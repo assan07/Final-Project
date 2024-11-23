@@ -20,22 +20,35 @@
     {% include "navbar1.html" %}
 
     <!-- Main content -->
-    <div
-      class="main d-flex justify-content-center align-content-center bg-body-secondary px-lg-3"
-    >
-      <div class="container bg m-3 h-50 rounded-2 w-100">
-        <div class="row">
-          <div class="col-md-6 p-3">
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </p>
+
+    <div class="main d-flex justify-content-center bg-body-secondary">
+      <div
+        class="row bg m-3 h-50 rounded-2 w-100 d-flex justify-content-between g-5"
+      >
+        <div class="col-md-6 p-3">
+          <p class="text-wrap">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+            aliquip ex ea commodo consequat.
+          </p>
+          <div class="button">
+            <button type="button" class="btn btn-outline-primary h-25">
+              Produk kami
+            </button>
+            <button type="button" class="btn btn-outline-info">
+              Ikuti Kami
+            </button>
           </div>
-          <div class="col-lg-2 d-flex justify-content-between align-content-center m-4">
-            <img src="{{ url_for('static', filename='images/icon/logo-brand.png') }}" alt="image toko" class="col-lg-2 w-50 h-50">
-          </div>
+        </div>
+        <div
+          class="col-lg-2 d-flex justify-content-between align-content-center m-4"
+        >
+          <img
+            src="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
+            alt="image toko"
+            class="col-lg-2 w-50 h-50"
+          />
         </div>
       </div>
     </div>
