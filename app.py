@@ -1,13 +1,11 @@
 from flask import Flask, render_template
 
-import os
-
-app = Flask(__name__, template_folder=os.path.join('app', 'templates'))
+app = Flask(__name__)
 
 # Home dan halaman about
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template('index.html')
 
 @app.route("/about")
 def about():
