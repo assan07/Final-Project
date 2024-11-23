@@ -1,4 +1,47 @@
-.bg{
-    background-color: rgba(183, 191, 254, 0.616);
-    height: 50px;
+.bg {
+  background-color: rgba(183, 191, 254, 0.616);
+  height: 50px;
+}
+
+/* Memastikan footer tetap di bagian bawah */
+body {
+  display: flex; /* Pastikan body menggunakan Flexbox */
+  flex-direction: column;
+  min-height: 100vh; /* Pastikan tinggi minimum halaman sama dengan tinggi layar */
+  margin: 0; /* Hilangkan margin default body */
+}
+
+footer {
+  margin-top: auto; /* Dorong footer ke bagian bawah */
+  background-color: #f8f9fa; /* Opsional: Berikan warna latar belakang untuk footer */
+}
+
+footer hr {
+  border: 1px solid #ddd; /* Warna garis */
+  margin: 0 auto;
+  width: 90%; /* Lebar garis */
+}
+
+footer p {
+  font-size: 14px;
+  color: #6c757d;
+  line-height: 1.5;
+}
+
+/* Tombol oval */
+.custom-button {
+  background-color: rgba(183, 191, 254, 0.616);
+  border-radius: 50px; /* Membuat tombol oval */
+  padding: 10px 20px; /* Memberikan ruang dalam tombol */
+  color: black; /* Warna teks hitam */
+}
+
+/* Jarak antar tombol */
+.button-container .btn + .btn {
+  margin-left: 10px; /* Memberi jarak antar tombol */
+}
+
+/* Memberikan jarak antara gambar dan footer */
+.content-section {
+  margin-bottom: 50px; /* Tambahkan jarak di bawah section utama */
 }
