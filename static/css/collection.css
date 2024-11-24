@@ -1,0 +1,6 @@
+.img-fixed-size {
+    width: 100%;
+    height: 250px; /* Sesuaikan tinggi gambar */
+    object-fit: cover; /* Memastikan gambar tidak terdistorsi */
+  }
+  
