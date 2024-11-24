@@ -1,3 +1,10 @@
+body {
+  display: flex; 
+  flex-direction: column;
+  min-height: 100vh; 
+  margin: 0; 
+}
+
 .bg {
   background-color: rgba(183, 191, 254, 0.616);
   height: 50px;
@@ -10,16 +17,8 @@
   font-weight: 300;
 }
 
-/* Memastikan footer tetap di bagian bawah */
-body {
-  display: flex; /* Pastikan body menggunakan Flexbox */
-  flex-direction: column;
-  min-height: 100vh; /* Pastikan tinggi minimum halaman sama dengan tinggi layar */
-  margin: 0; /* Hilangkan margin default body */
-}
-
 footer {
-  margin-top: auto; /* Dorong footer ke bagian bawah */
+  margin-top: auto; 
   background-color: #f8f9fa;
 }
 
@@ -32,9 +31,9 @@ footer p {
 /* Tombol oval */
 .custom-button {
   background-color: rgba(183, 191, 254, 0.616);
-  border-radius: 50px; /* Membuat tombol oval */
-  padding: 10px 20px; /* Memberikan ruang dalam tombol */
-  color: black; /* Warna teks hitam */
+  border-radius: 50px; 
+  padding: 10px 20px; 
+  color: black; 
 }
 
 /* Jarak antar tombol */
@@ -42,7 +41,6 @@ footer p {
   margin-left: 10px;
 }
 
-/* Memberikan jarak antara gambar dan footer */
 .content-section {
   margin-bottom: 50px;
 }
