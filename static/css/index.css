@@ -1,10 +1,81 @@
-.bg {
-  background-color: rgba(183, 191, 254, 0.616);
-  height: 50px;
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: #EBF7FD;
+}
+
+/*.nav {
+  background: linear-gradient(45deg, #15d4fb, #26a5f4);
+}*/
+.nav{
+  background-color: #15D4FB;
+}
+
+.nav-link {
+  color: white !important;
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  color: #ffce44 !important;
+  text-decoration: underline;
+}
+
+.main {
+  padding: 50px 15px;
 }
 
 .btn {
-  border-radius: 10px;
+  border-radius: 20px;
+  transition: 0.3s ease;
 }
 
-  
+.btn-outline-primary:hover {
+  background-color: #15d4fb;
+  color: white;
+}
+
+.btn-outline-info:hover {
+  background-color: #067bc2;
+  color: white;
+}
+
+.bg-footer {
+  background: linear-gradient(45deg, #001f33, #001f4c);
+}
+
+.bg-footer h4 {
+  color: #ffce44;
+}
+
+a{
+  list-style: none;
+  text-decoration: none;
+}
+.bg-footer a {
+  color: #ffce44;
+  transition: 0.3s;
+}
+
+.bg-footer a:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+.footer-icons a {
+  margin: 0 10px;
+  color: #ffce44;
+  font-size: 1.5rem;
+  transition: 0.3s;
+}
+
+.footer-icons a:hover {
+  color: white;
+}
+
+.rounded-2 {
+  transition: transform 0.3s ease;
+}
+
+.rounded-2:hover {
+  transform: scale(1.05);
+}
