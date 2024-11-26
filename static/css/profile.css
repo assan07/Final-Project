@@ -1,0 +1,71 @@
+body {
+    font-family: "Arial", sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+  }
+
+  .profile-box {
+    background: #ebf7fd;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    height: 75vh;
+  }
+  
+  .profile-img img {
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+  }
+
+  .form-container label {
+    font-weight: bold;
+  }
+
+  .form-container {
+    border: none;
+    border-right: 2px solid #5f5f5f;
+    border-left: 2px solid #5f5f5f;
+    outline: none;
+  }
+
+  .form-container .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+
+  .form-container .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+  }
+
+  .form-control {
+    border: none;
+    border-bottom: 2px solid #000;
+    outline: none;
+  }
+
+  .change-profile img {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 10px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .edit-password {
+    position: absolute;
+    bottom: 85px;
+    left: 70px;
+  }
+
+  .edit-password a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+  }
+
+  .edit-password a:hover {
+    text-decoration: underline;
+  }
