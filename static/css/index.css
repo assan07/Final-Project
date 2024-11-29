@@ -1,17 +1,19 @@
 body {
   font-family: "Poppins", sans-serif;
-  background-color: #EBF7FD;
+  background-color: #ebf7fd;
 }
 
-/*.nav {
-  background: linear-gradient(45deg, #15d4fb, #26a5f4);
-}*/
-.nav{
+.nav {
   height: 60px;
-  background-color: #15D4FB;
+  background: #2f1cff;
+  z-index: 1036;
 }
 
-.nav.link-href{
+.logo {
+  margin-left: -85px;
+}
+
+.nav.link-href {
   display: flex;
   margin-top: 12px;
   height: 40px;
@@ -29,12 +31,89 @@ body {
 }
 
 .main {
+  display: flex;
+  overflow: hidden; /* Membatasi area tampilan */
+  position: relative; /* Dibutuhkan untuk tombol navigasi */
+  background: #2f1cff;
   padding: 50px 15px;
+  height: 100vh;
+  justify-content: center;
+  transition: transform 0.5s ease-in-out;
+}
+
+.box-item {
+  margin-left: 50px;
+  display: flex;
+  justify-content: space-between;
+  width: 70vw;
+}
+
+h1 {
+  font-weight: bold;
+  color: #ffff;
+  font-size: 43px;
+}
+
+.slides-container {
+  display: flex;
+  transition: transform 0.5s ease-in-out; /* Animasi geser */
+  width: 400%; /* Menyesuaikan lebar sesuai jumlah slide */
+}
+
+.slide {
+  flex: 0 0 100%; /* Tiap slide mengambil 100% dari area tampilan */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.item-collection {
+  padding: 0;
+  width: 300px;
+  height: 300px;
+  background: transparent;
+  border: 1px solid white;
+}
+
+.item-collection img {
+  height: 360px;
+  background: transparent;
+}
+
+.nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.7);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.nav-button.left {
+  left: 10px;
+}
+
+.nav-button.right {
+  right: 10px;
+}
+
+.nav-button:hover {
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .btn {
-  border-radius: 20px;
+  border-radius: 15px;
+  border: 1px solid white;
   transition: 0.3s ease;
+  color: white;
+
+  font-weight: bold;
 }
 
 .btn-outline-primary:hover {
@@ -55,6 +134,54 @@ body {
   color: #ffce44;
 }
 
+/* about */
+
+.about-section {
+  background: linear-gradient(135deg, #2f1cff, #15d4fb);
+  color: rgb(255, 255, 255);
+  padding: 50px 15px;
+  border-radius: 10px;
+  margin-top: 30px;
+}
+
+.about-section p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  text-align: justify;
+  color: red;
+}
+.about-section h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.about-section {
+  background-color: #f8f9fa;
+}
+
+button.custom-button {
+  transition: all 0.3s ease;
+}
+
+button.custom-button:hover {
+  background-color: #0056b3;
+  color: #fff;
+}
+
+img:hover {
+  cursor: pointer;
+  transform: scale(1.1);
+  transition: transform 0.3s ease-in-out;
+}
+
+h3.fw-bold {
+  margin-bottom: 1rem;
+}
+
+/* footer */
 a {
   /* font-weight: bold; */
   list-style: none;

@@ -51,10 +51,6 @@ def payment():
     return render_template("carts/payment.html")
 
 # Rute untuk products
-@app.route("/products/collections")
-def collections():
-    return render_template("products/collections.html")
-
 @app.route("/products/product_details")
 def product_details():
     return render_template("products/product_details.html")
