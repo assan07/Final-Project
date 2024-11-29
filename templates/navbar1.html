@@ -1,67 +1,25 @@
 <header class="nav fixed-top">
   <div class="container w-75">
     <nav class="nav nav-pills justify-content-end" aria-label="Main navigation">
-      <a
-        href="/"
-        class="logo d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
-      >
-        <img
-          class="bi ms-4"
-          width="50"
-          height="50"
-          src="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
-          alt="Logo brand"
-        />
-        <img
-          class="fs-4 bi ms-1"
-          width="160"
-          height="40"
-          src="{{ url_for('static', filename='images/icon/logo-title-01.png') }}"
-          alt="Logo title"
-        />
+      <a href="/"
+        class="logo d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+        <img class="bi ms-4" width="50" height="50" src="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
+          alt="Logo brand" />
+        <img class="fs-4 bi ms-1" width="160" height="40"
+          src="{{ url_for('static', filename='images/icon/logo-title-01.png') }}" alt="Logo title" />
       </a>
       <ul class="nav link-href">
         <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
-        <li class="nav-item"><a href="/about" class="nav-link">About</a></li>
+        <li class="nav-item"><a href="/#about" class="nav-link">About</a></li>
+        <li class="nav-item"><a href="/products/product_lists" class="nav-link">Product</a></li>
         <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            role="button"
-            data-bs-toggle="dropdown"
-            >Product</a
-          >
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Cart</a>
           <ul class="dropdown-menu">
             <li>
-              <a class="dropdown-item" href="/products/collections"
-                >Collection</a
-              >
+              <a class="dropdown-item" href="/carts/order_summary">Order Summary</a>
             </li>
             <li>
-              <a class="dropdown-item" href="/products/product_lists"
-                >Product List</a
-              >
-            </li>
-          </ul>
-        </li>
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            role="button"
-            data-bs-toggle="dropdown"
-            >Cart</a
-          >
-          <ul class="dropdown-menu">
-            <li>
-              <a class="dropdown-item" href="/carts/order_summary"
-                >Order Summary</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="/carts/order_history"
-                >Order History</a
-              >
+              <a class="dropdown-item" href="/carts/order_history">Order History</a>
             </li>
           </ul>
         </li>
