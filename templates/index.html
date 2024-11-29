@@ -33,31 +33,200 @@
     {% include "navbar1.html" %}
 
     <!-- Main content -->
-    <div class="main container text-center">
-      <div class="row g-5">
-        <div class="col-md-6">
-          <h2 class="mb-3">Selamat Datang di Mustika Dua!</h2>
-          <p>
-            Mustika Dua menyediakan segala kebutuhan untuk pembangunan proyek
-            Anda. Temukan berbagai produk berkualitas dengan harga terbaik di
-            sini.
-          </p>
-          <a href="/products/collections"
-            ><button type="button" class="btn btn-outline-primary me-2">
-              Produk Kami
-            </button></a
-          >
-          <button type="button" class="btn btn-outline-info">Ikuti Kami</button>
+    <div class="main">
+      <!-- Kontainer slide -->
+      <div class="slides-container">
+        <div class="slide">
+          <div class="box-item">
+            <div>
+              <h1 class="mb-3">Cat Zinc</h1>
+              <h1 class="mb-3">Chromate</h1>
+              <button type="button" class="btn btn-outline-primary">
+                Detail
+              </button>
+            </div>
+            <div class="item-collection">
+              <img
+                src="{{ url_for('static', filename='images/cat/cet-zc.png') }}"
+                alt="image toko"
+                class="img-fluid"
+              />
+            </div>
+          </div>
         </div>
+        <div class="slide">
+          <div class="box-item">
+            <div>
+              <h1 class="mb-3">Cat Zinc 2</h1>
+              <h1 class="mb-3">Chromate 2</h1>
+              <button type="button" class="btn btn-outline-primary">
+                Detail
+              </button>
+            </div>
+            <div class="item-collection">
+              <img
+                src="{{ url_for('static', filename='images/cat/cet-zc-2.png') }}"
+                alt="image toko"
+                class="img-fluid"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="slide">
+          <div class="box-item">
+            <div>
+              <h1 class="mb-3">Cat Zinc 3</h1>
+              <h1 class="mb-3">Chromate 3</h1>
+              <button type="button" class="btn btn-outline-primary">
+                Detail
+              </button>
+            </div>
+            <div class="item-collection">
+              <img
+                src="{{ url_for('static', filename='images/cat/cet-zc-3.png') }}"
+                alt="image toko"
+                class="img-fluid"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="slide">
+          <div class="box-item">
+            <div>
+              <h1 class="mb-3">Cat Zinc 4</h1>
+              <h1 class="mb-3">Chromate 4</h1>
+              <button type="button" class="btn btn-outline-primary">
+                Detail
+              </button>
+            </div>
+            <div class="item-collection">
+              <img
+                src="{{ url_for('static', filename='images/cat/cet-zc-4.png') }}"
+                alt="image toko"
+                class="img-fluid"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tombol navigasi -->
+      <button class="nav-button left">&lt;</button>
+      <button class="nav-button right">&gt;</button>
+    </div>
+
+   
+
+    <!-- about content -->
+    <div class="about-section bg-light py-5">
+      <div class="container text-center">
+        <h2 class="fw-bold text-primary">About Us</h2>
+        <p class="text-muted">
+          We are committed to providing high-quality building materials for your
+          needs. With years of experience, we strive to bring innovative
+          solutions to our customers.
+        </p>
+      </div>
+    </div>
+
+    <section class="container mt-5 mb-5 content-section">
+      <div class="row align-items-center">
+        <!-- Text -->
         <div class="col-md-6">
+          <h3 class="fw-bold text-primary">Tentang Toko Mustika Dua</h3>
+          <p class="text-wrap text-secondary">
+            Toko Mustika Dua didirikan pada tahun 2007 dengan tujuan memenuhi
+            kebutuhan masyarakat Kota Bau-Bau akan bahan bangunan berkualitas.
+            Kehadiran Mustika Dua menjadi solusi yang sangat dibutuhkan oleh
+            masyarakat setempat. Berlokasi di Jl. Sultan Dayanu Ikhsanuddin
+            No.211, Lipu, Kec. Betoambari, Kota Bau-Bau, Sulawesi Tenggara
+            93724.
+          </p>
+          <div class="mt-4">
+            <button class="btn btn-primary btn-lg me-2">
+              <i class="bi bi-box-seam"></i> Produk
+            </button>
+            <button class="btn btn-outline-secondary btn-lg">
+              <i class="bi bi-people"></i> Ikuti Kami
+            </button>
+          </div>
+        </div>
+        <!-- Image -->
+        <div class="col-md-6 text-center">
           <img
-            src="{{ url_for('static', filename='images/image-ds.jpg') }}"
-            alt="image toko"
-            class="img-fluid rounded-2 shadow"
+            src="/static/images/foto_depan.jpg"
+            alt="Gambar Produk"
+            class="img-fluid rounded shadow-lg"
           />
         </div>
       </div>
-    </div>
+    </section>
+
+    <!-- Section -->
+    <section id="ikuti-kami" class="container mt-5">
+      <div class="row align-items-center">
+        <div class="col-md-6 text-center">
+          <img
+            src="/static/images/foto_papan.jpg"
+            class="img-fluid rounded shadow-sm mb-3"
+            alt="Foto Papan"
+          />
+          <img
+            src="/static/images/foto_bengkel.jpg"
+            class="img-fluid rounded shadow-sm"
+            alt="Foto Bengkel"
+          />
+        </div>
+        <div class="col-md-6">
+          <p class="text-wrap text-secondary">
+            Selain menyediakan bahan bangunan berkualitas, Toko Mustika Dua juga
+            telah memperluas layanan dengan membuka bengkel pengelasan. Layanan
+            ini mencakup pembuatan pagar, kanopi, dan berbagai produk pengelasan
+            lainnya untuk memberikan solusi lengkap bagi kebutuhan pelanggan.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="container mt-5 mb-5 content-section">
+      <div class="row align-items-center">
+        <!-- Text -->
+        <div class="col-md-6">
+          <h3 class="fw-bold text-primary">Makna Nama "Mustika Dua"</h3>
+          <p class="text-secondary">
+            Mustika melambangkan barang-barang berkualitas tinggi, sementara Dua
+            menandakan bahwa toko ini adalah cabang kedua dari Toko Mustika yang
+            pertama kali didirikan di Kota Raha, Kabupaten Muna, Sulawesi
+            Tenggara.
+          </p>
+          <h3 class="fw-bold text-primary">Filosofi Logo</h3>
+          <p class="text-secondary">
+            Daun Pupus Hijau melambangkan pertumbuhan dan perkembangan
+            berkelanjutan. Warna biru menggambarkan kesuksesan yang luas,
+            sementara Lingkaran Biru Muda mewakili kesatuan dan komitmen
+            terhadap kualitas layanan.
+          </p>
+          <h3 class="fw-bold text-primary">Komitmen Kami</h3>
+          <p class="text-secondary">
+            Kami berkomitmen untuk memberikan layanan berkualitas tinggi, solusi
+            fleksibel, dan pertumbuhan yang berkelanjutan.
+          </p>
+        </div>
+        <!-- Image -->
+        <div class="col-md-6 text-center">
+          <img
+            src="/static/images/icon/logo-brand.png"
+            alt="Logo Toko"
+            class="img-fluid rounded shadow-sm mb-3"
+          />
+          <img
+            src="/static/images/icon/logo-title-01.png"
+            alt="Logo Title"
+            class="img-fluid rounded shadow-sm"
+          />
+        </div>
+      </div>
+    </section>
 
     <!-- Footer -->
     {% include "footer.html" %}
@@ -67,5 +236,31 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const slidesContainer = document.querySelector(".slides-container");
+        const slides = document.querySelectorAll(".slide");
+        const prevButton = document.querySelector(".nav-button.left");
+        const nextButton = document.querySelector(".nav-button.right");
+
+        let currentSlideIndex = 0;
+
+        const updateSlidePosition = () => {
+          const offset = -(currentSlideIndex * 100); // Geser slide berdasarkan index
+          slidesContainer.style.transform = `translateX(${offset}%)`;
+        };
+
+        prevButton.addEventListener("click", () => {
+          currentSlideIndex =
+            (currentSlideIndex - 1 + slides.length) % slides.length; // Navigasi ke kiri
+          updateSlidePosition();
+        });
+
+        nextButton.addEventListener("click", () => {
+          currentSlideIndex = (currentSlideIndex + 1) % slides.length; // Navigasi ke kanan
+          updateSlidePosition();
+        });
+      });
+    </script>
   </body>
 </html>
