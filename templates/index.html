@@ -28,7 +28,6 @@
       href="{{ url_for('static', filename='css/index.css') }}"
     />
   </head>
-
   <body>
     <!-- Navbar -->
     {% include "navbar1.html" %}
@@ -117,7 +116,7 @@
     </div>
 
     <!-- about content -->
-    <div class="about-section bg-light py-5">
+    <div id="about" class="about-section bg-light py-5">
       <div class="container text-center">
         <h2 class="fw-bold">About Us</h2>
         <p class="text-center text-light">
@@ -143,7 +142,7 @@
           </p>
         </div>
         <!-- Image -->
-        <div class="col-md-6 text-center">
+        <div class="col-md-4">
           <img
             src="{{ url_for('static', filename='images/toko/foto_depan.jpg') }}"
             alt="Gambar Produk"
@@ -156,28 +155,27 @@
     <!-- Section -->
     <section id="ikuti-kami" class="container mt-5">
       <div class="row align-items-center">
-        <div class="col-md-3 text-center">
-          <img
-            src="{{ url_for('static', filename='images/toko/foto_papan.jpg') }}"
-            class="img-fluid rounded shadow-sm mb-3"
-            alt="Foto Papan"
-          />
-        </div>
-        <div class="col-md-3 text-center">
-
-          <img
-            src="{{ url_for('static', filename='images/toko/foto_bengkel.jpg') }}"
-            class="img-fluid rounded shadow-sm"
-            alt="Foto Bengkel"
-          />
-        </div>
-        <div class="col-md-6">
+        <div class="col-md-5">
           <p class="text-wrap text-secondary">
             Selain menyediakan bahan bangunan berkualitas, Toko Mustika Dua juga
             telah memperluas layanan dengan membuka bengkel pengelasan. Layanan
             ini mencakup pembuatan pagar, kanopi, dan berbagai produk pengelasan
             lainnya untuk memberikan solusi lengkap bagi kebutuhan pelanggan.
           </p>
+        </div>
+        <div class="row-cols-6">
+          <img
+            src="{{ url_for('static', filename='images/toko/foto_papan.jpg') }}"
+            class="img-fluid rounded shadow-sm mb-3"
+            alt="Foto Papan"
+          />
+        </div>
+        <div class="row-cols-6">
+          <img
+            src="{{ url_for('static', filename='images/toko/foto_bengkel.jpg') }}"
+            class="img-fluid rounded shadow-sm"
+            alt="Foto Bengkel"
+          />
         </div>
       </div>
     </section>
@@ -207,7 +205,7 @@
           </p>
         </div>
         <!-- Image -->
-        <div class="col-md-6 text-center">
+        <div class="col-md-3 g-4 text-center">
           <img
             src="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
             alt="Logo Toko"
@@ -215,7 +213,7 @@
           />
           <img
             src="{{ url_for('static', filename='images/icon/logo-title-01.png') }}"
-            alt="Logo Title"
+            altb="Logo Title"
             class="img-fluid rounded shadow-sm"
           />
         </div>

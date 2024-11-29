@@ -6,7 +6,6 @@ body {
 .nav {
   height: 60px;
   background: #2f1cff;
-  z-index: 1036;
 }
 
 .logo {
@@ -143,19 +142,18 @@ h1 {
   border-radius: 10px;
   margin-top: 30px;
 }
-
-.about-section p {
-  font-size: 1.1rem;
-  line-height: 1.8;
-  text-align: justify;
-  color: red;
-}
 .about-section h2 {
   font-size: 2.5rem;
   font-weight: bold;
   text-align: center;
   margin-bottom: 20px;
   color: #fff;
+}
+
+.about-section p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  text-align: justify;
 }
 
 .about-section {
