@@ -1,0 +1,28 @@
+
+.page-summary{
+  padding: 10px;
+    margin-top: 100px;
+    margin-bottom: 100px;
+    border-bottom: 2px solid #3f3f3f;
+}
+
+.img-placeholder {
+    width: 60px;
+    height: 60px;
+    background-color: #ccc;
+    border-radius: 5px;
+  }
+  
+  hr {
+    border: 1px solid #000;
+  }
+  
+  .bg-light {
+    background-color: #f8f9fa !important;
+  }
+  
+  /* Product Cards */
+.product-Cards {
+    width: 80%;
+    margin-top: 100px;
+  }

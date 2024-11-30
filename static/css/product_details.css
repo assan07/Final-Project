@@ -1,31 +1,47 @@
+.cont-product-detail {
+  width: 100%;
+  margin-top: 160px;
+}
+
+/* Product Cards */
+.product-Cards {
+  width: 90%;
+  border-top: 2px solid #2f1cff;
+  margin-top: 100px;
+}
+
 .carousel-item img {
-    width: 100%;
-    max-height: 400px;
-    object-fit: contain;
+  width: 100%;
+  max-height: 400px;
+  object-fit: contain;
 }
 
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
-    background-color: #007bff; /* Warna biru */
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  background-color: #007bff; /* Warna biru */
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Hilangkan ikon default dan tambahkan ikon custom */
 .carousel-control-prev-icon::after,
 .carousel-control-next-icon::after {
-    display: block;
-    width: 12px;
-    height: 12px;
+  display: block;
+  width: 12px;
+  height: 12px;
 }
 
 .carousel-control-prev-icon::after {
-    transform: rotate(-135deg); /* Arah panah ke kiri */
+  transform: rotate(-135deg); /* Arah panah ke kiri */
 }
 
 .carousel-control-next-icon::after {
-    transform: rotate(45deg); /* Arah panah ke kanan */
+  transform: rotate(45deg); /* Arah panah ke kanan */
+}
+
+.product-Cards {
+  width: 90%;
 }

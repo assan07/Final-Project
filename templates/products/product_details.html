@@ -28,7 +28,7 @@
   <body>
     {% include "navbar1.html" %}
 
-    <div class="container mt-lg-5 mb-5">
+    <div class="cont-product-detail container mb-5">
       <div class="row">
         <!-- Image Section -->
         <div class="col-md-6 text-center">
@@ -128,19 +128,48 @@
           </p>
           <p><strong>Ukuran:</strong> 0.8L, 0.9L, 1L, 1 Kg</p>
           <div class="py-5">
-            <button class="btn btn-outline-primary me-2">Add to Cart</button>
-            <button class="btn btn-primary">Buy Now</button>
+            <button class="btn btn-primary me-2">Add to Cart</button>
+            <a href="/carts/order_summary"
+              ><button class="btn btn-success">Buy Now</button></a
+            >
           </div>
+        </div>
+      </div>
+      <!-- Product Cards -->
+      <div class="product-Cards row g-4 w-100">
+        <!-- Product 1 -->
+        <div class="col-sm-6 col-md-4 col-lg-3">
+          <a href="/products/product_details">
+            <div
+              class="card h-100 shadow-sm product-card col align-content-center"
+            >
+              <img
+                src="{{ url_for('static', filename='images/cat/cet-zc.png') }}"
+                class="card-img-top mx-4"
+                alt="Wireless Headphones"
+                style="width: 180px; height: 230px"
+              />
+              <div class="card-body">
+                <h5 class="card-title">Wireless Headphones</h5>
+                <p class="card-text">
+                  High-quality sound with noise-canceling feature.
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="text-primary fw-bold">Rp.19999</span>
+                  <button class="btn btn-primary">Add to Cart</button>
+                </div>
+              </div>
+            </div>
+          </a>
         </div>
       </div>
     </div>
 
+    {% include "footer.html" %}
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
-
-    {% include "footer.html" %}
   </body>
 </html>

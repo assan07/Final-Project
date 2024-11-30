@@ -48,23 +48,25 @@
       <div class="row g-4">
         <!-- Product 1 -->
         <div class="col-sm-6 col-md-4 col-lg-3">
-          <div class="card h-100 shadow-sm product-card">
-            <img
-              src="{{ url_for('static', filename='images/cat/cet-zc.png') }}"
-              class="card-img-top"
-              alt="Wireless Headphones"
-            />
-            <div class="card-body">
-              <h5 class="card-title">Wireless Headphones</h5>
-              <p class="card-text">
-                High-quality sound with noise-canceling feature.
-              </p>
-              <div class="d-flex justify-content-between align-items-center">
-                <span class="text-primary fw-bold">Rp.19999</span>
-                <button class="btn btn-primary">Add to Cart</button>
+          <a href="/products/product_details">
+            <div class="card h-100 shadow-sm product-card">
+              <img
+                src="{{ url_for('static', filename='images/cat/cet-zc.png') }}"
+                class="card-img-top"
+                alt="Wireless Headphones"
+              />
+              <div class="card-body">
+                <h5 class="card-title">Wireless Headphones</h5>
+                <p class="card-text">
+                  High-quality sound with noise-canceling feature.
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="text-primary fw-bold">Rp.19999</span>
+                  <button class="btn btn-primary">Add to Cart</button>
+                </div>
               </div>
             </div>
-          </div>
+          </a>
         </div>
       </div>
     </div>
