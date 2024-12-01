@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Checkout Page</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet"
+    />
 
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
@@ -20,85 +23,125 @@
     />
   </head>
   <body>
-    {% include "navbar1.html" %}
+    {% include "main/navbar1.html" %}
 
     <div class="container page-summary">
-      <div class="row">
-        <!-- Bagian kiri -->
-        <div class="col-md-7">
-          <h5>Barang yang di beli</h5>
-          <div class="d-flex align-items-start mb-3">
-            <div class="me-3">
-              <div class="img-placeholder"></div>
-            </div>
-            <div>
-              <p class="mb-1 fw-bold">nama barang</p>
-              <p class="mb-0 text-muted">RP.1234</p>
-            </div>
-          </div>
-          <hr />
-        </div>
+      <h4>Keranjang Belanja</h4>
+      <form>
+        <div class="row">
+          <!-- Bagian kiri: Daftar Barang -->
+          <div class="col-md-7">
 
-        <!-- Bagian kanan -->
-        <div class="col-md-5 ">
-          <div class="mb-3">
-            <textarea
-              class="form-control form-control-sm"
-              id="exampleFormControlTextarea1"
-              rows="3"
-              placeholder="Alamat anda"
-            ></textarea>
+            <!-- Item 1 -->
+            <div class="form-check d-flex align-items-start mb-3">
+              <input
+                class="form-check-input me-3"
+                type="checkbox"
+                name="items[]"
+                value="item1"
+                id="item1"
+              />
+              <label class="form-check-label w-100" for="item1">
+                <div class="d-flex align-items-center">
+                  <div class="img-placeholder me-3"></div>
+                  <div>
+                    <p class="mb-1 fw-bold">Nama Barang 1</p>
+                    <p class="mb-0 text-muted">RP. 1234</p>
+                  </div>
+                </div>
+              </label>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="form-check d-flex align-items-start mb-3">
+              <input
+                class="form-check-input me-3"
+                type="checkbox"
+                name="items[]"
+                value="item2"
+                id="item2"
+              />
+              <label class="form-check-label w-100" for="item2">
+                <div class="d-flex align-items-center">
+                  <div class="img-placeholder me-3"></div>
+                  <div>
+                    <p class="mb-1 fw-bold">Nama Barang 2</p>
+                    <p class="mb-0 text-muted">RP. 5678</p>
+                  </div>
+                </div>
+              </label>
+            </div>
+
+            <hr />
           </div>
 
-          <div class="bg-light p-3 rounded shadow">
-            <h6 class="fw-bold">ringkasan belanja</h6>
-            <div class="d-flex justify-content-between">
-              <p class="mb-1">total harga</p>
-              <p class="mb-1">Rp.1234</p>
+          <!-- Bagian kanan: Ringkasan -->
+          <div class="col-md-5">
+            <div class="mb-3">
+              <textarea
+                class="form-control form-control-sm"
+                id="exampleFormControlTextarea1"
+                rows="3"
+                placeholder="Alamat anda"
+              ></textarea>
             </div>
-            <h6 class="fw-bold mt-3">metode Pembayaran</h6>
-            <div class="d-flex gap-3 mb-3">
-              <button class="btn btn-secondary btn-sm">BRI</button>
-              <button class="btn btn-secondary btn-sm">dana</button>
-              <button class="btn btn-secondary btn-sm">ovo</button>
-            </div>
-            <button class="btn btn-dark w-100">Beli</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Product Cards -->
-    <div class="product-Cards row g-4 mx-5 my-5">
-      <!-- Product 1 -->
-      <div class="col-sm-6 col-md-4 col-lg-3">
-        <a href="/products/product_details">
-          <div
-            class="card h-100 shadow-sm product-card col align-content-center"
-          >
-            <img
-              src="{{ url_for('static', filename='images/cat/cet-zc.png') }}"
-              class="card-img-top mx-4"
-              alt="Wireless Headphones"
-              style="width: 180px; height: 230px"
-            />
-            <div class="card-body">
-              <h5 class="card-title">Wireless Headphones</h5>
-              <p class="card-text">
-                High-quality sound with noise-canceling feature.
-              </p>
-              <div class="d-flex justify-content-between align-items-center">
-                <span class="text-primary fw-bold">Rp.19999</span>
-                <button class="btn btn-primary">Add to Cart</button>
+            <div class="bg-light p-3 rounded shadow">
+              <h6 class="fw-bold">Ringkasan Belanja</h6>
+              <div class="d-flex justify-content-between">
+                <p class="mb-1">Total Harga</p>
+                <p class="mb-1" id="total-harga">Rp. 0</p>
               </div>
+              <h6 class="fw-bold mt-3">Metode Pembayaran</h6>
+              <div class="d-flex gap-3 mb-3">
+                <button class="btn btn-outline-secondary btn-sm">BRI</button>
+                <button class="btn btn-outline-secondary btn-sm">dana</button>
+                <button class="btn btn-outline-secondary btn-sm">ovo</button>
+              </div>
+              <button type="submit" class="btn btn-dark w-100">Beli</button>
             </div>
           </div>
-        </a>
-      </div>
+        </div>
+      </form>
     </div>
-  </div>
-    {% include "footer.html" %}
+    {% include "main/footer.html" %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        // Harga barang (sesuai id checkbox)
+        const items = {
+          item1: 1234,
+          item2: 5678,
+        };
+
+        // Update total harga saat checkbox diubah
+        $('input[name="items[]"]').on("change", function () {
+          let total = 0;
+
+          // Iterasi checkbox yang dipilih
+          $('input[name="items[]"]:checked').each(function () {
+            const itemId = $(this).val();
+            total += items[itemId];
+          });
+
+          // Perbarui elemen total harga
+          $("#total-harga").text(`Rp. ${total}`);
+
+          // Kirim data ke server melalui AJAX
+          $.ajax({
+            url: "/update-total", // Ganti dengan URL endpoint API Anda
+            method: "POST",
+            data: { total: total },
+            success: function (response) {
+              console.log("Total harga berhasil diperbarui:", response);
+            },
+            error: function () {
+              console.error("Gagal memperbarui total harga");
+            },
+          });
+        });
+      });
+    </script>
   </body>
 </html>
