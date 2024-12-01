@@ -5,12 +5,12 @@ body {
 
 /* Navbar Customization */
 .nav-custom {
-  background-color: rgba(183, 191, 254, 0.616);
+  background: #2f1cff;
   height: 50px;
 }
 
 .nav-custom .nav-link {
-  color: #000;
+  color: #ffffff;
   font-weight: bold;
 }
 

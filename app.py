@@ -16,6 +16,10 @@ def admin_data_barang():
 def admin_data_user():
     return render_template("accounts/admin/data_user.html")
 
+@app.route("/accounts/admin/login_adm")
+def admin_login():
+    return render_template("accounts/admin/login_adm.html")
+
 # Rute untuk accounts/users
 @app.route("/accounts/users/login")
 def user_login():
@@ -42,9 +46,6 @@ def order_history():
 def order_summary():
     return render_template("carts/order_summary.html")
 
-@app.route("/carts/payment")
-def payment():
-    return render_template("carts/payment.html")
 
 # Rute untuk products
 @app.route("/products/product_details")

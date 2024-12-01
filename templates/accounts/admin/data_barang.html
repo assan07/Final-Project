@@ -24,10 +24,10 @@
             </a>
             <ul class="nav">
                 <li class="nav-item">
-                    <a href="/accounts/admin/data_barang" class="nav-link text-dark">Data Barang</a>
+                    <a href="/accounts/admin/data_barang" class="nav-link">Data Barang</a>
                 </li>
                 <li class="nav-item">
-                    <a href="/accounts/admin/data_user" class="nav-link text-dark">Data User</a>
+                    <a href="/accounts/admin/data_user" class="nav-link">Data User</a>
                 </li>
             </ul>
         </nav>
@@ -42,13 +42,13 @@
                 <div class="d-flex justify-content-end mb-3">
                     <input type="text" class="form-control w-25 me-2" placeholder="Search">
                     <button class="btn btn-dark">Search</button>
-                    <button type="button" onclick="open_box()" class="btn btn-danger mx-2">Tambah
+                    <button id="tambahBtn" type="button"  class="btn btn-danger mx-2">Tambah
                         Barang</button>
                 </div>
 
                 <!-- Table -->
                 <div class="table-responsive">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered text-center">
                         <thead class="table-secondary">
                             <tr>
                                 <th>No.</th>
@@ -71,10 +71,10 @@
                                 <td>Lorem</td>
                                 <td>Lorem</td>
                                 <td>
-                                    <button class="btn btn-danger btn-sm delete-btn" type="button" aria-label="Delete">
-                                        <i class="fa fa-delete-left"></i> Delete
+                                    <button id="deleteBtn" class="btn btn-danger btn-sm delete-btn" type="button" >
+                                        <i class="fa fa-trash"></i> Delete
                                     </button>
-                                    <button class="btn btn-danger btn-sm edit-btn" type="button" aria-label="Delete">
+                                    <button id="editBtn" class="btn btn-danger btn-sm edit-btn" type="button">
                                         <i class="fa fa-edit"></i> Edit
                                     </button>
                                 </td>
@@ -84,6 +84,8 @@
                 </div>
             </div>
         </div>
+
+        <!-- form tambah barang -->
         <div id="input-box" style="display: none;">
             <div class="row g-2 mt-5 border border-2 p-4">
                 <div class="col-md-4">
@@ -124,12 +126,52 @@
                 </div>
             </div>
         </div>
-
+        <!-- form edti -->
+        <div id="edit-box" style="display: none;">
+            <div class="row g-2 mt-5 border border-2 p-4">
+                <div class="col-md-4">
+                    <label for="inputState" class="form-label">Kategori</label>
+                    <select id="inputState" class="form-select">
+                        <option selected>Choose...</option>
+                        <option>CAT</option>
+                        <option>TINNER</option>
+                        <option>AKSESORIS PVC</option>
+                    </select>
+                </div>
+                <div class="mb-2 col-md-4">
+                    <label for="InputBrand" class="form-label">Brand</label>
+                    <input type="text" class="form-control" id="brand" placeholder="Brand Name">
+                </div>
+                <div class="col-md-4">
+                    <label for="InputNetto" class="form-label">Netto</label>
+                    <input type="text" class="form-control" id="netto" placeholder="Netto Product">
+                </div>
+                <div class="col-md-4">
+                    <label for="inputWarna" class="form-label">Warna</label>
+                    <input type="text" class="form-control" id="warna" placeholder="Warna Product">
+                </div>
+                <div class="col-md-4">
+                    <label for="inputHarga" class="form-label">Harga</label>
+                    <input type="text" class="form-control" id="harga" placeholder="Harga Product">
+                </div>
+                <div class="col-md-4">
+                    <label for="inputStock" class="form-label">Stock</label>
+                    <input type="text" class="form-control" id="stock" placeholder="Stock Product">
+                </div>
+                <div class="col-md-12">
+                    <label for="formFileMultiple" class="form-label">Foto Product</label>
+                    <input class="form-control" type="file" id="foto" multiple>
+                </div>
+                <div class="mt-4 col-12">
+                    <button type="submit" class="btn btn-primary">Tambah Barang</button>
+                </div>
+            </div>
+        </div>
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
         <script>
             document.addEventListener("DOMContentLoaded", () => {
-                const deleteButtons = document.querySelectorAll(".delete-btn");
+                const deleteButtons = document.querySelectorAll("#deleteBtn");
                 deleteButtons.forEach(button => {
                     button.addEventListener("click", () => {
                         if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
@@ -142,7 +184,9 @@
             $(document).ready(function () {
                 // Mendapatkan referensi ke elemen form dan tombol "Tambah Barang"
                 const inputBox = $('#input-box');
-                const tambahBarangBtn = $('.btn-danger.mx-2');
+                const editBox = $('#edit-box')
+                const tambahBarangBtn = $('#tambahBtn');
+                const editBtn = $('#editBtn')
 
                 // Fungsi untuk membuka/menutup form
                 function toggleForm() {
@@ -158,8 +202,13 @@
 
                 // Menambahkan event listener pada tombol "Tambah Barang"
                 tambahBarangBtn.click(toggleForm);
+
+                function toggleForm(){
+                    editBox.toggle();
+                }
+                editBtn.click(toggleForm);
+
             })
         </script>
 </body>
-
 </html>
