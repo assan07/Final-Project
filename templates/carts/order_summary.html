@@ -31,7 +31,6 @@
         <div class="row">
           <!-- Bagian kiri: Daftar Barang -->
           <div class="col-md-7">
-
             <!-- Item 1 -->
             <div class="form-check d-flex align-items-start mb-3">
               <input
@@ -87,6 +86,26 @@
             </div>
             <div class="bg-light p-3 rounded shadow">
               <h6 class="fw-bold">Ringkasan Belanja</h6>
+              <div class="input-group me-3" style="width: 100px">
+                <button
+                  id="decrease"
+                  class="btn btn-outline-secondary text-danger"
+                >
+                  -
+                </button>
+                <input
+                  id="quantity"
+                  type="text"
+                  class="form-control text-center"
+                  value="1"
+                />
+                <button
+                  id="increase"
+                  class="btn btn-outline-secondary text-success"
+                >
+                  +
+                </button>
+              </div>
               <div class="d-flex justify-content-between">
                 <p class="mb-1">Total Harga</p>
                 <p class="mb-1" id="total-harga">Rp. 0</p>
@@ -109,37 +128,66 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
       $(document).ready(function () {
-        // Harga barang (sesuai id checkbox)
-        const items = {
-          item1: 1234,
-          item2: 5678,
-        };
+        const $quantity = $("#quantity");
+        const stock = parseInt($("#stock").text(), 10);
 
-        // Update total harga saat checkbox diubah
-        $('input[name="items[]"]').on("change", function () {
-          let total = 0;
-
-          // Iterasi checkbox yang dipilih
-          $('input[name="items[]"]:checked').each(function () {
-            const itemId = $(this).val();
-            total += items[itemId];
-          });
-
-          // Perbarui elemen total harga
-          $("#total-harga").text(`Rp. ${total}`);
-
-          // Kirim data ke server melalui AJAX
+        // Fungsi AJAX untuk memperbarui jumlah di server
+        function updateQuantity(productId, newQuantity) {
           $.ajax({
-            url: "/update-total", // Ganti dengan URL endpoint API Anda
+            url: "/update-cart", // Endpoint server untuk update jumlah
             method: "POST",
-            data: { total: total },
+            contentType: "application/json",
+            data: JSON.stringify({
+              product_id: productId,
+              quantity: newQuantity,
+            }),
             success: function (response) {
-              console.log("Total harga berhasil diperbarui:", response);
+              console.log("Update successful:", response);
             },
-            error: function () {
-              console.error("Gagal memperbarui total harga");
+            error: function (xhr, status, error) {
+              console.error("Update failed:", status, error);
             },
           });
+        }
+
+        // Fungsi untuk mengurangi jumlah
+        $("#decrease").click(function () {
+          let currentQuantity = parseInt($quantity.val(), 10) || 1;
+          const productId = $(this).data("id");
+
+          if (currentQuantity > 1) {
+            currentQuantity--;
+            $quantity.val(currentQuantity);
+            updateQuantity(productId, currentQuantity); // Kirim data melalui AJAX
+          }
+        });
+
+        // Fungsi untuk menambah jumlah
+        $("#increase").click(function () {
+          let currentQuantity = parseInt($quantity.val(), 10) || 1;
+          const productId = $(this).data("id");
+
+          if (currentQuantity < stock) {
+            currentQuantity++;
+            $quantity.val(currentQuantity);
+            updateQuantity(productId, currentQuantity); // Kirim data melalui AJAX
+          }
+        });
+
+        // Validasi manual input jumlah dan kirim AJAX
+        $quantity.on("input", function () {
+          let currentValue = parseInt($quantity.val(), 10);
+          const productId = $("#increase").data("id");
+
+          if (isNaN(currentValue) || currentValue < 1) {
+            $quantity.val(1);
+            currentValue = 1;
+          } else if (currentValue > stock) {
+            $quantity.val(stock);
+            currentValue = stock;
+          }
+
+          updateQuantity(productId, currentValue); // Kirim data saat input valid
         });
       });
     </script>

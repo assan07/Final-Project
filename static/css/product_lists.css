@@ -3,14 +3,14 @@
   display: flex;
   position: sticky;
   justify-content: center;
-  background-color: transparent;
-  border: 1px solid #2f1cff;
+  background-color: #ebf7fd;
   padding: 10px 0;
   position: sticky;
   top: 60px;
-  z-index: 1030;
+  z-index: 900;
   margin-bottom: 20px;
   margin-top: 40px;
+  width: 100%;
 }
 .list-collection .btn {
   color: #4e3ffc;
