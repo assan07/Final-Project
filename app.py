@@ -31,9 +31,13 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 
 # Fungsi untuk memeriksa apakah ekstensi file diperbolehkan
+
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 # Home dan halaman about
+
+
 @app.route("/")
 def home():
     if 'user_id' in session:
@@ -44,7 +48,93 @@ def home():
         return redirect(url_for('user_login'))
 
 # Rute untuk accounts/admin
+
+
+@app.route("/admin/dashboard")
+def admin_dashboard():
+    if 'admin_id' not in session:
+        return redirect(url_for('admin_login'))
+
+    total_users = db.user.count_documents({})
+    total_barang = db.barang.count_documents({})
+    total_transaksi = db.transaksi.count_documents(
+        {}) if 'transaksi' in db.list_collection_names() else 0
+
+    recent_activities = list(db.activity_log.find().sort('date', -1).limit(10))
+
+    return render_template('accounts/admin/dashboard.html',
+                           active_page='dashboard',
+                           total_users=total_users,
+                           total_barang=total_barang,
+                           total_transaksi=total_transaksi,
+                           recent_activities=recent_activities)
+
+
+@app.route("/accounts/admin/logout")
+def admin_logout():
+    session.clear()
+    flash('Anda telah logout', 'success')
+    return redirect(url_for('admin_login'))
+
+
+@app.route("/accounts/admin/login_adm", methods=['GET', 'POST'])
+def admin_login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        if not username or not password:
+            flash('username dan password harus diisi', 'error')
+            return redirect(url_for('admin_login'))
+
+        admin = db.admin.find_one({'username': username.lower()})
+
+        if admin and bcrypt.check_password_hash(admin['password'], password):
+            session['admin_id'] = str(admin['_id'])
+            session['admin_name'] = admin['username']
+            flash('Login berhasil!', 'success')
+            return redirect(url_for('admin_dashboard'))
+
+        flash('username atau password salah', 'error')
+        return redirect(url_for('admin_login'))
+
+    return render_template("accounts/admin/login_adm.html")
+
+
+@app.route("/accounts/admin/register_adm", methods=['GET', 'POST'])
+def admin_register():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        if not username or not email or not password:
+            flash('Semua field harus diisi', 'error')
+            return redirect(url_for('admin_register'))
+
+        existing_admin = db.admin.find_one({'username': username})
+
+        if existing_admin:
+            flash('Username atau Email sudah terdaftar', 'error')
+            return redirect(url_for('admin_register'))
+
+        hashed_password = bcrypt.generate_password_hash(
+            password).decode('utf-8')
+
+        db.admin.insert_one({
+            'username': username,
+            'email': email,
+            'password': hashed_password
+        })
+
+        flash('Registrasi Admin berhasil! Silakan login', 'success')
+        return redirect(url_for('admin_login'))
+
+    return render_template("accounts/admin/register_adm.html")
+
+
 # Rute untuk halaman data barang admin
+
 @app.route("/accounts/admin/data_barang")
 def admin_data_barang():
     barang_collection = db.barang
@@ -52,6 +142,8 @@ def admin_data_barang():
     return render_template("accounts/admin/data_barang.html", barang_data=barang_data)
 
 # Rute untuk menambah barang
+
+
 @app.route("/accounts/admin/data_barang/tambah_barang", methods=["POST"])
 def tambah_barang():
     kategori = request.form.get('kategori')
@@ -84,6 +176,8 @@ def tambah_barang():
     return jsonify({"status": "success"}), 200
 
 # Rute untuk delete barang
+
+
 @app.route("/accounts/admin/data_barang/delete_barang", methods=["POST"])
 def delete_barang():
     barang_id = request.form.get('id')
@@ -114,6 +208,8 @@ def delete_barang():
         return jsonify({"status": "error", "message": "Barang tidak ditemukan"}), 404
 
 # Rute untuk edit barang
+
+
 @app.route("/accounts/admin/data_barang/edit_barang", methods=["POST"])
 def edit_barang():
     barang_id = request.form.get('id')
@@ -142,21 +238,19 @@ def edit_barang():
     if foto_filename:
         update_data["foto"] = foto_filename
 
-    result = barang_collection.update_one({'_id': ObjectId(barang_id)}, {"$set": update_data})
+    result = barang_collection.update_one(
+        {'_id': ObjectId(barang_id)}, {"$set": update_data})
 
     if result.modified_count > 0:
         return jsonify({"status": "success"}), 200
     else:
         return jsonify({"status": "error", "message": "Barang tidak ditemukan atau tidak ada perubahan."}), 400
 
+
 @app.route("/accounts/admin/data_user")
 def admin_data_user():
     return render_template("accounts/admin/data_user.html")
 
-
-@app.route("/accounts/admin/login_adm")
-def admin_login():
-    return render_template("accounts/admin/login_adm.html")
 
 # Rute untuk accounts/users
 
@@ -231,6 +325,7 @@ def user_register():
 
 # route untuk mencek apakah user sudah login atau blum
 
+
 @app.route("/accounts/users/status", methods=["GET"])
 def user_status():
     # Cek apakah ada sesi aktif
@@ -245,6 +340,7 @@ def user_status():
         })
 
 # route logout
+
 
 @app.route("/accounts/users/logout", methods=["GET"])
 def user_logout():
