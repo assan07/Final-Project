@@ -10,7 +10,6 @@ from bson import ObjectId
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
-
 MONGODB_URI = os.environ.get("MONGODB_URI")
 DB_NAME = os.environ.get("DB_NAME")
 
@@ -28,14 +27,10 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 
 # Fungsi untuk memeriksa apakah ekstensi file diperbolehkan
-
-
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 # Home dan halaman about
-
-
 @app.route("/")
 def home():
     if 'user_id' in session:
@@ -45,8 +40,6 @@ def home():
 
 # Rute untuk accounts/admin
 # Rute untuk halaman data barang admin
-
-
 @app.route("/accounts/admin/data_barang")
 def admin_data_barang():
     barang_collection = db.barang
@@ -54,8 +47,6 @@ def admin_data_barang():
     return render_template("accounts/admin/data_barang.html", barang_data=barang_data)
 
 # Rute untuk menambah barang
-
-
 @app.route("/accounts/admin/data_barang/tambah_barang", methods=["POST"])
 def tambah_barang():
     kategori = request.form.get('kategori')
@@ -88,8 +79,6 @@ def tambah_barang():
     return jsonify({"status": "success"}), 200
 
 # Rute untuk delete barang
-
-
 @app.route("/accounts/admin/data_barang/delete_barang", methods=["POST"])
 def delete_barang():
     barang_id = request.form.get('id')
@@ -119,6 +108,41 @@ def delete_barang():
     else:
         return jsonify({"status": "error", "message": "Barang tidak ditemukan"}), 404
 
+# Rute untuk edit barang
+@app.route("/accounts/admin/data_barang/edit_barang", methods=["POST"])
+def edit_barang():
+    barang_id = request.form.get('id')
+    kategori = request.form.get('kategori')
+    brand = request.form.get('brand')
+    netto = request.form.get('netto')
+    warna = request.form.get('warna')
+    harga = request.form.get('harga')
+    stock = request.form.get('stock')
+    foto = request.files.get('foto')
+    foto_filename = None
+
+    if foto and allowed_file(foto.filename):
+        foto_filename = secure_filename(foto.filename)
+        foto.save(os.path.join(app.config['UPLOAD_FOLDER'], foto_filename))
+
+    barang_collection = db.barang
+    update_data = {
+        "kategori": kategori,
+        "brand": brand,
+        "netto": netto,
+        "warna": warna,
+        "harga": harga,
+        "stock": stock,
+    }
+    if foto_filename:
+        update_data["foto"] = foto_filename
+
+    result = barang_collection.update_one({'_id': ObjectId(barang_id)}, {"$set": update_data})
+
+    if result.modified_count > 0:
+        return jsonify({"status": "success"}), 200
+    else:
+        return jsonify({"status": "error", "message": "Barang tidak ditemukan atau tidak ada perubahan."}), 400
 
 @app.route("/accounts/admin/data_user")
 def admin_data_user():
