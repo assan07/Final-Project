@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify, url_for, flash, session, redirect
 from pymongo import MongoClient
+from jinja2 import Environment, FileSystemLoader
 import os
 from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
@@ -39,7 +40,9 @@ def allowed_file(filename):
 @app.route("/")
 def home():
     if 'user_id' in session:
-        return render_template("main/index.html", full_name=session['full_name'])
+        full_name = session.get("full_name", "Guest")
+        return render_template("main/index.html", full_name=full_name)
+        # return render_template("main/index.html", full_name=session['full_name'])
     else:
         return redirect(url_for('user_login'))
 
