@@ -1,32 +1,119 @@
-<header>
-  <div class="container w-75">
-    <nav class="nav fixed-top nav-pills justify-content-end" aria-label="Main navigation">
-      <a href="/"
-        class="logo d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-        <img class="mx-2" width="60" height="60" src="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
-          alt="Logo brand" />
-        <img width="160" height="40"
-          src="{{ url_for('static', filename='images/icon/logo-title-01.png') }}" alt="Logo title" />
-      </a>
-      <ul class="link-href">
-        <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
-        <li class="nav-item"><a href="/#about" class="nav-link">About</a></li>
-        <li class="nav-item"><a href="/products/product_lists" class="nav-link">Product</a></li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Cart</a>
-          <ul class="dropdown-menu">
-            <li>
-              <a class="dropdown-item" href="/carts/order_summary">Order Summary</a>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <header>
+      <div class="container w-75">
+        <nav class="nav fixed-top nav-pills" aria-label="Main navigation">
+          <a
+            href="/"
+            class="logo d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
+          >
+            <img
+              class="mx-2"
+              width="60"
+              height="60"
+              src="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
+              alt="Logo brand"
+            />
+            <img
+              width="160"
+              height="40"
+              src="{{ url_for('static', filename='images/icon/logo-title-01.png') }}"
+              alt="Logo title"
+            />
+          </a>
+          <ul class="link-href">
+            <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
+            <li class="nav-item">
+              <a href="/#about" class="nav-link">About</a>
             </li>
-            <li>
-              <a class="dropdown-item" href="/carts/order_history">Order History</a>
+            <li class="nav-item">
+              <a href="/products/product_lists" class="nav-link">Product</a>
             </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                >Cart</a
+              >
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item" href="/carts/order_summary"
+                    >Order Summary</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="/carts/order_history"
+                    >Order History</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <div class="icon-user">
+              <i class="fa-solid fa-user fa-xl"></i>
+              <div class="profile-item">
+                <a
+                  href="/accounts/users/profile"
+                  id="profile-link"
+                  class="nav-link profile_menu"
+                  >Profile</a
+                >
+                
+                <a href="/accounts/users/login" id="login-link" class="nav-link"
+                  >Login</a
+                >
+                <a
+                  href="/accounts/users/register"
+                  id="register-link"
+                  class="nav-link"
+                  >Register</a
+                >
+                <a
+                  href="/accounts/users/logout"
+                  id="logout-link"
+                  class="nav-link"
+                  >Log Out</a
+                >
+              </div>
+            </div>
           </ul>
-        </li>
-        <li class="nav-item">
-          <a href="/accounts/users/login" class="nav-link">Login</a>
-        </li>
-      </ul>
-    </nav>
-  </div>
-</header>
+        </nav>
+      </div>
+    </header>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        // Panggil endpoint status login
+        $.ajax({
+          url: "/accounts/users/status",
+          method: "GET",
+          success: function (response) {
+            if (response.is_logged_in) {
+              // Jika user sudah login
+              $("#profile-link").removeClass("d-none");
+              $("#logout-link").removeClass("d-none");
+              $("#login-link").addClass("d-none");
+              $("#register-link").addClass("d-none");
+            } else {
+              // Jika user belum login
+              $("#profile-link").addClass("d-none");
+              $("#logout-link").addClass("d-none");
+              $("#login-link").removeClass("d-none");
+              $("#register-link").removeClass("d-none");
+            }
+          },
+          error: function () {
+            console.error("Gagal mendapatkan status login.");
+          },
+        });
+      });
+    </script>
+  </body>
+</html>

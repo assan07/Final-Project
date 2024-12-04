@@ -5,20 +5,21 @@ body {
 /* navbar */
 .nav {
   display: flex;
+  justify-content: space-between;
   height: 80px;
   background: #ffffff;
-  box-shadow: 8px 8px 10px #6166fa96
+  box-shadow: 8px 8px 10px #6166fa96;
 }
-
 
 .nav .link-href {
   display: flex;
-  margin-top: 12px;
-  height: 40px;
-  font-size: 18px;
+  justify-content: space-between;
   text-decoration: none;
   list-style: none;
-  justify-content: center;
+  margin-top: 12px;
+  margin-right: 45px;
+  height: 40px;
+  font-size: 18px;
 }
 
 .nav-link {
@@ -58,6 +59,32 @@ body {
   background: #ffffffe6;
 }
 
+.icon-user {
+  color: #120470;
+  margin-right: 20px;
+  margin-top: 10px;
+  margin-left: 20px;
+  cursor: pointer;
+  height: 80px;
+  transition: all .3s ease-in-out;
+}
+
+.profile-item {
+  display: none;
+  position: fixed;
+  top: 58px;
+  right: 10px;
+  background: #fff;
+  box-shadow: 5px 5px 8px #6166fa96;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Ketika .icon-user dihover, tampilkan elemen dengan class .profile-item */
+.icon-user:hover .profile-item {
+  display: block;
+}
+
+
 /* hero */
 .main {
   display: flex;
@@ -74,7 +101,6 @@ body {
   display: flex;
   justify-content: space-between;
   width: 70vw;
-  
 }
 
 h1 {
@@ -91,7 +117,7 @@ h1 {
 }
 
 .slide {
-  flex: 0 0 100%; 
+  flex: 0 0 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -103,9 +129,9 @@ h1 {
   height: 300px;
   margin-right: 100px;
   background: transparent;
-  box-shadow:8px 8px 10px #1017f4;
-  transition: all .3s ease-in-out;
-  border: 1px solid#120470 !important;
+  box-shadow: 8px 8px 10px #1017f4;
+  transition: all 0.3s ease-in-out;
+  border: 1px solid #120470;
 }
 
 .item-collection img {
@@ -114,7 +140,7 @@ h1 {
   transition: all 0.3s ease-in-out;
 }
 
-.item-collection:hover{
+.item-collection:hover {
   cursor: pointer;
   filter: drop-shadow(8px 8px 10px #1017f4);
   transform: scale(1.1);
@@ -129,7 +155,7 @@ h1 {
   font-weight: bold;
 }
 
-.btn-outline-primary{
+.btn-outline-primary {
   background-color: #010330;
   color: white;
 }
@@ -139,31 +165,29 @@ h1 {
   color: white;
 }
 
- /* button navigasi kiri */
-.fa-circle-left{
- color: #120470;
- font-size: 40px;
- margin-left: 80px;
- transition: all .3s ease-in-out;
+/* button navigasi kiri */
+.fa-circle-left {
+  color: #120470;
+  font-size: 40px;
+  margin-left: 80px;
+  transition: all 0.3s ease-in-out;
 }
 
-.fa-circle-left:hover{
+.fa-circle-left:hover {
   transform: translateX(-8px);
- }
+}
 
- /* button navigasi kanan */
-.fa-circle-right{
+/* button navigasi kanan */
+.fa-circle-right {
   color: #120470;
   font-size: 40px;
   margin-right: 80px;
-  transition: all .3s ease-in-out;
- }
- 
- .fa-circle-right:hover{
-   transform: translateX(8px);
-  }
+  transition: all 0.3s ease-in-out;
+}
 
-
+.fa-circle-right:hover {
+  transform: translateX(8px);
+}
 
 /* about */
 
