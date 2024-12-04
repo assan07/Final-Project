@@ -55,19 +55,27 @@ def admin_dashboard():
     if 'admin_id' not in session:
         return redirect(url_for('admin_login'))
 
+    # Dashboard data
     total_users = db.user.count_documents({})
     total_barang = db.barang.count_documents({})
     total_transaksi = db.transaksi.count_documents(
         {}) if 'transaksi' in db.list_collection_names() else 0
-
     recent_activities = list(db.activity_log.find().sort('date', -1).limit(10))
+
+    # Data Barang
+    barang_data = list(db.barang.find())
+
+    # Data User
+    data_user = list(db.user.find({}, {'password': 0}))
 
     return render_template('accounts/admin/dashboard.html',
                            active_page='dashboard',
                            total_users=total_users,
                            total_barang=total_barang,
                            total_transaksi=total_transaksi,
-                           recent_activities=recent_activities)
+                           recent_activities=recent_activities,
+                           barang_data=barang_data,
+                           data_user=data_user)
 
 
 @app.route("/accounts/admin/logout")
