@@ -3,8 +3,11 @@ from pymongo import MongoClient
 import os
 from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash
 from dotenv import load_dotenv
 from bson import ObjectId
+import secrets
+from datetime import datetime, timedelta
 
 # Load environment variables
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
@@ -201,6 +204,7 @@ def user_register():
     return render_template("accounts/users/register.html")
 
 # route untuk mencek apakah user sudah login atau blum
+
 @app.route("/accounts/users/status", methods=["GET"])
 def user_status():
     # Cek apakah ada sesi aktif
@@ -215,6 +219,7 @@ def user_status():
         })
 
 # route logout
+
 @app.route("/accounts/users/logout", methods=["GET"])
 def user_logout():
     # Hapus sesi user
@@ -222,6 +227,57 @@ def user_logout():
     flash("Anda telah logout.", "success")
     return redirect(url_for("home"))
 
+
+@app.route("/accounts/users/reset-password/<token>", methods=['GET', 'POST'])
+def reset_password(token):
+    reset_data = db.password_resets.find_one({
+        'token': token,
+        'expiry': {'$gt': datetime.utcnow()}
+    })
+
+    if not reset_data:
+        flash('Link tidak valid atau sudah kadaluarsa', 'error')
+        return redirect(url_for('user_login'))
+
+    if request.method == 'POST':
+        new_password = bcrypt.generate_password_hash(
+            request.form['password']).decode('utf-8')
+
+        db.user.update_one(
+            {'email': reset_data['email']},
+            {'$set': {'password': new_password}}
+        )
+
+        db.password_resets.delete_one({'token': token})
+
+        flash('Password berhasil diubah', 'success')
+        return redirect(url_for('user_login'))
+
+    return render_template('accounts/users/reset_password.html')
+
+
+@app.route("/accounts/users/forget-password", methods=['GET', 'POST'])
+def forget_password():
+    if request.method == 'POST':
+        email = request.form['email']
+        user = db.user.find_one({'email': email})
+
+        if user:
+            token = secrets.token_urlsafe(32)
+            expiry = datetime.utcnow() + timedelta(hours=1)
+
+            db.password_resets.insert_one({
+                'email': email,
+                'token': token,
+                'expiry': expiry
+            })
+
+            reset_link = url_for('reset_password', token=token, _external=True)
+            flash(f'Link reset password: {reset_link}', 'success')
+            return redirect(url_for('user_login'))
+
+        flash('Email tidak ditemukan', 'error')
+    return render_template('accounts/users/forget_password.html')
 
 
 @app.route("/accounts/users/profile")
