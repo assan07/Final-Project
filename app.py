@@ -200,6 +200,29 @@ def user_register():
 
     return render_template("accounts/users/register.html")
 
+# route untuk mencek apakah user sudah login atau blum
+@app.route("/accounts/users/status", methods=["GET"])
+def user_status():
+    # Cek apakah ada sesi aktif
+    if "user_id" in session:
+        return jsonify({
+            "is_logged_in": True,
+            "full_name": session.get("full_name", "User")
+        })
+    else:
+        return jsonify({
+            "is_logged_in": False
+        })
+
+# route logout
+@app.route("/accounts/users/logout", methods=["GET"])
+def user_logout():
+    # Hapus sesi user
+    session.clear()
+    flash("Anda telah logout.", "success")
+    return redirect(url_for("home"))
+
+
 
 @app.route("/accounts/users/profile")
 def user_profile():
