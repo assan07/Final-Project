@@ -4,13 +4,15 @@ from jinja2 import Environment, FileSystemLoader
 import os
 from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash
 from dotenv import load_dotenv
 from bson import ObjectId
+import secrets
+from datetime import datetime, timedelta
 
 # Load environment variables
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 load_dotenv(dotenv_path)
-
 
 MONGODB_URI = os.environ.get("MONGODB_URI")
 DB_NAME = os.environ.get("DB_NAME")
@@ -29,13 +31,9 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 
 # Fungsi untuk memeriksa apakah ekstensi file diperbolehkan
-
-
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 # Home dan halaman about
-
-
 @app.route("/")
 def home():
     if 'user_id' in session:
@@ -47,8 +45,6 @@ def home():
 
 # Rute untuk accounts/admin
 # Rute untuk halaman data barang admin
-
-
 @app.route("/accounts/admin/data_barang")
 def admin_data_barang():
     barang_collection = db.barang
@@ -56,8 +52,6 @@ def admin_data_barang():
     return render_template("accounts/admin/data_barang.html", barang_data=barang_data)
 
 # Rute untuk menambah barang
-
-
 @app.route("/accounts/admin/data_barang/tambah_barang", methods=["POST"])
 def tambah_barang():
     kategori = request.form.get('kategori')
@@ -90,8 +84,6 @@ def tambah_barang():
     return jsonify({"status": "success"}), 200
 
 # Rute untuk delete barang
-
-
 @app.route("/accounts/admin/data_barang/delete_barang", methods=["POST"])
 def delete_barang():
     barang_id = request.form.get('id')
@@ -121,6 +113,41 @@ def delete_barang():
     else:
         return jsonify({"status": "error", "message": "Barang tidak ditemukan"}), 404
 
+# Rute untuk edit barang
+@app.route("/accounts/admin/data_barang/edit_barang", methods=["POST"])
+def edit_barang():
+    barang_id = request.form.get('id')
+    kategori = request.form.get('kategori')
+    brand = request.form.get('brand')
+    netto = request.form.get('netto')
+    warna = request.form.get('warna')
+    harga = request.form.get('harga')
+    stock = request.form.get('stock')
+    foto = request.files.get('foto')
+    foto_filename = None
+
+    if foto and allowed_file(foto.filename):
+        foto_filename = secure_filename(foto.filename)
+        foto.save(os.path.join(app.config['UPLOAD_FOLDER'], foto_filename))
+
+    barang_collection = db.barang
+    update_data = {
+        "kategori": kategori,
+        "brand": brand,
+        "netto": netto,
+        "warna": warna,
+        "harga": harga,
+        "stock": stock,
+    }
+    if foto_filename:
+        update_data["foto"] = foto_filename
+
+    result = barang_collection.update_one({'_id': ObjectId(barang_id)}, {"$set": update_data})
+
+    if result.modified_count > 0:
+        return jsonify({"status": "success"}), 200
+    else:
+        return jsonify({"status": "error", "message": "Barang tidak ditemukan atau tidak ada perubahan."}), 400
 
 @app.route("/accounts/admin/data_user")
 def admin_data_user():
@@ -203,6 +230,7 @@ def user_register():
     return render_template("accounts/users/register.html")
 
 # route untuk mencek apakah user sudah login atau blum
+
 @app.route("/accounts/users/status", methods=["GET"])
 def user_status():
     # Cek apakah ada sesi aktif
@@ -217,6 +245,7 @@ def user_status():
         })
 
 # route logout
+
 @app.route("/accounts/users/logout", methods=["GET"])
 def user_logout():
     # Hapus sesi user
@@ -224,6 +253,57 @@ def user_logout():
     flash("Anda telah logout.", "success")
     return redirect(url_for("home"))
 
+
+@app.route("/accounts/users/reset-password/<token>", methods=['GET', 'POST'])
+def reset_password(token):
+    reset_data = db.password_resets.find_one({
+        'token': token,
+        'expiry': {'$gt': datetime.utcnow()}
+    })
+
+    if not reset_data:
+        flash('Link tidak valid atau sudah kadaluarsa', 'error')
+        return redirect(url_for('user_login'))
+
+    if request.method == 'POST':
+        new_password = bcrypt.generate_password_hash(
+            request.form['password']).decode('utf-8')
+
+        db.user.update_one(
+            {'email': reset_data['email']},
+            {'$set': {'password': new_password}}
+        )
+
+        db.password_resets.delete_one({'token': token})
+
+        flash('Password berhasil diubah', 'success')
+        return redirect(url_for('user_login'))
+
+    return render_template('accounts/users/reset_password.html')
+
+
+@app.route("/accounts/users/forget-password", methods=['GET', 'POST'])
+def forget_password():
+    if request.method == 'POST':
+        email = request.form['email']
+        user = db.user.find_one({'email': email})
+
+        if user:
+            token = secrets.token_urlsafe(32)
+            expiry = datetime.utcnow() + timedelta(hours=1)
+
+            db.password_resets.insert_one({
+                'email': email,
+                'token': token,
+                'expiry': expiry
+            })
+
+            reset_link = url_for('reset_password', token=token, _external=True)
+            flash(f'Link reset password: {reset_link}', 'success')
+            return redirect(url_for('user_login'))
+
+        flash('Email tidak ditemukan', 'error')
+    return render_template('accounts/users/forget_password.html')
 
 
 @app.route("/accounts/users/profile")

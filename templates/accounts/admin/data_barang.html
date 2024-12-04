@@ -80,7 +80,7 @@
                                     <!-- Button Edit -->
                                     <button class="btn btn-danger btn-sm edit-btn" type="button" data-id="{{ barang._id }}" data-kategori="{{ barang.kategori }}" data-brand="{{ barang.brand }}" data-netto="{{ barang.netto }}" data-warna="{{ barang.warna }}" data-harga="{{ barang.harga }}"
                                         data-stock="{{ barang.stock }}" data-foto="{{ barang.foto }}">
-                                        <i class="fa fa-edit"></i> Edit
+                                    <i class="fa fa-edit"></i> Edit
                                     </button>
 
                                 </td>
@@ -131,6 +131,48 @@
                 </div>
                 <div class="mt-4 col-12">
                     <button id="submitSimpanBarang" class="btn btn-primary">Simpan</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Edit Barang -->
+        <div id="edit-box" style="display: none;">
+            <div class="row g-2 mt-5 border border-2 p-4">
+                <div class="col-md-4">
+                    <label for="editKategori" class="form-label">Kategori</label>
+                    <select id="editKategori" class="form-select">
+                <option selected>Choose...</option>
+                <option>CAT</option>
+                <option>TINNER</option>
+                <option>AKSESORIS PVC</option>
+            </select>
+                </div>
+                <div class="mb-2 col-md-4">
+                    <label for="editBrand" class="form-label">Brand</label>
+                    <input type="text" class="form-control" id="editBrand" placeholder="Brand Name">
+                </div>
+                <div class="col-md-4">
+                    <label for="editNetto" class="form-label">Netto</label>
+                    <input type="text" class="form-control" id="editNetto" placeholder="Netto Product">
+                </div>
+                <div class="col-md-4">
+                    <label for="editWarna" class="form-label">Warna</label>
+                    <input type="text" class="form-control" id="editWarna" placeholder="Warna Product">
+                </div>
+                <div class="col-md-4">
+                    <label for="editHarga" class="form-label">Harga</label>
+                    <input type="text" class="form-control" id="editHarga" placeholder="Harga Product">
+                </div>
+                <div class="col-md-4">
+                    <label for="editStock" class="form-label">Stock</label>
+                    <input type="text" class="form-control" id="editStock" placeholder="Stock Product">
+                </div>
+                <div class="col-md-12">
+                    <label for="editFoto" class="form-label">Foto Product</label>
+                    <input class="form-control" type="file" id="editFoto">
+                </div>
+                <div class="mt-4 col-12">
+                    <button id="submitEditBarang" class="btn btn-primary">Simpan Perubahan</button>
                 </div>
             </div>
         </div>
@@ -223,6 +265,73 @@
                         }
                     });
                 }
+            });
+        });
+
+        // Menangani klik tombol Edit
+        document.querySelectorAll(".edit-btn").forEach(function(button) {
+            button.addEventListener("click", function() {
+                // Ambil data dari atribut data-* di tombol edit
+                var id = button.getAttribute("data-id");
+                var kategori = button.getAttribute("data-kategori");
+                var brand = button.getAttribute("data-brand");
+                var netto = button.getAttribute("data-netto");
+                var warna = button.getAttribute("data-warna");
+                var harga = button.getAttribute("data-harga");
+                var stock = button.getAttribute("data-stock");
+                var foto = button.getAttribute("data-foto");
+
+                // Isi form dengan data yang diambil
+                document.getElementById("editKategori").value = kategori;
+                document.getElementById("editBrand").value = brand;
+                document.getElementById("editNetto").value = netto;
+                document.getElementById("editWarna").value = warna;
+                document.getElementById("editHarga").value = harga;
+                document.getElementById("editStock").value = stock;
+
+                // Tampilkan form edit
+                document.getElementById("edit-box").style.display = "block";
+
+                // Menangani pengiriman data edit ke server
+                document.getElementById("submitEditBarang").addEventListener("click", function() {
+                    var updatedKategori = document.getElementById("editKategori").value;
+                    var updatedBrand = document.getElementById("editBrand").value;
+                    var updatedNetto = document.getElementById("editNetto").value;
+                    var updatedWarna = document.getElementById("editWarna").value;
+                    var updatedHarga = document.getElementById("editHarga").value;
+                    var updatedStock = document.getElementById("editStock").value;
+                    var updatedFoto = document.getElementById("editFoto").files[0];
+
+                    var formData = new FormData();
+                    formData.append("id", id);
+                    formData.append("kategori", updatedKategori);
+                    formData.append("brand", updatedBrand);
+                    formData.append("netto", updatedNetto);
+                    formData.append("warna", updatedWarna);
+                    formData.append("harga", updatedHarga);
+                    formData.append("stock", updatedStock);
+                    formData.append("foto", updatedFoto); // Untuk mengirim foto jika ada
+
+                    // Kirim data ke server menggunakan AJAX (jQuery)
+                    $.ajax({
+                        url: "/accounts/admin/data_barang/edit_barang", // Ubah URL jika perlu
+                        method: "POST",
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function(response) {
+                            if (response.status === "success") {
+                                alert("Barang berhasil diperbarui!");
+                                location.reload(); // Reload halaman setelah berhasil
+                            } else {
+                                alert("Terjadi kesalahan saat memperbarui barang.");
+                            }
+                        },
+                        error: function() {
+                            alert("Terjadi kesalahan saat mengirim data.");
+                        }
+                    });
+                });
             });
         });
     </script>
