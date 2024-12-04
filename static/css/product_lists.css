@@ -3,10 +3,10 @@
   display: flex;
   position: sticky;
   justify-content: center;
-  background-color: #ebf7fd;
+  background-color: #ffff;
   padding: 10px 0;
   position: sticky;
-  top: 60px;
+  top: 80px;
   z-index: 900;
   margin-bottom: 20px;
   margin-top: 40px;
@@ -30,6 +30,7 @@
 .product-card img {
   width: 100%;
   height: auto;
+
 }
 
 .product-card:hover img {
@@ -40,6 +41,7 @@
 .product-card p,
 .product-card span {
   transition: color 0.3s ease;
+  
 }
 
 .product-card:hover h5,

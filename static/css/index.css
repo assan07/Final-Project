@@ -1,39 +1,41 @@
 body {
   font-family: "Poppins", sans-serif;
-  background-color: #ebf7fd;
+  background-color: #ffffff;
 }
 /* navbar */
 .nav {
   display: flex;
-  height: 60px;
-  background: #2f1cff;
+  height: 80px;
+  background: #ffffff;
+  box-shadow: 8px 8px 10px #6166fa96
 }
 
-.logo {
-  margin-left: -85px;
-}
 
 .nav .link-href {
   display: flex;
   margin-top: 12px;
   height: 40px;
+  font-size: 18px;
+  text-decoration: none;
+  list-style: none;
   justify-content: center;
 }
 
 .nav-link {
-  color: white !important;
+  text-decoration: none;
+  color: #120470 !important;
   font-weight: bold;
 }
 
 .nav-link:hover {
   color: #ffce44 !important;
-  text-decoration: underline;
+  text-decoration: none;
 }
 .nav-button {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.7);
+  background: #ffffffb3;
   border: none;
   border-radius: 50%;
   width: 40px;
@@ -53,7 +55,7 @@ body {
 }
 
 .nav-button:hover {
-  background: rgba(255, 255, 255, 0.9);
+  background: #ffffffe6;
 }
 
 /* hero */
@@ -61,11 +63,10 @@ body {
   display: flex;
   overflow: hidden; /* Membatasi area tampilan */
   position: relative; /* Dibutuhkan untuk tombol navigasi */
-  background: #2f1cff;
   padding: 50px 15px;
   height: 100vh;
   justify-content: center;
-  transition: transform 0.5s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
 .box-item {
@@ -73,22 +74,24 @@ body {
   display: flex;
   justify-content: space-between;
   width: 70vw;
+  
 }
 
 h1 {
   font-weight: bold;
-  color: #ffff;
+  filter: drop-shadow(8px 8px 10px #1017f4);
+  color: #120470 !important;
   font-size: 43px;
 }
 
 .slides-container {
   display: flex;
-  transition: transform 0.5s ease-in-out; /* Animasi geser */
-  width: 400%; /* Menyesuaikan lebar sesuai jumlah slide */
+  transition: transform 0.5s ease-in-out;
+  width: 400%;
 }
 
 .slide {
-  flex: 0 0 100%; /* Tiap slide mengambil 100% dari area tampilan */
+  flex: 0 0 100%; 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -98,32 +101,36 @@ h1 {
   padding: 0;
   width: 300px;
   height: 300px;
+  margin-right: 100px;
   background: transparent;
-  border: 1px solid white;
+  box-shadow:8px 8px 10px #1017f4;
+  transition: all .3s ease-in-out;
+  border: 1px solid#120470 !important;
 }
 
 .item-collection img {
   height: 360px;
   background: transparent;
-  transition: transform 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
-.item-collection img:hover {
+.item-collection:hover{
   cursor: pointer;
+  filter: drop-shadow(8px 8px 10px #1017f4);
   transform: scale(1.1);
 }
 
 .btn {
   border-radius: 15px;
-  border: 1px solid white;
+  border: 1px solid #120470;
   transition: 0.3s ease;
-  color: white;
+  color: #120470;
 
   font-weight: bold;
 }
 
-.btn-outline-primary:hover {
-  background-color: #15d4fb;
+.btn-outline-primary{
+  background-color: #010330;
   color: white;
 }
 
@@ -132,13 +139,31 @@ h1 {
   color: white;
 }
 
-.bg-footer {
-  background: linear-gradient(45deg, #001f33, #001f4c);
+ /* button navigasi kiri */
+.fa-circle-left{
+ color: #120470;
+ font-size: 40px;
+ margin-left: 80px;
+ transition: all .3s ease-in-out;
 }
 
-.bg-footer h4 {
-  color: #ffce44;
-}
+.fa-circle-left:hover{
+  transform: translateX(-8px);
+ }
+
+ /* button navigasi kanan */
+.fa-circle-right{
+  color: #120470;
+  font-size: 40px;
+  margin-right: 80px;
+  transition: all .3s ease-in-out;
+ }
+ 
+ .fa-circle-right:hover{
+   transform: translateX(8px);
+  }
+
+
 
 /* about */
 
@@ -149,7 +174,7 @@ h1 {
 
 .about-section {
   background: linear-gradient(135deg, #2f1cff, #15d4fb);
-  color: rgb(255, 255, 255);
+  color: white;
   padding: 50px 15px;
   border-radius: 10px;
   margin-top: 30px;
@@ -168,24 +193,16 @@ h1 {
   text-align: justify;
 }
 
-.about-section {
-  background-color: #f8f9fa;
-}
-
-button.custom-button {
-  transition: all 0.3s ease;
-}
-
-button.custom-button:hover {
-  background-color: #0056b3;
-  color: #fff;
-}
-
-h3.fw-bold {
-  margin-bottom: 1rem;
-}
-
 /* footer */
+
+.bg-footer {
+  background: linear-gradient(45deg, #001f33, #001f4c);
+}
+
+.bg-footer h4 {
+  color: #ffce44;
+}
+
 a {
   /* font-weight: bold; */
   list-style: none;
