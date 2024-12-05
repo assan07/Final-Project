@@ -43,7 +43,6 @@
         .stats-card {
             transition: transform 0.2s;
             border-radius: 0.5rem;
-            /* Membuat sudut lebih halus */
         }
         
         .stats-card:hover {
@@ -54,47 +53,35 @@
             font-size: 1.5rem;
             font-weight: bold;
         }
-        /* Variasi warna biru untuk kartu statistik */
         
         .bg-blue-dark {
             background-color: #003366;
-            /* Biru tua */
             color: white;
-            /* Pastikan teks tetap terlihat */
         }
         
         .bg-blue-medium {
             background-color: #004c99;
-            /* Biru sedang */
             color: white;
         }
         
         .bg-blue-light {
             background-color: #1a75ff;
-            /* Biru terang */
             color: white;
         }
         
         .bg-blue-lighter {
             background-color: #66a3ff;
-            /* Biru muda */
             color: white;
         }
         
         .btn-sm {
             padding: 0.25rem 0.5rem;
-            /* Padding seragam untuk tombol kecil */
             font-size: 0.875rem;
-            /* Ukuran font */
             line-height: 1.5;
             border-radius: 0.2rem;
-            /* Radius sudut */
             height: auto;
-            /* Pastikan tinggi otomatis */
             display: inline-flex;
-            /* Agar ikon dan teks rata */
             align-items: center;
-            /* Sentris teks dan ikon */
         }
         
         .btn-danger {
@@ -105,7 +92,6 @@
         
         .btn i {
             margin-right: 4px;
-            /* Jarak kecil antara ikon dan teks */
         }
     </style>
 </head>
@@ -188,8 +174,6 @@
                     </div>
                 </div>
             </div>
-
-
 
             <!-- Recent Activity -->
             <div class="card mt-5">
@@ -411,7 +395,6 @@
                                     </tbody>
                                 </table>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -460,18 +443,15 @@
                                     </tbody>
                                 </table>
                             </div>
-
                         </div>
                     </div>
                 </div>
             </div>
-
-
         </div>
     </div>
     </div>
 
-    <!-- Scripts Data Barang -->
+    <!-- Scripts -->
     <script>
         // Fungsi untuk mencari Data Barang
         document.getElementById('searchButtonBarang').addEventListener('click', function() {
@@ -557,7 +537,6 @@
             }
         });
 
-
         // Tampilkan input form
         document.getElementById("tambahBtn").addEventListener("click", function() {
             document.getElementById("input-box").style.display = "block";
@@ -606,7 +585,6 @@
                 }
             });
         });
-
 
         // Delete Barang
         $(document).ready(function() {
