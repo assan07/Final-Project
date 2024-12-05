@@ -1,563 +1,705 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/data_user.css') }}" />
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <style>
-    .sidebar {
-      height: 100vh;
-      position: fixed;
-      top: 0;
-      left: 0;
-      padding-top: 3.5rem;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .main-content {
-      margin-left: 250px;
-      padding: 20px;
-    }
-
-    .nav-link {
-      color: #333;
-      padding: 0.8rem 1rem;
-      border-radius: 0.25rem;
-      margin: 0.2rem 0;
-    }
-
-    .nav-link:hover {
-      background-color: #c7ddf3;
-    }
-
-    .nav-link.active {
-      background-color: #0d6efd;
-      color: white;
-    }
-
-    .stats-card {
-      transition: transform 0.2s;
-    }
-
-    .stats-card:hover {
-      transform: translateY(-5px);
-    }
-
-    .navbar-brand {
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-
-    .tab-content {
-      padding: 20px 0;
-    }
-
-    #mainTabs .nav-link {
-      color: #495057;
-      background-color: transparent;
-      border-bottom: 2px solid transparent;
-      border-radius: 0;
-    }
-
-    #mainTabs .nav-link.active {
-      color: #0d6efd;
-      background-color: transparent;
-      border-bottom: 2px solid #0d6efd;
-    }
-
-    .tab-pane {
-      padding: 20px 0;
-    }
-  </style>
-</head>
-
-<body>
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-    <div class="container-fluid">
-      <a class="navbar-brand d-flex align-items-center mx-3">
-        <img class="bi me-2" width="40" height="40" src="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
-          alt="Logo brand" />
-        <img class="fs-4 bi me-2" width="160" height="40"
-          src="{{ url_for('static', filename='images/icon/logo-title.png') }}" alt="Logo title" />
-      </a>
-      <div class="d-flex">
-        <span class="navbar-text me-3">
-          Welcome, {{ session['admin_name'] }}
-        </span>
-        <a href="{{ url_for('admin_logout') }}" class="btn btn-light btn-m me-3">Logout</a>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Sidebar -->
-  <div class="sidebar bg-white" style="width: 250px;">
-    <div class="nav flex-column nav-pills p-3" role="tablist" aria-orientation="vertical">
-      <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#dashboard" type="button" role="tab">
-        Dashboard
-      </button>
-      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dataBarang" type="button" role="tab">
-        Data Barang
-      </button>
-      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dataUser" type="button" role="tab">
-        Data User
-      </button>
-    </div>
-  </div>
-
-  <!-- Main Content with Tabs -->
-  <div class="main-content">
-    <div class="tab-content">
-      <!-- Dashboard Tab -->
-      <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
-        <div class="row mb-4 mt-lg-5 pt-5">
-          <div class="col-md-4">
-            <div class="card stats-card bg-primary text-white">
-              <div class="card-body">
-                <h5 class="card-title">Total Users</h5>
-                <h2 class="card-text">{{ total_users }}</h2>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card stats-card bg-success text-white">
-              <div class="card-body">
-                <h5 class="card-title">Total Barang</h5>
-                <h2 class="card-text">{{ total_barang }}</h2>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card stats-card bg-info text-white">
-              <div class="card-body">
-                <h5 class="card-title">Total Transaksi</h5>
-                <h2 class="card-text">{{ total_transaksi }}</h2>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Recent Activity -->
-      <div class="card mt-5">
-        <div class="card-header">
-          <h5 class="card-title mb-0">Recent Activity</h5>
-        </div>
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th>Tanggal</th>
-                  <th>User</th>
-                  <th>Aktivitas</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for activity in recent_activities %}
-                <tr>
-                  <td>{{ activity.date }}</td>
-                  <td>{{ activity.user }}</td>
-                  <td>{{ activity.action }}</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- Data Barang Tab -->
-      <div class="tab-pane fade" id="dataBarang" role="tabpanel">
-        <div class="container mt-4">
-          <div class="card mt-4">
-            <div class="card-body">
-              <h2 class="card-title">DATA BARANG</h2>
-              <!-- Search Bar -->
-              <div class="d-flex justify-content-end mb-3">
-                <input type="text" class="form-control w-25 me-2" placeholder="Search">
-                <button class="btn btn-dark">Search</button>
-                <button id="tambahBtn" type="button" class="btn btn-danger mx-2">Tambah Barang</button>
-              </div>
-
-              <!-- Table -->
-              <div class="table-responsive">
-                <table class="table table-bordered text-center">
-                  <thead class="table-secondary">
-                    <tr>
-                      <th>No.</th>
-                      <th>Kategori</th>
-                      <th>Brand</th>
-                      <th>Netto</th>
-                      <th>Warna</th>
-                      <th>Harga</th>
-                      <th>Stok</th>
-                      <th>Image</th>
-                      <th>Aksi</th>
-                    </tr>
-                  </thead>
-                  <tbody id="barangTableBody">
-                    {% for barang in barang_data %}
-                    <tr>
-                      <td>{{ loop.index }}</td>
-                      <td>{{ barang.kategori }}</td>
-                      <td>{{ barang.brand }}</td>
-                      <td>{{ barang.netto }}</td>
-                      <td>{{ barang.warna }}</td>
-                      <td>{{ barang.harga }}</td>
-                      <td>{{ barang.stock }}</td>
-                      <td>
-                        {% if barang.foto %}
-                        <img src="{{ url_for('static', filename='images/uploads/' + barang.foto) }}" alt="Foto Barang"
-                          width="50">
-                        {% else %}
-                        No Image
-                        {% endif %}
-                      </td>
-                      <td>
-                        <button class="btn btn-danger btn-sm delete-btn" type="button" data-id="{{ barang._id }}">
-                          <i class="fa fa-trash"></i> Delete
-                        </button>
-                        <button class="btn btn-danger btn-sm edit-btn" type="button" data-id="{{ barang._id }}"
-                          data-kategori="{{ barang.kategori }}" data-brand="{{ barang.brand }}"
-                          data-netto="{{ barang.netto }}" data-warna="{{ barang.warna }}"
-                          data-harga="{{ barang.harga }}" data-stock="{{ barang.stock }}" data-foto="{{ barang.foto }}">
-                          <i class="fa fa-edit"></i> Edit
-                        </button>
-                      </td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Form Tambah Barang -->
-      <div id="input-box" style="display: none;">
-        <div class="row g-2 mt-5 border border-2 p-4">
-          <div class="col-md-4">
-            <label for="inputState" class="form-label">Kategori</label>
-            <select id="inputState" class="form-select">
-              <option selected>Choose...</option>
-              <option>CAT</option>
-              <option>TINNER</option>
-              <option>AKSESORIS PVC</option>
-            </select>
-          </div>
-          <div class="mb-2 col-md-4">
-            <label for="InputBrand" class="form-label">Brand</label>
-            <input type="text" class="form-control" id="brand" placeholder="Brand Name">
-          </div>
-          <div class="col-md-4">
-            <label for="InputNetto" class="form-label">Netto</label>
-            <input type="text" class="form-control" id="netto" placeholder="Netto Product">
-          </div>
-          <div class="col-md-4">
-            <label for="inputWarna" class="form-label">Warna</label>
-            <input type="text" class="form-control" id="warna" placeholder="Warna Product">
-          </div>
-          <div class="col-md-4">
-            <label for="inputHarga" class="form-label">Harga</label>
-            <input type="text" class="form-control" id="harga" placeholder="Harga Product">
-          </div>
-          <div class="col-md-4">
-            <label for="inputStock" class="form-label">Stock</label>
-            <input type="text" class="form-control" id="stock" placeholder="Stock Product">
-          </div>
-          <div class="col-md-12">
-            <label for="formFileMultiple" class="form-label">Foto Product</label>
-            <input class="form-control" type="file" id="foto" multiple>
-          </div>
-          <div class="mt-4 col-12">
-            <button id="submitSimpanBarang" class="btn btn-primary">Simpan</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Form Edit Barang -->
-      <div id="edit-box" style="display: none;">
-        <div class="row g-2 mt-5 border border-2 p-4">
-          <div class="col-md-4">
-            <label for="editKategori" class="form-label">Kategori</label>
-            <select id="editKategori" class="form-select">
-              <option selected>Choose...</option>
-              <option>CAT</option>
-              <option>TINNER</option>
-              <option>AKSESORIS PVC</option>
-            </select>
-          </div>
-          <div class="mb-2 col-md-4">
-            <label for="editBrand" class="form-label">Brand</label>
-            <input type="text" class="form-control" id="editBrand" placeholder="Brand Name">
-          </div>
-          <div class="col-md-4">
-            <label for="editNetto" class="form-label">Netto</label>
-            <input type="text" class="form-control" id="editNetto" placeholder="Netto Product">
-          </div>
-          <div class="col-md-4">
-            <label for="editWarna" class="form-label">Warna</label>
-            <input type="text" class="form-control" id="editWarna" placeholder="Warna Product">
-          </div>
-          <div class="col-md-4">
-            <label for="editHarga" class="form-label">Harga</label>
-            <input type="text" class="form-control" id="editHarga" placeholder="Harga Product">
-          </div>
-          <div class="col-md-4">
-            <label for="editStock" class="form-label">Stock</label>
-            <input type="text" class="form-control" id="editStock" placeholder="Stock Product">
-          </div>
-          <div class="col-md-12">
-            <label for="editFoto" class="form-label">Foto Product</label>
-            <input class="form-control" type="file" id="editFoto">
-          </div>
-          <div class="mt-4 col-12">
-            <button id="submitEditBarang" class="btn btn-primary">Simpan Perubahan</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Data User Tab -->
-      <div class="tab-pane fade" id="dataUser" role="tabpanel">
-        <div class="container mt-4">
-          <div class="card mt-4">
-            <div class="card-body">
-              <h2 class="card-title">DATA USER</h2>
-              <!-- Search Bar -->
-              <div class="d-flex justify-content-end mb-3">
-                <input type="text" class="form-control w-25 me-2" placeholder="Search">
-                <button class="btn btn-dark">Search</button>
-              </div>
-
-              <!-- Table -->
-              <div class="table-responsive">
-                <table class="table table-bordered text-center">
-                  <thead class="table-secondary">
-                    <tr>
-                      <th>No.</th>
-                      <th>Nama</th>
-                      <th>Email</th>
-                      <th>No Handphone</th>
-                      <th>Password</th>
-                      <th>Aksi</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for user in data_user %}
-                    <tr>
-                      <td>{{ loop.index }}</td>
-                      <td>{{ user.full_name }}</td>
-                      <td>{{ user.email }}</td>
-                      <td>{{ user.phone_number }}</td>
-                      <td>*****</td>
-                      <td>
-                        <button class="btn btn-danger btn-sm delete-btn" type="button" data-id="{{ user._id }}">
-                          <i class="fa fa-trash"></i> Delete
-                        </button>
-                      </td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Scripts -->
-  <script>
-    // Tampilkan input form
-    document.getElementById("tambahBtn").addEventListener("click", function () {
-      document.getElementById("input-box").style.display = "block";
-    });
-
-    // Menambahkan barang baru ke dalam database
-    document.getElementById("submitSimpanBarang").addEventListener("click", function () {
-      var kategori = document.getElementById("inputState").value;
-      var brand = document.getElementById("brand").value;
-      var netto = document.getElementById("netto").value;
-      var warna = document.getElementById("warna").value;
-      var harga = document.getElementById("harga").value;
-      var stock = document.getElementById("stock").value;
-      var foto = document.getElementById("foto").files[0]; // Ambil file foto
-
-      if (!kategori || !brand || !netto || !warna || !harga || !stock) {
-        alert("Semua kolom harus diisi!");
-        return;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/data_user.css') }}"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+      .sidebar {
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        padding-top: 3.5rem;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       }
 
-      // Buat FormData untuk mengirim data termasuk file gambar
-      var formData = new FormData();
-      formData.append('kategori', kategori);
-      formData.append('brand', brand);
-      formData.append('netto', netto);
-      formData.append('warna', warna);
-      formData.append('harga', harga);
-      formData.append('stock', stock);
-      if (foto) {
-        formData.append('foto', foto);
+      .main-content {
+        margin-left: 250px;
+        padding: 20px;
       }
 
-      // Kirim data menggunakan AJAX
-      $.ajax({
-        url: '/accounts/admin/data_barang/tambah_barang',
-        type: 'POST',
-        data: formData,
-        processData: false, // Jangan memproses data sebagai string
-        contentType: false, // Biarkan jQuery mengatur content type sesuai kebutuhan
-        success: function (response) {
-          alert("Barang berhasil disimpan");
-          location.reload();
-        },
-        error: function () {
-          alert("Terjadi kesalahan. Silakan coba lagi...");
-        }
-      });
-    });
+      .nav-link {
+        color: #333;
+        padding: 0.8rem 1rem;
+        border-radius: 0.25rem;
+        margin: 0.2rem 0;
+      }
 
+      .nav-link:hover {
+        background-color: #c7ddf3;
+      }
 
-    // Hapus Barang
-    $(document).ready(function () {
-      // Event listener untuk tombol delete
-      $("#barangTableBody").on("click", ".delete-btn", function () {
-        const barangId = $(this).data("id");
+      .nav-link.active {
+        background-color: #0d6efd;
+        color: white;
+      }
 
-        // Tampilkan dialog konfirmasi
-        const confirmation = confirm("Anda yakin akan menghapus barang ini?");
-        if (confirmation) {
-          // Kirim permintaan DELETE menggunakan AJAX
-          $.ajax({
-            url: "/accounts/admin/data_barang/delete_barang",
-            type: "POST",
-            data: {
-              id: barangId
-            },
-            success: function (response) {
-              if (response.status === "success") {
-                alert(response.message);
+      .stats-card {
+        transition: transform 0.2s;
+      }
 
-                // Hapus baris barang dari tabel
-                $(`#barangTableBody tr:has(td button[data-id='${barangId}'])`).remove();
+      .stats-card:hover {
+        transform: translateY(-5px);
+      }
 
-                // Perbarui nomor urut secara dinamis
-                $("#barangTableBody tr").each(function (index) {
-                  $(this).find("td:first").text(index + 1);
-                });
-              } else {
-                alert("Gagal menghapus data.");
-              }
-            },
-            error: function () {
-              alert("Terjadi kesalahan pada server.");
-            }
-          });
-        }
-      });
-    });
+      .navbar-brand {
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
 
-    // Menangani klik tombol Edit
-    document.querySelectorAll(".edit-btn").forEach(function (button) {
-      button.addEventListener("click", function () {
-        // Ambil data dari atribut data-* di tombol edit
-        var id = button.getAttribute("data-id");
-        var kategori = button.getAttribute("data-kategori");
-        var brand = button.getAttribute("data-brand");
-        var netto = button.getAttribute("data-netto");
-        var warna = button.getAttribute("data-warna");
-        var harga = button.getAttribute("data-harga");
-        var stock = button.getAttribute("data-stock");
-        var foto = button.getAttribute("data-foto");
+      .tab-content {
+        padding: 20px 0;
+      }
 
-        // Isi form dengan data yang diambil
-        document.getElementById("editKategori").value = kategori;
-        document.getElementById("editBrand").value = brand;
-        document.getElementById("editNetto").value = netto;
-        document.getElementById("editWarna").value = warna;
-        document.getElementById("editHarga").value = harga;
-        document.getElementById("editStock").value = stock;
+      #mainTabs .nav-link {
+        color: #495057;
+        background-color: transparent;
+        border-bottom: 2px solid transparent;
+        border-radius: 0;
+      }
 
-        // Tampilkan form edit
-        document.getElementById("edit-box").style.display = "block";
+      #mainTabs .nav-link.active {
+        color: #0d6efd;
+        background-color: transparent;
+        border-bottom: 2px solid #0d6efd;
+      }
 
-        // Menangani pengiriman data edit ke server
-        document.getElementById("submitEditBarang").addEventListener("click", function () {
-          var updatedKategori = document.getElementById("editKategori").value;
-          var updatedBrand = document.getElementById("editBrand").value;
-          var updatedNetto = document.getElementById("editNetto").value;
-          var updatedWarna = document.getElementById("editWarna").value;
-          var updatedHarga = document.getElementById("editHarga").value;
-          var updatedStock = document.getElementById("editStock").value;
-          var updatedFoto = document.getElementById("editFoto").files[0];
+      .tab-pane {
+        padding: 20px 0;
+      }
+    </style>
+  </head>
 
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+      <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center mx-3">
+          <img
+            class="bi me-2"
+            width="40"
+            height="40"
+            src="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
+            alt="Logo brand"
+          />
+          <img
+            class="fs-4 bi me-2"
+            width="160"
+            height="40"
+            src="{{ url_for('static', filename='images/icon/logo-title.png') }}"
+            alt="Logo title"
+          />
+        </a>
+        <div class="d-flex">
+          <span class="navbar-text me-3">
+            Welcome, {{ session['admin_name'] }}
+          </span>
+          <a
+            href="{{ url_for('admin_logout') }}"
+            class="btn btn-light btn-m me-3"
+            >Logout</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar bg-white" style="width: 250px">
+      <div
+        class="nav flex-column nav-pills p-3"
+        role="tablist"
+        aria-orientation="vertical"
+      >
+        <button
+          class="nav-link active"
+          data-bs-toggle="tab"
+          data-bs-target="#dashboard"
+          type="button"
+          role="tab"
+        >
+          Dashboard
+        </button>
+        <button
+          class="nav-link"
+          data-bs-toggle="tab"
+          data-bs-target="#dataBarang"
+          type="button"
+          role="tab"
+        >
+          Data Barang
+        </button>
+        <button
+          class="nav-link"
+          data-bs-toggle="tab"
+          data-bs-target="#dataUser"
+          type="button"
+          role="tab"
+        >
+          Data User
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content with Tabs -->
+    <div class="main-content">
+      <div class="tab-content">
+        <!-- Dashboard Tab -->
+        <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
+          <div class="row mb-4 mt-lg-5 pt-5">
+            <div class="col-md-4">
+              <div class="card stats-card bg-primary text-white">
+                <div class="card-body">
+                  <h5 class="card-title">Total Users</h5>
+                  <h2 class="card-text">{{ total_users }}</h2>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card stats-card bg-success text-white">
+                <div class="card-body">
+                  <h5 class="card-title">Total Barang</h5>
+                  <h2 class="card-text">{{ total_barang }}</h2>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card stats-card bg-info text-white">
+                <div class="card-body">
+                  <h5 class="card-title">Total Transaksi</h5>
+                  <h2 class="card-text">{{ total_transaksi }}</h2>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card mt-5">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Recent Activity</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Tanggal</th>
+                    <th>User</th>
+                    <th>Aktivitas</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for activity in recent_activities %}
+                  <tr>
+                    <td>{{ activity.date }}</td>
+                    <td>{{ activity.user }}</td>
+                    <td>{{ activity.action }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Data Barang Tab -->
+        <div class="tab-pane fade" id="dataBarang" role="tabpanel">
+          <div class="container mt-4">
+            <div class="card mt-4">
+              <div class="card-body">
+                <h2 class="card-title">DATA BARANG</h2>
+                <!-- Search Bar -->
+                <div class="d-flex justify-content-end mb-3">
+                  <input
+                    type="text"
+                    class="form-control w-25 me-2"
+                    placeholder="Search"
+                  />
+                  <button class="btn btn-dark">Search</button>
+                  <button
+                    id="tambahBtn"
+                    type="button"
+                    class="btn btn-danger mx-2"
+                  >
+                    Tambah Barang
+                  </button>
+                </div>
+
+                <!-- Table -->
+                <div class="table-responsive">
+                  <table class="table table-bordered text-center">
+                    <thead class="table-secondary">
+                      <tr>
+                        <th>No.</th>
+                        <th>Kategori</th>
+                        <th>Brand</th>
+                        <th>Netto</th>
+                        <th>Warna</th>
+                        <th>Harga</th>
+                        <th>Stok</th>
+                        <th>Image</th>
+                        <th>Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody id="barangTableBody">
+                      {% for barang in barang_data %}
+                      <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ barang.kategori }}</td>
+                        <td>{{ barang.brand }}</td>
+                        <td>{{ barang.netto }}</td>
+                        <td>{{ barang.warna }}</td>
+                        <td>{{ barang.harga }}</td>
+                        <td>{{ barang.stock }}</td>
+                        <td>
+                          {% if barang.foto %}
+                          <img
+                            src="{{ url_for('static', filename='images/uploads/' + barang.foto) }}"
+                            alt="Foto Barang"
+                            width="50"
+                          />
+                          {% else %} No Image {% endif %}
+                        </td>
+                        <td>
+                          <button
+                            class="btn btn-danger btn-sm delete-btn"
+                            type="button"
+                            data-id="{{ barang._id }}"
+                          >
+                            <i class="fa fa-trash"></i> Delete
+                          </button>
+                          <button
+                            class="btn btn-danger btn-sm edit-btn"
+                            type="button"
+                            data-id="{{ barang._id }}"
+                            data-kategori="{{ barang.kategori }}"
+                            data-brand="{{ barang.brand }}"
+                            data-netto="{{ barang.netto }}"
+                            data-warna="{{ barang.warna }}"
+                            data-harga="{{ barang.harga }}"
+                            data-stock="{{ barang.stock }}"
+                            data-foto="{{ barang.foto }}"
+                          >
+                            <i class="fa fa-edit"></i> Edit
+                          </button>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Tambah Barang -->
+        <div id="input-box" style="display: none">
+          <div class="row g-2 mt-5 border border-2 p-4">
+            <div class="col-md-4">
+              <label for="inputState" class="form-label">Kategori</label>
+              <select id="inputState" class="form-select">
+                <option selected>Choose...</option>
+                <option>CAT</option>
+                <option>TINNER</option>
+                <option>AKSESORIS PVC</option>
+              </select>
+            </div>
+            <div class="mb-2 col-md-4">
+              <label for="InputBrand" class="form-label">Brand</label>
+              <input
+                type="text"
+                class="form-control"
+                id="brand"
+                placeholder="Brand Name"
+              />
+            </div>
+            <div class="col-md-4">
+              <label for="InputNetto" class="form-label">Netto</label>
+              <input
+                type="text"
+                class="form-control"
+                id="netto"
+                placeholder="Netto Product"
+              />
+            </div>
+            <div class="col-md-4">
+              <label for="inputWarna" class="form-label">Warna</label>
+              <input
+                type="text"
+                class="form-control"
+                id="warna"
+                placeholder="Warna Product"
+              />
+            </div>
+            <div class="col-md-4">
+              <label for="inputHarga" class="form-label">Harga</label>
+              <input
+                type="text"
+                class="form-control"
+                id="harga"
+                placeholder="Harga Product"
+              />
+            </div>
+            <div class="col-md-4">
+              <label for="inputStock" class="form-label">Stock</label>
+              <input
+                type="text"
+                class="form-control"
+                id="stock"
+                placeholder="Stock Product"
+              />
+            </div>
+            <div class="col-md-12">
+              <label for="formFileMultiple" class="form-label"
+                >Foto Product</label
+              >
+              <input class="form-control" type="file" id="foto" multiple />
+            </div>
+            <div class="mt-4 col-12">
+              <button id="submitSimpanBarang" class="btn btn-primary">
+                Simpan
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Edit Barang -->
+        <div id="edit-box" style="display: none">
+          <div class="row g-2 mt-5 border border-2 p-4">
+            <div class="col-md-4">
+              <label for="editKategori" class="form-label">Kategori</label>
+              <select id="editKategori" class="form-select">
+                <option selected>Choose...</option>
+                <option>CAT</option>
+                <option>TINNER</option>
+                <option>AKSESORIS PVC</option>
+              </select>
+            </div>
+            <div class="mb-2 col-md-4">
+              <label for="editBrand" class="form-label">Brand</label>
+              <input
+                type="text"
+                class="form-control"
+                id="editBrand"
+                placeholder="Brand Name"
+              />
+            </div>
+            <div class="col-md-4">
+              <label for="editNetto" class="form-label">Netto</label>
+              <input
+                type="text"
+                class="form-control"
+                id="editNetto"
+                placeholder="Netto Product"
+              />
+            </div>
+            <div class="col-md-4">
+              <label for="editWarna" class="form-label">Warna</label>
+              <input
+                type="text"
+                class="form-control"
+                id="editWarna"
+                placeholder="Warna Product"
+              />
+            </div>
+            <div class="col-md-4">
+              <label for="editHarga" class="form-label">Harga</label>
+              <input
+                type="text"
+                class="form-control"
+                id="editHarga"
+                placeholder="Harga Product"
+              />
+            </div>
+            <div class="col-md-4">
+              <label for="editStock" class="form-label">Stock</label>
+              <input
+                type="text"
+                class="form-control"
+                id="editStock"
+                placeholder="Stock Product"
+              />
+            </div>
+            <div class="col-md-12">
+              <label for="editFoto" class="form-label">Foto Product</label>
+              <input class="form-control" type="file" id="editFoto" />
+            </div>
+            <div class="mt-4 col-12">
+              <button id="submitEditBarang" class="btn btn-primary">
+                Simpan Perubahan
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Data User Tab -->
+        <div class="tab-pane fade" id="dataUser" role="tabpanel">
+          <div class="container mt-4">
+            <div class="card mt-4">
+              <div class="card-body">
+                <h2 class="card-title">DATA USER</h2>
+                <!-- Search Bar -->
+                <div class="d-flex justify-content-end mb-3">
+                  <input
+                    type="text"
+                    class="form-control w-25 me-2"
+                    placeholder="Search"
+                  />
+                  <button class="btn btn-dark">Search</button>
+                </div>
+
+                <!-- Table -->
+                <div class="table-responsive">
+                  <table class="table table-bordered text-center">
+                    <thead class="table-secondary">
+                      <tr>
+                        <th>No.</th>
+                        <th>Nama</th>
+                        <th>Email</th>
+                        <th>No Handphone</th>
+                        <th>Password</th>
+                        <th>Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for user in data_user %}
+                      <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ user.full_name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.phone_number }}</td>
+                        <td>*****</td>
+                        <td>
+                          <button
+                            class="btn btn-danger btn-sm delete-btn"
+                            type="button"
+                            data-id="{{ user._id }}"
+                          >
+                            <i class="fa fa-trash"></i> Delete
+                          </button>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+      // Tampilkan input form
+      document
+        .getElementById("tambahBtn")
+        .addEventListener("click", function () {
+          document.getElementById("input-box").style.display = "block";
+        });
+
+      // Menambahkan barang baru ke dalam database
+      document
+        .getElementById("submitSimpanBarang")
+        .addEventListener("click", function () {
+          var kategori = document.getElementById("inputState").value;
+          var brand = document.getElementById("brand").value;
+          var netto = document.getElementById("netto").value;
+          var warna = document.getElementById("warna").value;
+          var harga = document.getElementById("harga").value;
+          var stock = document.getElementById("stock").value;
+          var foto = document.getElementById("foto").files[0]; // Ambil file foto
+
+          if (!kategori || !brand || !netto || !warna || !harga || !stock) {
+            alert("Semua kolom harus diisi!");
+            return;
+          }
+
+          // Buat FormData untuk mengirim data termasuk file gambar
           var formData = new FormData();
-          formData.append("id", id);
-          formData.append("kategori", updatedKategori);
-          formData.append("brand", updatedBrand);
-          formData.append("netto", updatedNetto);
-          formData.append("warna", updatedWarna);
-          formData.append("harga", updatedHarga);
-          formData.append("stock", updatedStock);
-          formData.append("foto", updatedFoto); // Untuk mengirim foto jika ada
+          formData.append("kategori", kategori);
+          formData.append("brand", brand);
+          formData.append("netto", netto);
+          formData.append("warna", warna);
+          formData.append("harga", harga);
+          formData.append("stock", stock);
+          if (foto) {
+            formData.append("foto", foto);
+          }
 
-          // Kirim data ke server menggunakan AJAX (jQuery)
+          // Kirim data menggunakan AJAX
           $.ajax({
-            url: "/accounts/admin/data_barang/edit_barang", // Ubah URL jika perlu
-            method: "POST",
+            url: "/accounts/admin/data_barang/tambah_barang",
+            type: "POST",
             data: formData,
-            contentType: false,
-            processData: false,
+            processData: false, // Jangan memproses data sebagai string
+            contentType: false, // Biarkan jQuery mengatur content type sesuai kebutuhan
             success: function (response) {
-              if (response.status === "success") {
-                alert("Barang berhasil diperbarui!");
-                location.reload(); // Reload halaman setelah berhasil
-              } else {
-                alert("Terjadi kesalahan saat memperbarui barang.");
-              }
+              alert("Barang berhasil disimpan");
+              location.reload();
             },
             error: function () {
-              alert("Terjadi kesalahan saat mengirim data.");
-            }
+              alert("Terjadi kesalahan. Silakan coba lagi...");
+            },
           });
         });
-      });
-    });
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const deleteButtons = document.querySelectorAll(".delete-btn");
-      deleteButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
-            alert("Data telah dihapus!");
+      // Hapus Barang
+      $(document).ready(function () {
+        // Event listener untuk tombol delete
+        $("#barangTableBody").on("click", ".delete-btn", function () {
+          const barangId = $(this).data("id");
+
+          // Tampilkan dialog konfirmasi
+          const confirmation = confirm("Anda yakin akan menghapus barang ini?");
+          if (confirmation) {
+            // Kirim permintaan DELETE menggunakan AJAX
+            $.ajax({
+              url: "/accounts/admin/data_barang/delete_barang",
+              type: "POST",
+              data: {
+                id: barangId,
+              },
+              success: function (response) {
+                if (response.status === "success") {
+                  alert(response.message);
+
+                  // Hapus baris barang dari tabel
+                  $(
+                    `#barangTableBody tr:has(td button[data-id='${barangId}'])`
+                  ).remove();
+
+                  // Perbarui nomor urut secara dinamis
+                  $("#barangTableBody tr").each(function (index) {
+                    $(this)
+                      .find("td:first")
+                      .text(index + 1);
+                  });
+                } else {
+                  alert("Gagal menghapus data.");
+                }
+              },
+              error: function () {
+                alert("Terjadi kesalahan pada server.");
+              },
+            });
           }
         });
       });
-    });
 
-    document.addEventListener('DOMContentLoaded', function () {
-      // Inisialisasi tab Bootstrap
-      var triggerTabList = [].slice.call(document.querySelectorAll('.nav-link'))
-      triggerTabList.forEach(function (triggerEl) {
-        var tabTrigger = new bootstrap.Tab(triggerEl)
-        triggerEl.addEventListener('click', function (event) {
-          event.preventDefault()
-          tabTrigger.show()
-        })
-      })
-    });
-  </script>
+      // Menangani klik tombol Edit
+      document.querySelectorAll(".edit-btn").forEach(function (button) {
+        button.addEventListener("click", function () {
+          // Ambil data dari atribut data-* di tombol edit
+          var id = button.getAttribute("data-id");
+          var kategori = button.getAttribute("data-kategori");
+          var brand = button.getAttribute("data-brand");
+          var netto = button.getAttribute("data-netto");
+          var warna = button.getAttribute("data-warna");
+          var harga = button.getAttribute("data-harga");
+          var stock = button.getAttribute("data-stock");
+          var foto = button.getAttribute("data-foto");
 
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
-</body>
+          // Isi form dengan data yang diambil
+          document.getElementById("editKategori").value = kategori;
+          document.getElementById("editBrand").value = brand;
+          document.getElementById("editNetto").value = netto;
+          document.getElementById("editWarna").value = warna;
+          document.getElementById("editHarga").value = harga;
+          document.getElementById("editStock").value = stock;
 
+          // Tampilkan form edit
+          document.getElementById("edit-box").style.display = "block";
+
+          // Menangani pengiriman data edit ke server
+          document
+            .getElementById("submitEditBarang")
+            .addEventListener("click", function () {
+              var updatedKategori =
+                document.getElementById("editKategori").value;
+              var updatedBrand = document.getElementById("editBrand").value;
+              var updatedNetto = document.getElementById("editNetto").value;
+              var updatedWarna = document.getElementById("editWarna").value;
+              var updatedHarga = document.getElementById("editHarga").value;
+              var updatedStock = document.getElementById("editStock").value;
+              var updatedFoto = document.getElementById("editFoto").files[0];
+
+              var formData = new FormData();
+              formData.append("id", id);
+              formData.append("kategori", updatedKategori);
+              formData.append("brand", updatedBrand);
+              formData.append("netto", updatedNetto);
+              formData.append("warna", updatedWarna);
+              formData.append("harga", updatedHarga);
+              formData.append("stock", updatedStock);
+              formData.append("foto", updatedFoto); // Untuk mengirim foto jika ada
+
+              // Kirim data ke server menggunakan AJAX (jQuery)
+              $.ajax({
+                url: "/accounts/admin/data_barang/edit_barang", // Ubah URL jika perlu
+                method: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                  if (response.status === "success") {
+                    alert("Barang berhasil diperbarui!");
+                    location.reload(); // Reload halaman setelah berhasil
+                  } else {
+                    alert("Terjadi kesalahan saat memperbarui barang.");
+                  }
+                },
+                error: function () {
+                  alert("Terjadi kesalahan saat mengirim data.");
+                },
+              });
+            });
+        });
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const deleteButtons = document.querySelectorAll(".delete-btn");
+        deleteButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+              alert("Data telah dihapus!");
+            }
+          });
+        });
+      });
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // Inisialisasi tab Bootstrap
+        var triggerTabList = [].slice.call(
+          document.querySelectorAll(".nav-link")
+        );
+        triggerTabList.forEach(function (triggerEl) {
+          var tabTrigger = new bootstrap.Tab(triggerEl);
+          triggerEl.addEventListener("click", function (event) {
+            event.preventDefault();
+            tabTrigger.show();
+          });
+        });
+      });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+  </body>
 </html>

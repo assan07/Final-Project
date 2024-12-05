@@ -5,7 +5,17 @@
   overflow: hidden;
 }
 .login-form {
-  padding: 40px;
+  padding: 70px;
+}
+
+.title{
+  margin-bottom: 100px;
+}
+
+.login-form h1{
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 90px;
 }
 .form-control {
   margin-bottom: 20px;

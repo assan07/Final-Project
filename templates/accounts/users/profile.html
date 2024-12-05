@@ -12,15 +12,9 @@
       crossorigin="anonymous"
     />
     <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-      rel="stylesheet"
-    />
-    <!-- index.css -->
-    <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/index.css') }}"
     />
-    <!-- profile.css -->
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/profile.css') }}"
@@ -37,81 +31,113 @@
 
     <!-- Main Content -->
     <div class="profile-container">
-      <div class="row m-5 profile-box justify-content-between">
-        <!-- Profile Image -->
-        <div class="box-right-side col-md-2 align-content-between">
-          <div class="profile-img">
-            <img
-              src="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
-              alt="Profile Image"
-              style="width: 50px; height: 50px"
-            />
+      <div class="row profile-box p-4">
+        <!-- Profile Image and Edit Password -->
+        <!-- side bar -->
+        <div class="side-bar col-md-3 text-start">
+          <div class="profile-info d-flex align-items-center gap-4">
+            <div class="image-profile">
+              {% if profile_pic %}
+              <img
+                src="{{ profile_pic }}"
+                alt="Profile Picture"
+                class="img-thumbnail"
+              />
+              {% else %}
+              <i class="fa-solid fa-user fa-xl mt-3"></i>
+              {% endif %}
+            </div>
+            <div class="profile-name">
+              <p>{{ full_name }}</p>
+              <p>{{ email }}</p>
+            </div>
           </div>
-          <div class="edit-password">
-            <a href="/accounts/users/edit_password">
-              <i class="fas fa-key"></i> Edit Password
-            </a>
+          <div class="sidebar-menu d-flex flex-column">
+            <a href="/accounts/users/profile"
+              ><i class="fa-solid fa-user-pen"></i>Akun anda</a
+            >
+            <a href="/carts/order_summary"
+              ><i class="fa-solid fa-cart-arrow-down"></i>Keranjang anda</a
+            >
+            <a href="/carts/order_history"
+              ><i class="fa-solid fa-clock-rotate-left"></i>Riwayat</a
+            >
+            <a href="/accounts/users/edit_password"
+              ><i class="fas fa-key"></i>Edit password</a
+            >
+            <a href="/accounts/users/logout"
+              ><i class="fa-solid fa-right-from-bracket"></i>Log Out</a
+            >
           </div>
         </div>
 
-        <!-- Form Section -->
-        <div class="col-md-5 mt-4">
-          <div class="form-container px-4">
-            <form>
+        <!-- Profile Form -->
+        <div class="col-md-6 mt-5">
+          <h5 class="mb-4 text-primary">Your Profile</h5>
+          <div class="form-container">
+            <form
+              action="/accounts/users/profile"
+              method="POST"
+              enctype="multipart/form-data"
+            >
+              <!-- Profil Image -->
+              <div class="mb-3 text-center"></div>
+              <!-- Input File -->
               <div class="mb-3">
-                <label for="name">Name</label>
+                <label for="inputGroupFile04" class="form-label"
+                  >Profile Picture</label
+                >
+                <input
+                  type="file"
+                  class="form-control form-control-sm"
+                  id="inputGroupFile04"
+                  name="profile_pic"
+                  accept="image/*"
+                />
+              </div>
+              <!-- Full Name -->
+              <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
                 <input
                   type="text"
                   class="form-control"
                   id="name"
+                  name="name"
                   placeholder="Enter your name"
+                  value="{{ full_name }}"
                 />
               </div>
+              <!-- Email -->
               <div class="mb-3">
-                <label for="email">Email</label>
+                <label for="email" class="form-label">Email</label>
                 <input
                   type="email"
                   class="form-control"
                   id="email"
+                  name="email"
                   placeholder="Enter your email"
+                  value="{{ email }}"
                 />
               </div>
+              <!-- Phone Number -->
               <div class="mb-3">
-                <label for="hp">Phone Number</label>
+                <label for="hp" class="form-label">Phone Number</label>
                 <input
                   type="text"
                   class="form-control"
                   id="hp"
+                  name="hp"
                   placeholder="Enter your phone number"
+                  value="{{ phone_number }}"
                 />
               </div>
+              <!-- Save Button -->
               <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary flex-fill">
-                  <i class="fas fa-save"></i> Submit
+                  Save Changes
                 </button>
               </div>
             </form>
-          </div>
-        </div>
-
-        <!-- Change Profile Section -->
-        <div class="col-md-3 text-center">
-          <div class="change-profile p-4">
-            <img
-              src="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
-              alt="Change Profile"
-            />
-            <p>Change Profile Picture</p>
-            <div class="input-group">
-              <input
-                type="file"
-                class="form-control form-control-sm mt-2"
-                id="inputGroupFile04"
-              />
-            </div>
-            <button class="btn btn-secondary btn-sm mt-3">
-              <i class="fas fa-upload"></i> Upload
-            </button>
           </div>
         </div>
       </div>
@@ -123,5 +149,48 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <script>
+      $(document).ready(function () {
+        // Handle form submission via AJAX
+        $("#profileForm").on("submit", function (event) {
+          event.preventDefault();
+
+          // Create FormData object
+          var formData = new FormData(this);
+
+          // Send AJAX POST request
+          $.ajax({
+            url: "/accounts/users/profile",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+              if (response.success) {
+                // Update UI with new data
+                $("#name").val(response.full_name);
+                $("#email").val(response.email);
+                $("#phone_number").val(response.phone_number);
+
+                // Update profile picture preview if changed
+                if (response.profile_pic) {
+                  $("#profilePicPreview").attr(
+                    "src",
+                    "/" + response.profile_pic
+                  );
+                }
+
+                alert("Profile updated successfully!");
+              } else {
+                alert("Failed to update profile.");
+              }
+            },
+            error: function () {
+              alert("An error occurred. Please try again.");
+            },
+          });
+        });
+      });
+    </script>
   </body>
 </html>

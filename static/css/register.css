@@ -24,6 +24,10 @@ body {
   height: 170px;
   margin-bottom: 20px;
 }
+
+.title{
+  margin-bottom: 100px;
+}
 .register-left h2 {
   font-size: 28px;
   margin-bottom: 20px;

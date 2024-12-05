@@ -9,6 +9,8 @@ from dotenv import load_dotenv
 from bson import ObjectId
 import secrets
 from datetime import datetime, timedelta
+from werkzeug.utils import secure_filename
+
 
 # Load environment variables
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
@@ -26,24 +28,46 @@ app.secret_key = 'my_super_secret_key_12345'
 bcrypt = Bcrypt(app)
 
 # Direktori untuk menyimpan gambar
-UPLOAD_FOLDER = 'static/images/uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+UPLOAD_FOLDER_BARANG = 'static/images/gambar_barang'
+UPLOAD_FOLDER_PROFILE ='static/images/profile_pics'
+app.config['UPLOAD_FOLDER_BARANG'] = UPLOAD_FOLDER_BARANG
+app.config['UPLOAD_FOLDER_PROFILE'] = UPLOAD_FOLDER_PROFILE
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 
 # Fungsi untuk memeriksa apakah ekstensi file diperbolehkan
 
-
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
-# Home dan halaman about
 
+# Context Processor : untuk menyediakan variabel seperti full_name dan profile_pic ke semua template.
+@app.context_processor
+def inject_user():
+    if 'user_id' in session:
+        # Ambil data user dari session
+        full_name = session.get("full_name", "Guest")
+        profile_pic = session.get("profile_pic", None)
+
+        # Pastikan gambar default digunakan jika `profile_pic` kosong
+        if not profile_pic:
+            profile_pic = "images/default_profile.jpg"  # Gambar default
+
+        return {
+            "full_name": full_name,
+            "profile_pic": url_for('static', filename=f"images/profile_pics/{profile_pic}") if profile_pic != "images/default_profile.jpg" else url_for('static', filename=profile_pic)
+        }
+    return {
+        "full_name": None,
+        "profile_pic": None
+    }
+
+
+# Home dan halaman about
 
 @app.route("/")
 def home():
     if 'user_id' in session:
         full_name = session.get("full_name", "Guest")
         return render_template("main/index.html", full_name=full_name)
-        # return render_template("main/index.html", full_name=session['full_name'])
     else:
         return redirect(url_for('user_login'))
 
@@ -167,7 +191,7 @@ def tambah_barang():
 
     if foto and allowed_file(foto.filename):
         foto_filename = secure_filename(foto.filename)
-        foto.save(os.path.join(app.config['UPLOAD_FOLDER'], foto_filename))
+        foto.save(os.path.join(app.config['UPLOAD_FOLDER_BARANG'], foto_filename))
 
     # Menyimpan data ke MongoDB
     barang_collection = db.barang
@@ -185,7 +209,7 @@ def tambah_barang():
 
 # Rute untuk delete barang
 
-
+# data barang
 @app.route("/accounts/admin/data_barang/delete_barang", methods=["POST"])
 def delete_barang():
     barang_id = request.form.get('id')
@@ -200,7 +224,7 @@ def delete_barang():
         if foto_filename:
             # Path lengkap file gambar
             foto_path = os.path.join(
-                app.config['UPLOAD_FOLDER'], foto_filename)
+                app.config['UPLOAD_FOLDER_BARANG'], foto_filename)
             # Hapus file gambar jika ada
             if os.path.exists(foto_path):
                 os.remove(foto_path)
@@ -217,7 +241,6 @@ def delete_barang():
 
 # Rute untuk edit barang
 
-
 @app.route("/accounts/admin/data_barang/edit_barang", methods=["POST"])
 def edit_barang():
     barang_id = request.form.get('id')
@@ -232,7 +255,7 @@ def edit_barang():
 
     if foto and allowed_file(foto.filename):
         foto_filename = secure_filename(foto.filename)
-        foto.save(os.path.join(app.config['UPLOAD_FOLDER'], foto_filename))
+        foto.save(os.path.join(app.config['UPLOAD_FOLDER_BARANG'], foto_filename))
 
     barang_collection = db.barang
     update_data = {
@@ -261,39 +284,7 @@ def admin_data_user():
 
 
 # Rute untuk accounts/users
-
-
-@app.route("/accounts/users/login", methods=['GET', 'POST'])
-def user_login():
-    if request.method == 'POST':
-        # Get form data
-        email = request.form.get('email')
-        password = request.form.get('password')
-
-        # Validasi input
-        if not email or not password:
-            flash('Email dan password harus diisi', 'error')
-            return redirect(url_for('user_login'))
-
-        # Cari user
-        users_collection = db.user
-        user = users_collection.find_one({'email': email})
-
-        if user and bcrypt.check_password_hash(user['password'], password):
-            # Login berhasil
-            session['user_id'] = str(user['_id'])
-            session['full_name'] = user['full_name']
-
-            flash('Login berhasil!', 'success')
-            # Redirect ke halaman dashboard
-            return redirect(url_for('home'))
-        else:
-            flash('Email atau password salah', 'error')
-            return redirect(url_for('user_login'))
-
-    return render_template("accounts/users/login.html")
-
-
+# rute untuk register
 @app.route("/accounts/users/register", methods=['GET', 'POST'])
 def user_register():
     if request.method == 'POST':
@@ -331,8 +322,41 @@ def user_register():
 
     return render_template("accounts/users/register.html")
 
-# route untuk mencek apakah user sudah login atau blum
 
+# rute untuk login
+@app.route("/accounts/users/login", methods=['GET', 'POST'])
+def user_login():
+    if request.method == 'POST':
+        # Get form data
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        # Validasi input
+        if not email or not password:
+            flash('Email dan password harus diisi', 'error')
+            return redirect(url_for('user_login'))
+
+        # Cari user
+        users_collection = db.user
+        user = users_collection.find_one({'email': email})
+
+        if user and bcrypt.check_password_hash(user['password'], password):
+            # Login berhasil
+            session['user_id'] = str(user['_id'])
+            session['full_name'] = user['full_name']
+            session['email'] = user['email']
+            session["profile_pic"] = user.get("profile_pic", None) 
+
+            flash('Login berhasil!', 'success')
+            # Redirect ke halaman dashboard
+            return redirect(url_for('home'))
+        else:
+            flash('Email atau password salah', 'error')
+            return redirect(url_for('user_login'))
+
+    return render_template("accounts/users/login.html")
+
+# route untuk mencek apakah user sudah login atau blum
 
 @app.route("/accounts/users/status", methods=["GET"])
 def user_status():
@@ -340,16 +364,109 @@ def user_status():
     if "user_id" in session:
         return jsonify({
             "is_logged_in": True,
-            "full_name": session.get("full_name", "User")
+            "full_name": session.get("full_name", "User"),
+            "email": session.get("email", "user_email@gmail.com"),
+            "profile_pic": session.get("profile_pic",None)
         })
     else:
         return jsonify({
             "is_logged_in": False
         })
 
+# rute unutk edit dan tampilan info user
+@app.route("/accounts/users/profile", methods=['GET', 'POST'])
+def user_profile():
+    if 'user_id' in session and 'email' in session:
+        users_collection = db.user
+        
+        if request.method == "POST":
+            # Mendapatkan data form
+            full_name = request.form.get("name")
+            email = request.form.get("email")
+            phone_number = request.form.get("hp")
+            profile_pic = request.files.get("profile_pic")
+    
+            # Validasi data
+            if not full_name or not email or not phone_number:
+                flash("Semua field harus diisi.", "error")
+                return redirect(url_for("user_profile"))
+
+            # Validasi ekstensi file gambar
+            if profile_pic and profile_pic.filename != "":
+                ext = profile_pic.filename.split(".")[-1].lower()
+                if ext not in app.config['ALLOWED_EXTENSIONS']:
+                    flash("Hanya file gambar dengan format png, jpg, jpeg, gif yang diizinkan.", "error")
+                    return redirect(url_for("user_profile"))
+
+                # Pastikan folder upload ada
+                os.makedirs(app.config['UPLOAD_FOLDER_PROFILE'], exist_ok=True)
+
+                # Amankan nama file dan simpan
+                filename = secure_filename(profile_pic.filename)
+                file_path = os.path.join(app.config['UPLOAD_FOLDER_PROFILE'], filename)
+                profile_pic.save(file_path)
+
+                # Simpan path gambar untuk disimpan ke database
+                profile_pic_path = filename
+            else:
+                profile_pic_path = None  # Jika tidak ada gambar baru
+
+            # Update database
+            try:
+                user_id = ObjectId(session['user_id'])  # Pastikan format ObjectId benar
+                update_data = {
+                    "full_name": full_name,
+                    "email": email,
+                    "phone_number": phone_number,
+                }
+                if profile_pic_path:  # Hanya tambahkan jika ada gambar baru
+                    update_data["profile_pic"] = profile_pic_path
+
+                users_collection.update_one({"_id": user_id}, {"$set": update_data})
+
+                # Update data session
+                session['full_name'] = full_name
+                session['email'] = email
+                session['phone_number'] = phone_number
+                if profile_pic_path:
+                    session['profile_pic'] = profile_pic_path
+
+                flash("Profil berhasil diperbarui.", "success")
+            except Exception as e:
+                flash("Terjadi kesalahan saat memperbarui profil.", "error")
+                print(f"Error: {e}")
+
+            return redirect(url_for("user_profile"))
+
+        # Jika GET, ambil data user dari database
+        try:
+            user = users_collection.find_one({"_id": ObjectId(session['user_id'])})
+            if not user:
+                flash("User tidak ditemukan.", "error")
+                return redirect(url_for("user_login"))
+        except Exception as e:
+            flash("Terjadi kesalahan saat mengambil data user.", "error")
+            print(f"Error: {e}")
+            return redirect(url_for("user_login"))
+
+        # Data untuk ditampilkan di halaman profil
+        full_name = user.get("full_name", "Guest")
+        email = user.get("email", "user_email@gmail.com")
+        phone_number = user.get("phone_number", "0812345678")
+        profile_pic = user.get("profile_pic", None)
+
+        return render_template(
+            "accounts/users/profile.html",
+            full_name=full_name,
+            email=email,
+            phone_number=phone_number,
+        )
+    else:
+        flash("Anda harus login terlebih dahulu.", "error")
+        return redirect(url_for('user_login'))
+
+
 # route logout
-
-
 @app.route("/accounts/users/logout", methods=["GET"])
 def user_logout():
     # Hapus sesi user
@@ -357,7 +474,7 @@ def user_logout():
     flash("Anda telah logout.", "success")
     return redirect(url_for("home"))
 
-
+# rute untuk reset password
 @app.route("/accounts/users/reset-password/<token>", methods=['GET', 'POST'])
 def reset_password(token):
     reset_data = db.password_resets.find_one({
@@ -385,7 +502,7 @@ def reset_password(token):
 
     return render_template('accounts/users/reset_password.html')
 
-
+# rute untuk lupa password
 @app.route("/accounts/users/forget-password", methods=['GET', 'POST'])
 def forget_password():
     if request.method == 'POST':
@@ -410,38 +527,54 @@ def forget_password():
     return render_template('accounts/users/forget_password.html')
 
 
-@app.route("/accounts/users/profile")
-def user_profile():
-    return render_template("accounts/users/profile.html")
-
-
 @app.route("/accounts/users/edit_password")
 def edit_password():
-    return render_template("accounts/users/edit_password.html")
+    if 'user_id' in session and 'email' in session:
+        full_name = session.get("full_name", "Guest")
+        email = session.get("email","user_email@gmail.com")
+        return render_template("accounts/users/edit_password.html", full_name=full_name, email=email)
+    else:
+        return redirect(url_for('user_login'))
 
 # Rute untuk carts
 
 
 @app.route("/carts/order_history")
 def order_history():
-    return render_template("carts/order_history.html")
+    if 'user_id' in session:
+        full_name = session.get("full_name", "Guest")
+        return render_template("carts/order_history.html", full_name=full_name)
+    else:
+        return redirect(url_for('user_login'))
 
 
 @app.route("/carts/order_summary")
 def order_summary():
-    return render_template("carts/order_summary.html")
+    if 'user_id' in session:
+        full_name = session.get("full_name", "Guest")
+        return render_template("carts/order_summary.html", full_name=full_name)
+    else:
+        return redirect(url_for('user_login'))
 
 # Rute untuk products
 
 
 @app.route("/products/product_details")
 def product_details():
-    return render_template("products/product_details.html")
+    if 'user_id' in session:
+        full_name = session.get("full_name", "Guest")
+        return render_template("products/product_details.html", full_name=full_name)
+    else:
+        return redirect(url_for('user_login'))
 
 
 @app.route("/products/product_lists")
 def product_lists():
-    return render_template("products/product_lists.html")
+    if 'user_id' in session:
+        full_name = session.get("full_name", "Guest")
+        return render_template("products/product_lists.html", full_name=full_name, )
+    else:
+        return redirect(url_for('user_login'))
 
 
 if __name__ == '__main__':

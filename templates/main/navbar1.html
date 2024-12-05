@@ -14,16 +14,17 @@
             class="logo d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
           >
             <img
-              class="mx-2"
-              width="60"
-              height="60"
+              
+              width="56px"
+              height="56px"
               src="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
               alt="Logo brand"
+              style="margin-left: 40px; margin-right: 10px;"
             />
             <img
               width="160"
               height="40"
-              src="{{ url_for('static', filename='images/icon/logo-title-01.png') }}"
+              src="{{ url_for('static', filename='images/icon/logo-title.png') }}"
               alt="Logo title"
             />
           </a>
@@ -46,19 +47,27 @@
               <ul class="dropdown-menu">
                 <li>
                   <a class="dropdown-item" href="/carts/order_summary"
-                    >Order Summary</a
+                    >Keranjang anda</a
                   >
                 </li>
                 <li>
                   <a class="dropdown-item" href="/carts/order_history"
-                    >Order History</a
+                    >Riwayat</a
                   >
                 </li>
               </ul>
             </li>
             <div class="icon-user">
-              <i class="fa-solid fa-user fa-xl"></i>
-              <span class="navbar-user">{{ full_name }}</span>
+              {% if profile_pic %}
+              <img
+                src="{{ profile_pic }}"
+                alt="Profile Picture"
+                class="img-thumbnail"
+              />
+              {% else %}
+              <i class="fa-solid fa-user fa-xl mt-3"></i> 
+              {% endif %}
+              <span class="navbar-usernm">{{ full_name }}</span>
               <div class="profile-item">
                 <a
                   href="/accounts/users/profile"
