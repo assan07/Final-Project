@@ -62,25 +62,27 @@ def inject_user():
 
 
 # Home dan halaman about
-
 @app.route("/")
 def home():
     if 'user_id' in session:
         full_name = session.get("full_name", "Guest")
         return render_template("main/index.html", full_name=full_name)
+        # return render_template("main/index.html", full_name=session['full_name'])
     else:
         return redirect(url_for('user_login'))
 
 # Rute untuk accounts/admin
-
-
 @app.route("/admin/dashboard")
 def admin_dashboard():
     if 'admin_id' not in session:
         return redirect(url_for('admin_login'))
 
+    # Ambil data admin berdasarkan sesi
+    admin = db.admin.find_one({"_id": ObjectId(session['admin_id'])}, {"password": 0})
+
     # Dashboard data
     total_users = db.user.count_documents({})
+    total_admin = db.admin.count_documents({})
     total_barang = db.barang.count_documents({})
     total_transaksi = db.transaksi.count_documents(
         {}) if 'transaksi' in db.list_collection_names() else 0
@@ -92,14 +94,35 @@ def admin_dashboard():
     # Data User
     data_user = list(db.user.find({}, {'password': 0}))
 
+    # Data Admin
+    data_admin = list(db.admin.find({}, {'password': 0}))
+
     return render_template('accounts/admin/dashboard.html',
                            active_page='dashboard',
+                           admin=admin,
                            total_users=total_users,
+                           total_admin=total_admin,
                            total_barang=total_barang,
                            total_transaksi=total_transaksi,
                            recent_activities=recent_activities,
                            barang_data=barang_data,
-                           data_user=data_user)
+                           data_user=data_user,
+                           data_admin=data_admin)
+
+# Rute untuk delete admin
+@app.route("/accounts/admin/data_admin/delete_admin", methods=["POST"])
+def delete_admin():
+    admin_id = request.json.get('id')
+    admin_collection = db.admin
+
+    try:
+        result = admin_collection.delete_one({'_id': ObjectId(admin_id)})
+        if result.deleted_count > 0:
+            return jsonify({"status": "success", "message": "Admin berhasil dihapus!"}), 200
+        else:
+            return jsonify({"status": "error", "message": "Admin tidak ditemukan"}), 404
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 
 @app.route("/accounts/admin/logout")
@@ -280,8 +303,29 @@ def edit_barang():
 
 @app.route("/accounts/admin/data_user")
 def admin_data_user():
-    return render_template("accounts/admin/data_user.html")
+    user_collection = db.user
+    user_data = list(user_collection.find())
+    return render_template("accounts/admin/data_user.html", user_data=user_data)
 
+# Rute untuk delete user
+@app.route("/accounts/admin/data_user/delete_user", methods=["POST"])
+def delete_user():
+    user_id = request.form.get('id')
+    user_collection = db.user
+
+    # Cari user berdasarkan ID
+    user = user_collection.find_one({'_id': ObjectId(user_id)})
+
+    if user:
+        # Hapus data user dari database
+        result = user_collection.delete_one({'_id': ObjectId(user_id)})
+
+        if result.deleted_count > 0:
+            return jsonify({"status": "success", "message": "User berhasil dihapus!"}), 200
+        else:
+            return jsonify({"status": "error", "message": "User tidak ditemukan"}), 404
+    else:
+        return jsonify({"status": "error", "message": "User tidak ditemukan"}), 404
 
 # Rute untuk accounts/users
 # rute untuk register
