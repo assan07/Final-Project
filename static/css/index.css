@@ -96,10 +96,13 @@ body {
 /* hero */
 .main {
   display: flex;
-  overflow: hidden; /* Membatasi area tampilan */
-  position: relative; /* Dibutuhkan untuk tombol navigasi */
+  overflow: hidden;
+  position: relative;
   padding: 50px 15px;
   height: 100vh;
+  margin-top: 100px;
+  background-image: url("/static/images/icon/bg.png");
+  background-size: cover;
   justify-content: center;
   transition: all 0.3s ease-in-out;
 }
@@ -120,6 +123,8 @@ h1 {
 
 .slides-container {
   display: flex;
+  background-image: url("/static/images/icon/bg.png");
+  background-size: cover;
   transition: transform 0.5s ease-in-out;
   width: 400%;
 }
@@ -206,7 +211,7 @@ h1 {
   background: linear-gradient(135deg, #2f1cff, #15d4fb);
   color: white;
   padding: 50px 15px;
-  margin-top: 30px;
+  
 }
 .about-section h2 {
   font-size: 2.5rem;

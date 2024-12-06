@@ -174,8 +174,13 @@ def admin_data_barang():
 # Rute untuk menambah barang
 
 
-@app.route("/accounts/admin/data_barang/tambah_barang", methods=["POST"])
+@app.route("/accounts/admin/data_barang/tambah_barang", methods=["GET", "POST"])
 def tambah_barang():
+    if request.method == "GET":
+        # Tampilkan halaman tambah barang
+        return render_template("accounts/admin/data_barang.html")
+
+    # Proses metode POST (kode Anda yang sudah ada)
     kategori = request.form.get('kategori')
     brand = request.form.get('brand')
     netto = request.form.get('netto')
@@ -204,6 +209,7 @@ def tambah_barang():
     })
 
     return jsonify({"status": "success"}), 200
+
 
 # Rute untuk delete barang
 
