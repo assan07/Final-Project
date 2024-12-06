@@ -2,14 +2,12 @@ from flask import Flask, render_template, request, jsonify, url_for, flash, sess
 from pymongo import MongoClient
 from jinja2 import Environment, FileSystemLoader
 import os
+import bcrypt
 from flask_bcrypt import Bcrypt
-from werkzeug.utils import secure_filename
-from werkzeug.security import generate_password_hash
 from dotenv import load_dotenv
 from bson import ObjectId
 import secrets
 from datetime import datetime, timedelta
-from werkzeug.utils import secure_filename
 
 
 # Load environment variables
@@ -49,11 +47,11 @@ def inject_user():
 
         # Pastikan gambar default digunakan jika `profile_pic` kosong
         if not profile_pic:
-            profile_pic = "images/default_profile.jpg"  # Gambar default
+            profile_pic = "images/profile_pics/default_profile.png"  # Gambar default
 
         return {
             "full_name": full_name,
-            "profile_pic": url_for('static', filename=f"images/profile_pics/{profile_pic}") if profile_pic != "images/default_profile.jpg" else url_for('static', filename=profile_pic)
+            "profile_pic": url_for('static', filename=f"images/profile_pics/{profile_pic}") if profile_pic != "images/profile_pics/default_profile.png" else url_for('static', filename=profile_pic)
         }
     return {
         "full_name": None,
@@ -62,27 +60,25 @@ def inject_user():
 
 
 # Home dan halaman about
+
 @app.route("/")
 def home():
-    if 'user_id' in session:
-        full_name = session.get("full_name", "Guest")
-        return render_template("main/index.html", full_name=full_name)
-        # return render_template("main/index.html", full_name=session['full_name'])
-    else:
-        return redirect(url_for('user_login'))
+    # if 'user_id' in session:
+    full_name = session.get("full_name", "Guest")
+    return render_template("main/index.html", full_name=full_name)
+    # else:
+    #     return redirect(url_for('user_login'))
 
 # Rute untuk accounts/admin
+
+
 @app.route("/admin/dashboard")
 def admin_dashboard():
     if 'admin_id' not in session:
         return redirect(url_for('admin_login'))
 
-    # Ambil data admin berdasarkan sesi
-    admin = db.admin.find_one({"_id": ObjectId(session['admin_id'])}, {"password": 0})
-
     # Dashboard data
     total_users = db.user.count_documents({})
-    total_admin = db.admin.count_documents({})
     total_barang = db.barang.count_documents({})
     total_transaksi = db.transaksi.count_documents(
         {}) if 'transaksi' in db.list_collection_names() else 0
@@ -94,35 +90,14 @@ def admin_dashboard():
     # Data User
     data_user = list(db.user.find({}, {'password': 0}))
 
-    # Data Admin
-    data_admin = list(db.admin.find({}, {'password': 0}))
-
     return render_template('accounts/admin/dashboard.html',
                            active_page='dashboard',
-                           admin=admin,
                            total_users=total_users,
-                           total_admin=total_admin,
                            total_barang=total_barang,
                            total_transaksi=total_transaksi,
                            recent_activities=recent_activities,
                            barang_data=barang_data,
-                           data_user=data_user,
-                           data_admin=data_admin)
-
-# Rute untuk delete admin
-@app.route("/accounts/admin/data_admin/delete_admin", methods=["POST"])
-def delete_admin():
-    admin_id = request.json.get('id')
-    admin_collection = db.admin
-
-    try:
-        result = admin_collection.delete_one({'_id': ObjectId(admin_id)})
-        if result.deleted_count > 0:
-            return jsonify({"status": "success", "message": "Admin berhasil dihapus!"}), 200
-        else:
-            return jsonify({"status": "error", "message": "Admin tidak ditemukan"}), 404
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+                           data_user=data_user)
 
 
 @app.route("/accounts/admin/logout")
@@ -303,29 +278,8 @@ def edit_barang():
 
 @app.route("/accounts/admin/data_user")
 def admin_data_user():
-    user_collection = db.user
-    user_data = list(user_collection.find())
-    return render_template("accounts/admin/data_user.html", user_data=user_data)
+    return render_template("accounts/admin/data_user.html")
 
-# Rute untuk delete user
-@app.route("/accounts/admin/data_user/delete_user", methods=["POST"])
-def delete_user():
-    user_id = request.form.get('id')
-    user_collection = db.user
-
-    # Cari user berdasarkan ID
-    user = user_collection.find_one({'_id': ObjectId(user_id)})
-
-    if user:
-        # Hapus data user dari database
-        result = user_collection.delete_one({'_id': ObjectId(user_id)})
-
-        if result.deleted_count > 0:
-            return jsonify({"status": "success", "message": "User berhasil dihapus!"}), 200
-        else:
-            return jsonify({"status": "error", "message": "User tidak ditemukan"}), 404
-    else:
-        return jsonify({"status": "error", "message": "User tidak ditemukan"}), 404
 
 # Rute untuk accounts/users
 # rute untuk register
@@ -496,7 +450,7 @@ def user_profile():
         # Data untuk ditampilkan di halaman profil
         full_name = user.get("full_name", "Guest")
         email = user.get("email", "user_email@gmail.com")
-        phone_number = user.get("phone_number", "0812345678")
+        phone_number = user.get("phone_number", "No.Handphone ")
         profile_pic = user.get("profile_pic", None)
 
         return render_template(
@@ -570,15 +524,58 @@ def forget_password():
         flash('Email tidak ditemukan', 'error')
     return render_template('accounts/users/forget_password.html')
 
+from werkzeug.security import check_password_hash, generate_password_hash
+from flask import jsonify, flash, render_template, session, request, redirect, url_for
+from bson import ObjectId
 
-@app.route("/accounts/users/edit_password")
+@app.route("/accounts/users/edit_password", methods=["GET", "POST"])
 def edit_password():
-    if 'user_id' in session and 'email' in session:
-        full_name = session.get("full_name", "Guest")
-        email = session.get("email","user_email@gmail.com")
-        return render_template("accounts/users/edit_password.html", full_name=full_name, email=email)
+    if "user_id" in session and "email" in session:
+        email = session["email"]
+
+        if request.method == "POST":
+            # Ambil data dari form
+            current_password = request.form.get("current_password")
+            new_password = request.form.get("new_password")
+            confirm_password = request.form.get("confirm_password")
+
+            # Validasi input
+            if not current_password or not new_password or not confirm_password:
+                return jsonify({"status": "error", "message": "Semua field harus diisi!"}), 400
+
+            if new_password != confirm_password:
+                return jsonify({"status": "error", "message": "Password baru dan konfirmasi password tidak cocok!"}), 400
+
+            # Ambil data user dari database
+            users_collection = db.user
+            user = users_collection.find_one({"email": email})
+
+            if not user:
+                return jsonify({"status": "error", "message": "User tidak ditemukan!"}), 404
+
+            # Validasi password lama
+            if not bcrypt.check_password_hash(user['password'], current_password):
+                return jsonify({"status": "error", "message": "Password lama Anda salah!"}), 400
+
+            # Hash password baru
+            hashed_new_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+
+            # Update password di database
+            try:
+                users_collection.update_one(
+                    {"_id": ObjectId(user["_id"])},
+                    {"$set": {"password": hashed_new_password}}
+                )
+                flash("Password berhasil diperbarui.", "success")
+                return jsonify({"status": "success", "message": "Password berhasil diperbarui!"}), 200
+            except Exception as e:
+                print(f"Error: {e}")
+                return jsonify({"status": "error", "message": "Terjadi kesalahan saat memperbarui password."}), 500
+
+        # Jika GET, tampilkan halaman edit password
+        return render_template("accounts/users/edit_password.html", email=email)
     else:
-        return redirect(url_for('user_login'))
+        return redirect(url_for("user_login"))
 
 # Rute untuk carts
 

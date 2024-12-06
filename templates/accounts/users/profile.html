@@ -2,6 +2,16 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
+      type="image/x-icon"
+    />
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
+      type="image/x-icon"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile Management</title>
     <!-- Bootstrap CSS -->
@@ -27,7 +37,60 @@
   </head>
   <body>
     <!-- Navbar -->
-    {% include "main/navbar1.html" %}
+    <header>
+      <div class="container w-75">
+        <nav class="nav fixed-top nav-pills" aria-label="Main navigation">
+          <a
+            href="/"
+            class="logo d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
+          >
+            <img
+              width="56px"
+              height="56px"
+              src="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
+              alt="Logo brand"
+              style="margin-left: 40px; margin-right: 10px"
+            />
+            <img
+              width="160"
+              height="40"
+              src="{{ url_for('static', filename='images/icon/logo-title.png') }}"
+              alt="Logo title"
+            />
+          </a>
+          <ul class="link-href">
+            <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
+            <li class="nav-item">
+              <a href="/#about" class="nav-link">About</a>
+            </li>
+            <li class="nav-item">
+              <a href="/products/product_lists" class="nav-link">Product</a>
+            </li>
+
+            <div class="icon-user">
+              {% if profile_pic %}
+              <a href="/accounts/users/profile"
+                ><img
+                  src="{{ profile_pic }}"
+                  alt="Profile Picture"
+                  class="img-thumbnail"
+              /></a>
+              {% else %}
+              <i class="fa-solid fa-user fa-xl mt-3"></i>
+              {% endif %}
+              <div class="profile-item">
+                <a
+                  href="/accounts/users/profile"
+                  id="profile-link"
+                  class="nav-link profile_menu navbar-usernm"
+                  >{{ full_name }}</a
+                >
+              </div>
+            </div>
+          </ul>
+        </nav>
+      </div>
+    </header>
 
     <!-- Main Content -->
     <div class="profile-container">
@@ -134,7 +197,7 @@
               <!-- Save Button -->
               <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary flex-fill">
-                  Save Changes
+                  <i class="fas fa-save"></i> Save Changes
                 </button>
               </div>
             </form>

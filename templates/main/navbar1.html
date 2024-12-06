@@ -2,6 +2,19 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="description" content="Toko Bangunan Mustika Dua Kota Baubau" />
+
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
+      type="image/x-icon"
+    />
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
+      type="image/x-icon"
+    />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
   </head>
@@ -14,12 +27,11 @@
             class="logo d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
           >
             <img
-              
               width="56px"
               height="56px"
               src="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
               alt="Logo brand"
-              style="margin-left: 40px; margin-right: 10px;"
+              style="margin-left: 40px; margin-right: 10px"
             />
             <img
               width="160"
@@ -59,13 +71,14 @@
             </li>
             <div class="icon-user">
               {% if profile_pic %}
-              <img
-                src="{{ profile_pic }}"
-                alt="Profile Picture"
-                class="img-thumbnail"
-              />
+              <a href="/accounts/users/profile"
+                ><img
+                  src="{{ profile_pic }}"
+                  alt="Profile Picture"
+                  class="img-thumbnail"
+              /></a>
               {% else %}
-              <i class="fa-solid fa-user fa-xl mt-3"></i> 
+              <i class="fa-solid fa-user fa-xl mt-3"></i>
               {% endif %}
               <span class="navbar-usernm">{{ full_name }}</span>
               <div class="profile-item">

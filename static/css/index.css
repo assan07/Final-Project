@@ -65,12 +65,12 @@ body {
   margin-left: 20px;
   cursor: pointer;
   height: 80px;
-  transition: all .3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
 .icon-user img {
-  width: 50px;
-  height: 50px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -89,10 +89,9 @@ body {
 .icon-user:hover .profile-item {
   display: block;
 }
-.navbar-usernm{
+.navbar-usernm {
   font-weight: bold;
 }
-
 
 /* hero */
 .main {
@@ -138,9 +137,8 @@ h1 {
   height: 300px;
   margin-right: 100px;
   background: transparent;
-  box-shadow: 8px 8px 10px #1017f4;
   transition: all 0.3s ease-in-out;
-  border: 1px solid #120470;
+  border: 3px solid #120470;
 }
 
 .item-collection img {
@@ -151,7 +149,6 @@ h1 {
 
 .item-collection:hover {
   cursor: pointer;
-  filter: drop-shadow(8px 8px 10px #1017f4);
   transform: scale(1.1);
 }
 
