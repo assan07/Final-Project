@@ -10,7 +10,6 @@ from bson import ObjectId
 import secrets
 from datetime import datetime, timedelta
 
-
 # Load environment variables
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 load_dotenv(dotenv_path)
@@ -59,9 +58,7 @@ def inject_user():
         "profile_pic": None
     }
 
-
 # Home dan halaman about
-
 @app.route("/")
 def home():
     # if 'user_id' in session:
@@ -71,8 +68,6 @@ def home():
     #     return redirect(url_for('user_login'))
 
 # Rute untuk accounts/admin
-
-
 @app.route("/admin/dashboard")
 def admin_dashboard():
     if 'admin_id' not in session:
@@ -81,6 +76,7 @@ def admin_dashboard():
     # Dashboard data
     total_users = db.user.count_documents({})
     total_barang = db.barang.count_documents({})
+    total_admin = db.admin.count_documents({})
     total_transaksi = db.transaksi.count_documents(
         {}) if 'transaksi' in db.list_collection_names() else 0
     recent_activities = list(db.activity_log.find().sort('date', -1).limit(10))
@@ -90,23 +86,45 @@ def admin_dashboard():
 
     # Data User
     data_user = list(db.user.find({}, {'password': 0}))
+    
+    # Data Admin
+    data_admin = list(db.admin.find({},{'passowrd': 0}))
 
     return render_template('accounts/admin/dashboard.html',
                            active_page='dashboard',
                            total_users=total_users,
                            total_barang=total_barang,
+                           total_admin=total_admin,
                            total_transaksi=total_transaksi,
                            recent_activities=recent_activities,
                            barang_data=barang_data,
-                           data_user=data_user)
+                           data_user=data_user,data_admin=data_admin)
 
+# Rute untuk delete admin
+@app.route("/accounts/admin/data_admin/delete_admin", methods=["POST"])
+def delete_admin():
+    admin_id = request.form.get('id')
+    admin_collection = db.admin
+
+    # Cari admin berdasarkan ID
+    admin = admin_collection.find_one({'_id': ObjectId(admin_id)})
+
+    if admin:
+        # Hapus data admin dari database
+        result = admin_collection.delete_one({'_id': ObjectId(admin_id)})
+
+        if result.deleted_count > 0:
+            return jsonify({"status": "success", "message": "Admin berhasil dihapus"}), 200
+        else:
+            return jsonify({"status": "error", "message": "Admin tidak ditemukan"}), 404
+    else:
+        return jsonify({"status": "error", "message": "Admin tidak ditemukan"}), 404
 
 @app.route("/accounts/admin/logout")
 def admin_logout():
     session.clear()
     flash('Anda telah logout', 'success')
     return redirect(url_for('admin_login'))
-
 
 @app.route("/accounts/admin/login_adm", methods=['GET', 'POST'])
 def admin_login():
@@ -130,7 +148,6 @@ def admin_login():
         return redirect(url_for('admin_login'))
 
     return render_template("accounts/admin/login_adm.html")
-
 
 @app.route("/accounts/admin/register_adm", methods=['GET', 'POST'])
 def admin_register():
@@ -163,9 +180,7 @@ def admin_register():
 
     return render_template("accounts/admin/register_adm.html")
 
-
 # Rute untuk halaman data barang admin
-
 @app.route("/accounts/admin/data_barang")
 def admin_data_barang():
     barang_collection = db.barang
@@ -173,15 +188,12 @@ def admin_data_barang():
     return render_template("accounts/admin/data_barang.html", barang_data=barang_data)
 
 # Rute untuk menambah barang
-
-
 @app.route("/accounts/admin/data_barang/tambah_barang", methods=["GET", "POST"])
 def tambah_barang():
     if request.method == "GET":
-        # Tampilkan halaman tambah barang
         return render_template("accounts/admin/data_barang.html")
 
-    # Proses metode POST (kode Anda yang sudah ada)
+    # Proses metode POST
     kategori = request.form.get('kategori')
     brand = request.form.get('brand')
     netto = request.form.get('netto')
@@ -189,32 +201,28 @@ def tambah_barang():
     harga = request.form.get('harga')
     stock = request.form.get('stock')
 
-    # Mengambil foto produk
+    # Mengambil file foto
     foto = request.files.get('foto')
-    foto_filename = None
-
     if foto and allowed_file(foto.filename):
         foto_filename = secure_filename(foto.filename)
         foto.save(os.path.join(app.config['UPLOAD_FOLDER_BARANG'], foto_filename))
+    else:
+        return jsonify({"status": "error", "message": "File tidak valid atau tidak ada."}), 400
 
-    # Menyimpan data ke MongoDB
-    barang_collection = db.barang
-    barang_collection.insert_one({
+    # Simpan ke database
+    db.barang.insert_one({
         "kategori": kategori,
         "brand": brand,
         "netto": netto,
         "warna": warna,
         "harga": harga,
         "stock": stock,
-        "foto": foto_filename  # Simpan nama file gambar
+        "foto": foto_filename
     })
 
     return jsonify({"status": "success"}), 200
 
-
 # Rute untuk delete barang
-
-# data barang
 @app.route("/accounts/admin/data_barang/delete_barang", methods=["POST"])
 def delete_barang():
     barang_id = request.form.get('id')
@@ -245,7 +253,6 @@ def delete_barang():
         return jsonify({"status": "error", "message": "Barang tidak ditemukan"}), 404
 
 # Rute untuk edit barang
-
 @app.route("/accounts/admin/data_barang/edit_barang", methods=["POST"])
 def edit_barang():
     barang_id = request.form.get('id')
@@ -282,13 +289,32 @@ def edit_barang():
     else:
         return jsonify({"status": "error", "message": "Barang tidak ditemukan atau tidak ada perubahan."}), 400
 
-
 @app.route("/accounts/admin/data_user")
 def admin_data_user():
-    return render_template("accounts/admin/data_user.html")
+    user_collection = db.user
+    user_data = list(user_collection.find())
+    return render_template("accounts/admin/data_user.html", user_data=user_data)
 
+# Rute untuk delete user
+@app.route("/accounts/admin/data_user/delete_user", methods=["POST"])
+def delete_user():
+    user_id = request.form.get('id')
+    user_collection = db.user
 
-# Rute untuk accounts/users
+    # Cari user berdasarkan ID
+    user = user_collection.find_one({'_id': ObjectId(user_id)})
+
+    if user:
+        # Hapus data user dari database
+        result = user_collection.delete_one({'_id': ObjectId(user_id)})
+
+        if result.deleted_count > 0:
+            return jsonify({"status": "success", "message": "User berhasil dihapus"}), 200
+        else:
+            return jsonify({"status": "error", "message": "User tidak ditemukan"}), 404
+    else:
+        return jsonify({"status": "error", "message": "User tidak ditemukan"}), 404
+
 # rute untuk register
 @app.route("/accounts/users/register", methods=['GET', 'POST'])
 def user_register():
@@ -327,7 +353,6 @@ def user_register():
 
     return render_template("accounts/users/register.html")
 
-
 # rute untuk login
 @app.route("/accounts/users/login", methods=['GET', 'POST'])
 def user_login():
@@ -362,7 +387,6 @@ def user_login():
     return render_template("accounts/users/login.html")
 
 # route untuk mencek apakah user sudah login atau blum
-
 @app.route("/accounts/users/status", methods=["GET"])
 def user_status():
     # Cek apakah ada sesi aktif
@@ -469,8 +493,7 @@ def user_profile():
     else:
         flash("Anda harus login terlebih dahulu.", "error")
         return redirect(url_for('user_login'))
-
-
+    
 # route logout
 @app.route("/accounts/users/logout", methods=["GET"])
 def user_logout():
@@ -581,8 +604,6 @@ def edit_password():
         return redirect(url_for("user_login"))
 
 # Rute untuk carts
-
-
 @app.route("/carts/order_history")
 def order_history():
     if 'user_id' in session:
@@ -590,7 +611,6 @@ def order_history():
         return render_template("carts/order_history.html", full_name=full_name)
     else:
         return redirect(url_for('user_login'))
-
 
 @app.route("/carts/order_summary")
 def order_summary():
@@ -601,8 +621,6 @@ def order_summary():
         return redirect(url_for('user_login'))
 
 # Rute untuk products
-
-
 @app.route("/products/product_details")
 def product_details():
     if 'user_id' in session:
@@ -610,7 +628,6 @@ def product_details():
         return render_template("products/product_details.html", full_name=full_name)
     else:
         return redirect(url_for('user_login'))
-
 
 @app.route("/products/product_lists")
 def product_lists():
@@ -620,7 +637,7 @@ def product_lists():
         return render_template("products/product_lists.html", barang_data=barang_data)
     else:
         return redirect(url_for('user_login'))
-
+    
 # filter data
 @app.route("/products/product_lists/filter", methods=["GET"])
 def filter_products():
@@ -638,8 +655,5 @@ def filter_products():
     return render_template("products/product_list_filter.html", barang_data=barang_data)
     # else:
     #     return redirect(url_for('user_login'))
-
-
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
