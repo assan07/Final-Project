@@ -1,1 +1,0 @@
-/accounts/admin/data_barang/tambah_barang
