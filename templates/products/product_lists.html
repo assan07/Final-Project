@@ -33,39 +33,42 @@
     <!-- Product List Page -->
     <!-- List Collection -->
     <div class="list-collection">
-      <button class="btn btn-link text-decoration-none">Sort by: Cat</button>
-      <button class="btn btn-link text-decoration-none">Sort by: Tinner</button>
-      <button class="btn btn-link text-decoration-none">
+      <button
+        class="btn btn-link text-decoration-none filter-btn"
+        data-kategori="Cat"
+      >
+        Sort by: Cat
+      </button>
+      <button
+        class="btn btn-link text-decoration-none filter-btn"
+        data-kategori="Tinner"
+      >
+        Sort by: Tinner
+      </button>
+      <button
+        class="btn btn-link text-decoration-none filter-btn"
+        data-kategori="Aksesoris PVC"
+      >
         Sort by: Aksesoris PVC
       </button>
-      <button class="btn btn-link text-decoration-none">Sort by: Lem</button>
+      <button
+        class="btn btn-link text-decoration-none filter-btn"
+        data-kategori="Lem"
+      >
+        Sort by: Lem
+      </button>
+      <button
+        class="btn btn-link text-decoration-none filter-btn"
+        data-kategori="All"
+      >
+        Show All
+      </button>
     </div>
-    <div class="container py-5">
+    <div id="product-container" class="container py-5">
       <!-- Product Cards -->
-      <div class="row g-4">
-        <!-- Product 1 -->
-        <div class="col-sm-6 col-md-4 col-lg-3">
-          <a href="/products/product_details">
-            <div class="card h-100 shadow-sm product-card">
-              <img
-                src="{{ url_for('static', filename='images/cat/cet-zc.png') }}"
-                class="card-img-top"
-                alt="Wireless Headphones"
-              />
-              <div class="card-body">
-                <h5 class="card-title">Wireless Headphones</h5>
-                <p class="card-text">
-                  High-quality sound with noise-canceling feature.
-                </p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <span class="text-primary fw-bold">Rp.19999</span>
-                  <button class="btn btn-primary">Add to Cart</button>
-                </div>
-              </div>
-            </div>
-          </a>
-        </div>
-      </div>
+
+      <!-- Product 1 -->
+      {% include "products/product_list_filter.html" %}
     </div>
 
     {% include "main/footer.html" %}

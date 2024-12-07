@@ -3,6 +3,7 @@ from pymongo import MongoClient
 from jinja2 import Environment, FileSystemLoader
 import os
 import bcrypt
+from werkzeug.utils import secure_filename
 from flask_bcrypt import Bcrypt
 from dotenv import load_dotenv
 from bson import ObjectId
@@ -530,10 +531,6 @@ def forget_password():
         flash('Email tidak ditemukan', 'error')
     return render_template('accounts/users/forget_password.html')
 
-from werkzeug.security import check_password_hash, generate_password_hash
-from flask import jsonify, flash, render_template, session, request, redirect, url_for
-from bson import ObjectId
-
 @app.route("/accounts/users/edit_password", methods=["GET", "POST"])
 def edit_password():
     if "user_id" in session and "email" in session:
@@ -618,10 +615,30 @@ def product_details():
 @app.route("/products/product_lists")
 def product_lists():
     if 'user_id' in session:
-        full_name = session.get("full_name", "Guest")
-        return render_template("products/product_lists.html", full_name=full_name, )
+        barang_collection = db.barang
+        barang_data = list(barang_collection.find())
+        return render_template("products/product_lists.html", barang_data=barang_data)
     else:
         return redirect(url_for('user_login'))
+
+# filter data
+@app.route("/products/product_lists/filter", methods=["GET"])
+def filter_products():
+    # if 'user_id' in session:
+    kategori = request.args.get('kategori',' ').upper()
+    print(request.args.get('kategori'))
+    barang_collection = db.barang
+
+    if kategori and kategori != "ALL":
+       # Cari dengan case-insensitive menggunakan regex
+        barang_data = list(barang_collection.find({"kategori": {"$regex": f"^{kategori}$", "$options": "i"}}))
+    else:
+        barang_data = list(barang_collection.find())
+
+    return render_template("products/product_list_filter.html", barang_data=barang_data)
+    # else:
+    #     return redirect(url_for('user_login'))
+
 
 
 if __name__ == '__main__':
