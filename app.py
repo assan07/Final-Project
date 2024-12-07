@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from bson import ObjectId
 import secrets
 from datetime import datetime, timedelta
+from werkzeug.utils import secure_filename
 
 
 # Load environment variables
@@ -80,6 +81,7 @@ def admin_dashboard():
     # Dashboard data
     total_users = db.user.count_documents({})
     total_barang = db.barang.count_documents({})
+    total_admin = db.admin.count_documents({})
     total_transaksi = db.transaksi.count_documents(
         {}) if 'transaksi' in db.list_collection_names() else 0
     recent_activities = list(db.activity_log.find().sort('date', -1).limit(10))
@@ -89,15 +91,19 @@ def admin_dashboard():
 
     # Data User
     data_user = list(db.user.find({}, {'password': 0}))
+    
+    # Data Admin
+    data_admin = list(db.admin.find({},{'passowrd': 0}))
 
     return render_template('accounts/admin/dashboard.html',
                            active_page='dashboard',
                            total_users=total_users,
                            total_barang=total_barang,
+                           total_admin=total_admin,
                            total_transaksi=total_transaksi,
                            recent_activities=recent_activities,
                            barang_data=barang_data,
-                           data_user=data_user)
+                           data_user=data_user,data_admin=data_admin)
 
 
 @app.route("/accounts/admin/logout")
@@ -177,10 +183,9 @@ def admin_data_barang():
 @app.route("/accounts/admin/data_barang/tambah_barang", methods=["GET", "POST"])
 def tambah_barang():
     if request.method == "GET":
-        # Tampilkan halaman tambah barang
         return render_template("accounts/admin/data_barang.html")
 
-    # Proses metode POST (kode Anda yang sudah ada)
+    # Proses metode POST
     kategori = request.form.get('kategori')
     brand = request.form.get('brand')
     netto = request.form.get('netto')
@@ -188,24 +193,23 @@ def tambah_barang():
     harga = request.form.get('harga')
     stock = request.form.get('stock')
 
-    # Mengambil foto produk
+    # Mengambil file foto
     foto = request.files.get('foto')
-    foto_filename = None
-
     if foto and allowed_file(foto.filename):
         foto_filename = secure_filename(foto.filename)
         foto.save(os.path.join(app.config['UPLOAD_FOLDER_BARANG'], foto_filename))
+    else:
+        return jsonify({"status": "error", "message": "File tidak valid atau tidak ada."}), 400
 
-    # Menyimpan data ke MongoDB
-    barang_collection = db.barang
-    barang_collection.insert_one({
+    # Simpan ke database
+    db.barang.insert_one({
         "kategori": kategori,
         "brand": brand,
         "netto": netto,
         "warna": warna,
         "harga": harga,
         "stock": stock,
-        "foto": foto_filename  # Simpan nama file gambar
+        "foto": foto_filename
     })
 
     return jsonify({"status": "success"}), 200

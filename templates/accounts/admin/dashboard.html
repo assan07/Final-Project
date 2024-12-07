@@ -322,9 +322,10 @@
                         <td>
                           {% if barang.foto %}
                           <img
-                            src="{{ url_for('static', filename='images/uploads/' + barang.foto) }}"
+                            src="{{ url_for('static', filename='images/gambar_barang/' + barang.foto) }}"
                             alt="Foto Barang"
-                            width="50"
+                            width="70"
+                            height="50"
                           />
                           {% else %} No Image {% endif %}
                         </td>
