@@ -603,31 +603,8 @@ def edit_password():
     else:
         return redirect(url_for("user_login"))
 
-# Rute untuk carts
-@app.route("/carts/order_history")
-def order_history():
-    if 'user_id' in session:
-        full_name = session.get("full_name", "Guest")
-        return render_template("carts/order_history.html", full_name=full_name)
-    else:
-        return redirect(url_for('user_login'))
-
-@app.route("/carts/order_summary")
-def order_summary():
-    if 'user_id' in session:
-        full_name = session.get("full_name", "Guest")
-        return render_template("carts/order_summary.html", full_name=full_name)
-    else:
-        return redirect(url_for('user_login'))
-
 # Rute untuk products
-@app.route("/products/product_details")
-def product_details():
-    if 'user_id' in session:
-        full_name = session.get("full_name", "Guest")
-        return render_template("products/product_details.html", full_name=full_name)
-    else:
-        return redirect(url_for('user_login'))
+
 
 @app.route("/products/product_lists")
 def product_lists():
@@ -655,5 +632,95 @@ def filter_products():
     return render_template("products/product_list_filter.html", barang_data=barang_data)
     # else:
     #     return redirect(url_for('user_login'))
+
+# route produk detail
+@app.route("/products/product_details/<product_id>")
+def product_details(product_id):
+    if "user_id" in session:
+        barang_collection = db.barang
+
+        # Ambil produk berdasarkan ID
+        product = barang_collection.find_one({"_id": ObjectId(product_id)})
+
+        if not product:
+            flash("Produk tidak ditemukan!", "error")
+            return redirect(url_for("product_lists"))  # Kembali ke daftar produk
+
+        # Konversi harga ke tipe integer atau float
+        product['harga'] = float(product['harga'])  # Ubah ke float atau int sesuai kebutuhan
+
+        return render_template("products/product_details.html", product=product)
+    else:
+        return redirect(url_for("user_login"))
+
+
+
+# route tambek ke keranjang
+@app.route("/products/product_details/add", methods=["POST"])
+def add_to_cart():
+    if "user_id" in session:
+        try:
+            product_id = ObjectId(request.form.get("product_id"))
+        except:
+            return jsonify({"message": "ID produk tidak valid"}), 400
+
+        quantity = request.form.get("quantity")
+        try:
+            quantity = int(quantity)
+            if quantity <= 0:
+                raise ValueError
+        except ValueError:
+            return jsonify({"message": "Jumlah tidak valid"}), 400
+
+        barang_collection = db.barang
+        cart_collection = db.cart
+
+        # Ambil produk berdasarkan ID
+        product = barang_collection.find_one({"_id": product_id})
+
+        if not product:
+            return jsonify({"message": "Produk tidak ditemukan"}), 404
+
+        if product["stok"] < quantity:
+            return jsonify({"message": "Stok tidak mencukupi"}), 400
+
+        # Tambahkan ke keranjang
+        cart_collection.insert_one({
+            "user_id": session["user_id"],
+            "product_id": str(product_id),
+            "quantity": quantity,
+            "added_at": datetime.now(),
+        })
+
+        # Kurangi stok di koleksi barang
+        barang_collection.update_one(
+            {"_id": product_id},
+            {"$inc": {"stok": -quantity}}
+        )
+
+        return jsonify({"message": "Produk berhasil ditambahkan ke keranjang"}), 200
+    else:
+        return jsonify({"message": "Harap login terlebih dahulu"}), 401
+
+# Rute untuk carts
+@app.route("/carts/order_history")
+def order_history():
+    if 'user_id' in session:
+        full_name = session.get("full_name", "Guest")
+        return render_template("carts/order_history.html", full_name=full_name)
+    else:
+        return redirect(url_for('user_login'))
+
+@app.route("/carts/order_summary")
+def order_summary():
+    if 'user_id' in session:
+        full_name = session.get("full_name", "Guest")
+        return render_template("carts/order_summary.html", full_name=full_name)
+    else:
+        return redirect(url_for('user_login'))
+
+
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

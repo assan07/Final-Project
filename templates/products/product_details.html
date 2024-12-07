@@ -33,26 +33,27 @@
         <div class="col-md-4">
           <div class="border p-4 text-center">
             <img
-              src="https://depobeta.com/pub/media/catalog/product/cache/1c3c2896ea27d5eccd545554fa54ba9b/c/a/cat_dulux_catylac_exterior_9.jpg"
+              src="{{ url_for('static', filename='images/gambar_barang/' ~ (product['foto'] if product['foto'] else 'placeholder.png')) }}"
               class="img-fluid"
-              alt="Product Image"
+              alt="{{ product['brand'] }}"
             />
-            <p class="mt-3 text-secondary">KasirPintar</p>
           </div>
         </div>
 
         <!-- Product Details -->
         <div class="col-md-8">
-          <h4>Gembok Brabus 30 mm</h4>
-          <p class="text-muted">Kategori: campuran</p>
-          <h5 class="text-danger">Rp 24,000</h5>
-          <p class="mb-0">Terjual: <strong>0</strong></p>
-          <p>Info Produk: <strong>0 gr</strong></p>
+          <h4>{{ product['brand'] }}</h4>
+          <p class="text-muted">Kategori: {{ product['kategori'] }}</p>
+          <h5 class="text-danger">
+            Rp {{ "{:,.0f}".format(product['harga']) }}
+          </h5>
+          <p class="mb-0">Terjual: <strong>{{ product['terjual'] }}</strong></p>
+          <p>Info Produk: <strong>{{ product['netto'] }}</strong></p>
 
           <!-- Quantity and Add to Cart -->
-          <div class="d-flex align-items-center">
+          <div class="d-flex align-items-center mt-3">
             <p class="me-3 mb-0">Jumlah:</p>
-            <div class="input-group me-3" style="width: 100px">
+            <div class="input-group me-3" style="width: 120px">
               <button
                 id="decrease"
                 class="btn btn-outline-secondary text-danger"
@@ -64,6 +65,7 @@
                 type="text"
                 class="form-control text-center"
                 value="1"
+                min="1"
               />
               <button
                 id="increase"
@@ -72,10 +74,19 @@
                 +
               </button>
             </div>
-            <p  class="mb-0">Tersisa: <strong id="stock">7</stron></p>
+            <p class="mb-0">
+              Tersisa: <strong id="stock">{{ product['stock'] }}</strong>
+            </p>
           </div>
-          <h5 class="mt-3">Subtotal: Rp 24,000</h5>
-          <button class="btn btn-success w-100">Tambah Keranjang</button>
+          <h5 class="mt-3">
+            Subtotal: Rp
+            <span id="subtotal"
+              >{{ "{:,.0f}".format(product['harga'] | default(0) | float) }}
+            </span>
+          </h5>
+          <button id="add-to-cart" class="btn btn-success w-100 mt-3">
+            Tambah Keranjang
+          </button>
         </div>
       </div>
 
@@ -101,7 +112,7 @@
                 Jl. Dayanu Ikhsanuddin, kota baubau, Sulawesi Tenggara
               </p>
             </div>
-            <a href="#" class="btn btn-link ms-auto text-info">Kunjungi</a>
+            <a href="/products/product_lists" class="btn btn-link ms-auto text-info">Kunjungi</a>
           </div>
         </div>
       </div>
@@ -116,23 +127,33 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
       $(document).ready(function () {
-        // Ambil referensi input jumlah dan stok
         const $quantity = $("#quantity");
-        const stock = parseInt($("#stock").text(), 10); // Ambil jumlah stok tersisa
+        const $subtotal = $("#subtotal");
+        const stock = parseInt($("#stock").text(), 10); // Ambil stok dari elemen
+        const productPrice = parseFloat("{{ product['harga'] }}");
 
-        // Fungsi untuk mengurangi jumlah
+        // Fungsi untuk memperbarui subtotal
+        const updateSubtotal = () => {
+          const currentQuantity = parseInt($quantity.val(), 10) || 1;
+          const newSubtotal = productPrice * currentQuantity;
+          $subtotal.text(newSubtotal.toLocaleString("id-ID"));
+        };
+
+        // Kurangi jumlah
         $("#decrease").click(function () {
           let currentQuantity = parseInt($quantity.val(), 10) || 1;
           if (currentQuantity > 1) {
             $quantity.val(currentQuantity - 1);
+            updateSubtotal();
           }
         });
 
-        // Fungsi untuk menambah jumlah
+        // Tambah jumlah
         $("#increase").click(function () {
           let currentQuantity = parseInt($quantity.val(), 10) || 1;
           if (currentQuantity < stock) {
             $quantity.val(currentQuantity + 1);
+            updateSubtotal();
           }
         });
 
@@ -144,6 +165,25 @@
           } else if (currentValue > stock) {
             $quantity.val(stock);
           }
+          updateSubtotal();
+        });
+
+        // Tambah ke keranjang
+        $("#add-to-cart").click(function () {
+          const productId = "{{ product['_id'] }}";
+          const quantity = parseInt($quantity.val(), 10) || 1;
+
+          $.ajax({
+            url: "/products/product_details/add",
+            type: "POST",
+            data: { product_id: productId, quantity: quantity },
+            success: function (response) {
+              alert(response.message);
+            },
+            error: function (xhr) {
+              alert(xhr.responseJSON.message);
+            },
+          });
         });
       });
     </script>

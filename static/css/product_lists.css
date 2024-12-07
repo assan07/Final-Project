@@ -32,8 +32,6 @@
 }
 .product-card{
   display: flex;
-  justify-content: center;
-  align-items: center;
   height: 310px;
   width: 230px;
   padding: 10px;
@@ -44,10 +42,11 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
-.product-card img {
+.img-barang img {
   width: 60%;
-  height: auto;
-
+  height: 100%;
+  display: flex;
+  align-items: start;
 }
 
 .product-card h5,
@@ -66,4 +65,9 @@
 .product-card:hover button {
   background-color: #1d4ed8;
   color: white;
+}
+
+.card-body{
+  position: absolute;
+  margin-top: 170px;
 }
