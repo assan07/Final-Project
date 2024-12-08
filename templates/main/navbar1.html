@@ -14,13 +14,17 @@
       href="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
       type="image/x-icon"
     />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/index.css') }}"
+    />
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
   </head>
   <body>
     <header>
-      <div class="container w-75">
+      <div class="container w-100">
         <nav class="nav fixed-top nav-pills" aria-label="Main navigation">
           <a
             href="/"
@@ -53,10 +57,18 @@
                 class="nav-link fa-solid fa-cart-arrow-down"
                 href="/carts/order_summary"
                 role="button"
-                style="font-size: 24px;"
+                style="font-size: 24px"
               >
-            </a>
-              <div class="amount"><span>1</span></div>
+              </a>
+              {% if quantity and quantity > 0 %}
+              <div class="amount">
+                <span>{{ quantity }}</span>
+              </div>
+              {% else %}
+              <div class="amount" style="display: none">
+                <span>0</span>
+              </div>
+              {% endif %}
             </li>
             <div class="icon-user">
               {% if profile_pic %}
@@ -104,22 +116,59 @@
         </nav>
       </div>
     </header>
+    <!-- contenct -->
+    {% block content %} {% endblock %}
+    <footer>
+      <div class="bg-footer text-light py-4">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-4">
+              <h4>Mustika Dua</h4>
+              <p>
+                Mustika Dua adalah toko bangunan terpercaya untuk semua
+                kebutuhan proyek Anda.
+              </p>
+            </div>
+            <div class="col-md-4">
+              <h4>Quick Links</h4>
+              <ul class="list-unstyled">
+                <li><a href="/">Home</a></li>
+                <li><a href="#">Product</a></li>
+                <li><a href="#">Cart</a></li>
+              </ul>
+            </div>
+            <div class="col-md-4">
+              <h4>Contact Us</h4>
+              <div class="footer-icons">
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="text-center mt-3">
+            <p>
+              © 2024 Mustika Dua. All rights reserved.
+              <a href="#">Privacy Policy</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
       $(document).ready(function () {
-        // Panggil endpoint status login
+        // Validasi status login
         $.ajax({
           url: "/accounts/users/status",
           method: "GET",
           success: function (response) {
             if (response.is_logged_in) {
-              // Jika user sudah login
               $("#profile-link").removeClass("d-none");
               $("#logout-link").removeClass("d-none");
               $("#login-link").addClass("d-none");
               $("#register-link").addClass("d-none");
             } else {
-              // Jika user belum login
               $("#profile-link").addClass("d-none");
               $("#logout-link").addClass("d-none");
               $("#login-link").removeClass("d-none");
@@ -130,7 +179,32 @@
             console.error("Gagal mendapatkan status login.");
           },
         });
+
+        // Update jumlah keranjang
+        function updateNavbarQuantity() {
+          $.ajax({
+            url: "/cart/quantity",
+            method: "GET",
+            success: function (response) {
+              const $amount = $(".amount");
+              if (response.quantity && response.quantity > 0) {
+                $amount.find("span").text(response.quantity);
+                $amount.show(); // Tampilkan elemen jika ada item
+              } else {
+                $amount.hide(); // Sembunyikan elemen jika kosong
+              }
+            },
+            error: function () {
+              console.error("Gagal memperbarui jumlah keranjang");
+            },
+          });
+        }
+
+        // Panggil saat halaman dimuat
+        updateNavbarQuantity();
       });
     </script>
+    <!-- Blok Skrip untuk Halaman Anak -->
+    {% block scripts %} {% endblock %}
   </body>
 </html>

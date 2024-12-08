@@ -28,8 +28,8 @@
   </head>
 
   <body>
-    {% include "main/navbar1.html" %}
-
+    {% extends "main/navbar1.html" %}
+    {% block content %} 
     <!-- Product List Page -->
     <!-- List Collection -->
     <div class="list-collection">
@@ -71,7 +71,7 @@
       {% include "products/product_list_filter.html" %}
     </div>
 
-    {% include "main/footer.html" %}
+    {% endblock %}
 
     <!-- Bootstrap JS -->
     <script

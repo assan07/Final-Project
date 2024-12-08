@@ -58,6 +58,7 @@ def inject_user():
         "profile_pic": None
     }
 
+
 # Home dan halaman about
 @app.route("/")
 def home():
@@ -201,6 +202,12 @@ def tambah_barang():
     harga = request.form.get('harga')
     stock = request.form.get('stock')
 
+    # Konversi stok menjadi integer
+    try:
+        stock = int(stock)
+    except ValueError:
+        return jsonify({"status": "error", "message": "Nilai stok harus berupa angka."}), 400
+
     # Mengambil file foto
     foto = request.files.get('foto')
     if foto and allowed_file(foto.filename):
@@ -216,11 +223,12 @@ def tambah_barang():
         "netto": netto,
         "warna": warna,
         "harga": harga,
-        "stock": stock,
+        "stock": stock,  # Stok sudah dikonversi menjadi integer
         "foto": foto_filename
     })
 
     return jsonify({"status": "success"}), 200
+
 
 # Rute untuk delete barang
 @app.route("/accounts/admin/data_barang/delete_barang", methods=["POST"])
@@ -644,63 +652,98 @@ def product_details(product_id):
 
         if not product:
             flash("Produk tidak ditemukan!", "error")
-            return redirect(url_for("product_lists"))  # Kembali ke daftar produk
+            return redirect(url_for("product_lists"))
 
-        # Konversi harga ke tipe integer atau float
-        product['harga'] = float(product['harga'])  # Ubah ke float atau int sesuai kebutuhan
-
+        product['harga'] = float(product['harga'])  # Pastikan harga tipe float
         return render_template("products/product_details.html", product=product)
     else:
         return redirect(url_for("user_login"))
 
 
-
-# route tambek ke keranjang
 @app.route("/products/product_details/add", methods=["POST"])
 def add_to_cart():
-    if "user_id" in session:
-        try:
-            product_id = ObjectId(request.form.get("product_id"))
-        except:
-            return jsonify({"message": "ID produk tidak valid"}), 400
+    data = request.get_json()
+    product_id = data.get("product_id")
+    quantity = int(data.get("quantity", 1))
 
-        quantity = request.form.get("quantity")
+    barang_collection = db.barang
+    cart_collection = db.cart
+
+    for item in barang_collection.find():
         try:
-            quantity = int(quantity)
-            if quantity <= 0:
-                raise ValueError
+            stock_value = int(item.get("stock", 0))  # Konversi ke int
+            barang_collection.update_one(
+                {"_id": item["_id"]},
+                {"$set": {"stock": stock_value}}
+            )
+            print(f"Updated item {item['_id']} with stock {stock_value}")
         except ValueError:
-            return jsonify({"message": "Jumlah tidak valid"}), 400
+            print(f"Skipping item {item['_id']} due to invalid stock value")
 
-        barang_collection = db.barang
-        cart_collection = db.cart
+    # Cari produk berdasarkan ID
+    product = barang_collection.find_one({"_id": ObjectId(product_id)})
 
-        # Ambil produk berdasarkan ID
-        product = barang_collection.find_one({"_id": product_id})
+    if not product:
+        return jsonify({"message": "Produk tidak ditemukan"}), 404
 
-        if not product:
-            return jsonify({"message": "Produk tidak ditemukan"}), 404
-
-        if product["stok"] < quantity:
+    try:
+        # Validasi stok barang
+        stock = int(product.get("stock", 0))
+        if stock < quantity:
             return jsonify({"message": "Stok tidak mencukupi"}), 400
 
-        # Tambahkan ke keranjang
+        # Kurangi stok barang di database
+        barang_collection.update_one(
+            {"_id": ObjectId(product_id)},
+            {"$inc": {"stock": - quantity}}
+        )
+    except ValueError:
+        return jsonify({"message": "Nilai stok tidak valid"}), 400
+
+    # Tambahkan produk ke keranjang
+    existing_cart_item = cart_collection.find_one({"product_id": str(product_id)})
+    if existing_cart_item:
+        # Update quantity jika produk sudah ada di keranjang
+        cart_collection.update_one(
+            {"product_id": str(product_id)},
+            {"$inc": {"quantity": quantity}}
+        )
+    else:
+        # Tambahkan item baru ke keranjang
         cart_collection.insert_one({
-            "user_id": session["user_id"],
-            "product_id": str(product_id),
+            "product_id": str(product["_id"]),
+            "gambar_barang": product.get("foto"),
+            "brand": product.get("brand"),
+            "harga": product.get("harga"),
             "quantity": quantity,
-            "added_at": datetime.now(),
         })
 
-        # Kurangi stok di koleksi barang
-        barang_collection.update_one(
-            {"_id": product_id},
-            {"$inc": {"stok": -quantity}}
-        )
+    return jsonify({
+        "message": "Produk berhasil ditambahkan ke keranjang!",
+        "remaining_stock": stock - quantity  # Tampilkan stok yang tersisa
+    }), 200
 
-        return jsonify({"message": "Produk berhasil ditambahkan ke keranjang"}), 200
-    else:
-        return jsonify({"message": "Harap login terlebih dahulu"}), 401
+
+@app.context_processor
+def inject_cart_quantity():
+    # """Menghitung total jumlah barang di keranjang untuk semua pengguna."""
+    if 'user_id' in session:
+        cart_collection = db.cart
+        cart_items = list(cart_collection.find({}))
+        total_quantity = sum(item.get("quantity", 0) for item in cart_items)
+        return {"quantity": total_quantity}
+    return {"quantity": 0}
+
+
+@app.route("/cart/quantity")
+def cart_quantity():
+    """API untuk mendapatkan jumlah total barang di keranjang."""
+    if 'user_id' in session:
+        cart_collection = db.cart
+        cart_items = list(cart_collection.find({}))
+        total_quantity = sum(item.get("quantity", 0) for item in cart_items)
+        return jsonify({"quantity": total_quantity})
+    return jsonify({"quantity": 0})
 
 # Rute untuk carts
 @app.route("/carts/order_history")
@@ -712,15 +755,39 @@ def order_history():
     else:
         return redirect(url_for('user_login'))
 
-@app.route("/carts/order_summary")
+@app.route("/carts/order-summary", methods=["GET"])
 def order_summary():
-    if 'user_id' in session:
-        full_name = session.get("full_name", "Guest")
-        return render_template("carts/order_summary.html", full_name=full_name)
-    else:
-        return redirect(url_for('user_login'))
+    cart_collection = db.cart  # Misalnya mengambil data keranjang
+    
+    if not cart_collection or not isinstance(cart_collection, list):
+        return jsonify({"message": "Cart is empty or invalid"}), 400
+
+    try:
+        total_price = sum(
+            float(item.get("harga", 0)) * int(item.get("quantity", 0)) for item in cart_collection
+        )
+        return jsonify({"total_price": total_price}), 200
+    except (TypeError, ValueError):
+        return jsonify({"message": "Invalid data in cart"}), 400
+    
+    # return render_template("carts/order_summary.html", carts=cart_collection, total_price=total_price)
 
 
+@app.route("/carts/order-summary/update-cart", methods=["POST"])
+def update_cart():
+    data = request.json
+    item_id = data.get("item_id")
+    quantity = int(data.get("quantity", 1))
+    
+    # Cari item di keranjang
+    for item in db["cart"]:
+        if item["id"] == item_id:
+            # Perbarui kuantitas dan hitung ulang subtotal
+            item["quantity"] = quantity
+            updated_price = item["harga"] * item["quantity"]
+            return jsonify({"message": "Quantity updated", "updated_price": updated_price}), 200
+
+    return jsonify({"message": "Item not found in cart"}), 404
 
 
 if __name__ == '__main__':
