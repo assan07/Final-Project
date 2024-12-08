@@ -43,31 +43,20 @@
           <ul class="link-href">
             <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
             <li class="nav-item">
-              <a href="/#about" class="nav-link">About</a>
+              <a href="/#about" class="nav-link">Tentang Kami</a>
             </li>
             <li class="nav-item">
-              <a href="/products/product_lists" class="nav-link">Product</a>
+              <a href="/products/product_lists" class="nav-link">Produk Kami</a>
             </li>
-            <li class="nav-item dropdown">
+            <li class="nav-item">
               <a
-                class="nav-link dropdown-toggle"
-                href="#"
+                class="nav-link fa-solid fa-cart-arrow-down"
+                href="/carts/order_summary"
                 role="button"
-                data-bs-toggle="dropdown"
-                >Cart</a
+                style="font-size: 24px;"
               >
-              <ul class="dropdown-menu">
-                <li>
-                  <a class="dropdown-item" href="/carts/order_summary"
-                    >Keranjang anda</a
-                  >
-                </li>
-                <li>
-                  <a class="dropdown-item" href="/carts/order_history"
-                    >Riwayat</a
-                  >
-                </li>
-              </ul>
+            </a>
+              <div class="amount"><span>1</span></div>
             </li>
             <div class="icon-user">
               {% if profile_pic %}
@@ -78,7 +67,12 @@
                   class="img-thumbnail"
               /></a>
               {% else %}
-              <i class="fa-solid fa-user fa-xl mt-3"></i>
+              <a href="/accounts/users/profile"
+                ><img
+                  src="{{ url_for('static', filename='images/profile_pics/default_profile.png') }}"
+                  alt="Profile Picture"
+                  class="img-thumbnail"
+              /></a>
               {% endif %}
               <span class="navbar-usernm">{{ full_name }}</span>
               <div class="profile-item">

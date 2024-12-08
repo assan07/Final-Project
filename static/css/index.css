@@ -85,6 +85,21 @@ body {
   transition: all 0.3s ease-in-out;
 }
 
+.nav-item .amount{
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #03b503;
+  color: #fff;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  left: 40px;
+  bottom: 15px;
+  font-size: 12px;
+}
+
 /* Ketika .icon-user dihover, tampilkan elemen dengan class .profile-item */
 .icon-user:hover .profile-item {
   display: block;

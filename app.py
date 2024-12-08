@@ -705,9 +705,10 @@ def add_to_cart():
 # Rute untuk carts
 @app.route("/carts/order_history")
 def order_history():
-    if 'user_id' in session:
+    if "user_id" in session and "email" in session:
+        email = session["email"]
         full_name = session.get("full_name", "Guest")
-        return render_template("carts/order_history.html", full_name=full_name)
+        return render_template("carts/order_history.html", full_name=full_name, email=email)
     else:
         return redirect(url_for('user_login'))
 

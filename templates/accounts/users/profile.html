@@ -107,7 +107,12 @@
                 class="img-thumbnail"
               />
               {% else %}
-              <i class="fa-solid fa-user fa-xl mt-3"></i>
+              <a href="/accounts/users/profile"
+                ><img
+                  src="{{ url_for('static', filename='images/profile_pics/default_profile.png') }}"
+                  alt="Profile Picture"
+                  class="img-thumbnail"
+              /></a>
               {% endif %}
             </div>
             <div class="profile-name">
