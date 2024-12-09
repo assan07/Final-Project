@@ -199,8 +199,14 @@ def tambah_barang():
     brand = request.form.get('brand')
     netto = request.form.get('netto')
     warna = request.form.get('warna')
-    harga = request.form.get('harga')
-    stock = request.form.get('stock')
+    harga = request.form.get('harga')  # Harga akan dikonversi menjadi float
+    stock = request.form.get('stock')  # Stok akan dikonversi menjadi integer
+
+    # Konversi harga menjadi float
+    try:
+        harga = float(harga)
+    except ValueError:
+        return jsonify({"status": "error", "message": "Nilai harga harus berupa angka."}), 400
 
     # Konversi stok menjadi integer
     try:
@@ -222,12 +228,13 @@ def tambah_barang():
         "brand": brand,
         "netto": netto,
         "warna": warna,
-        "harga": harga,
-        "stock": stock,  # Stok sudah dikonversi menjadi integer
+        "harga": harga,  
+        "stock": stock,  
         "foto": foto_filename
     })
 
     return jsonify({"status": "success"}), 200
+
 
 
 # Rute untuk delete barang
@@ -626,18 +633,32 @@ def product_lists():
 # filter data
 @app.route("/products/product_lists/filter", methods=["GET"])
 def filter_products():
-    # if 'user_id' in session:
-    kategori = request.args.get('kategori',' ').upper()
-    print(request.args.get('kategori'))
-    barang_collection = db.barang
+    try:
+        # Koleksi barang
+        barang_collection = db.barang
 
-    if kategori and kategori != "ALL":
-       # Cari dengan case-insensitive menggunakan regex
-        barang_data = list(barang_collection.find({"kategori": {"$regex": f"^{kategori}$", "$options": "i"}}))
-    else:
-        barang_data = list(barang_collection.find())
+        # Ambil parameter kategori dari URL, default ke string kosong
+        kategori = request.args.get('kategori', '').strip().upper()
 
-    return render_template("products/product_list_filter.html", barang_data=barang_data)
+        # Filter data barang berdasarkan kategori
+        if kategori and kategori != "ALL":
+            # Pencarian case-insensitive menggunakan regex
+            barang_data = list(barang_collection.find({"kategori": {"$regex": f"^{kategori}$", "$options": "i"}}))
+        else:
+            # Jika kategori tidak disediakan atau 'ALL', ambil semua barang
+            barang_data = list(barang_collection.find())
+
+        # Konversi harga menjadi float untuk semua data barang
+        for barang in barang_data:
+            barang['harga'] = float(barang.get('harga', 0))
+
+        # Render template dengan data barang
+        return render_template("products/product_list_filter.html", barang_data=barang_data)
+
+    except Exception as e:
+        print(f"Error: {str(e)}")  # Log error untuk debugging
+        return jsonify({"message": "An error occurred", "error": str(e)}), 500
+
     # else:
     #     return redirect(url_for('user_login'))
 
@@ -737,7 +758,7 @@ def inject_cart_quantity():
 
 @app.route("/cart/quantity")
 def cart_quantity():
-    """API untuk mendapatkan jumlah total barang di keranjang."""
+    # """API untuk mendapatkan jumlah total barang di keranjang."""
     if 'user_id' in session:
         cart_collection = db.cart
         cart_items = list(cart_collection.find({}))
@@ -755,39 +776,77 @@ def order_history():
     else:
         return redirect(url_for('user_login'))
 
-@app.route("/carts/order-summary", methods=["GET"])
+# Fungsi untuk mengubah ObjectId menjadi string
+def serialize_object_id(data):
+    if isinstance(data, list):
+        return [{**item, "_id": str(item["_id"])} for item in data]
+    if isinstance(data, dict):
+        data["_id"] = str(data["_id"])
+        return data
+    return data
+
+@app.route("/carts/order_summary", methods=["GET"])
 def order_summary():
-    cart_collection = db.cart  # Misalnya mengambil data keranjang
-    
-    if not cart_collection or not isinstance(cart_collection, list):
-        return jsonify({"message": "Cart is empty or invalid"}), 400
-
     try:
+        # Ambil semua item dari koleksi `cart`
+        cart_items = list(db.cart.find())
+        cart_items['harga'] = float(cart_items['harga']) 
+
+        # Periksa apakah keranjang kosong
+        if not cart_items:
+            return jsonify({"message": "Cart is empty"}), 400
+
+        # Hitung total harga
         total_price = sum(
-            float(item.get("harga", 0)) * int(item.get("quantity", 0)) for item in cart_collection
+            float(item.get("harga", 0)) * int(item.get("quantity", 0)) for item in cart_items
         )
-        return jsonify({"total_price": total_price}), 200
-    except (TypeError, ValueError):
-        return jsonify({"message": "Invalid data in cart"}), 400
-    
-    # return render_template("carts/order_summary.html", carts=cart_collection, total_price=total_price)
+
+        # Serialisasi ObjectId sebelum mengembalikan data
+        serialized_cart_items = serialize_object_id(cart_items)
+
+        # return jsonify({"total_price": total_price, "cart_items": serialized_cart_items}), 200
+        return render_template("carts/order_summary.html",
+                                total_price=cart_items,
+                                cart_items=serialized_cart_items
+                                ),200
+
+    except Exception as e:
+        return jsonify({"message": f"An eerror occurred: {str(e)}"}), 500
 
 
-@app.route("/carts/order-summary/update-cart", methods=["POST"])
+@app.route("/carts/order_summary/update-cart", methods=["POST"])
 def update_cart():
-    data = request.json
-    item_id = data.get("item_id")
-    quantity = int(data.get("quantity", 1))
-    
-    # Cari item di keranjang
-    for item in db["cart"]:
-        if item["id"] == item_id:
-            # Perbarui kuantitas dan hitung ulang subtotal
-            item["quantity"] = quantity
-            updated_price = item["harga"] * item["quantity"]
-            return jsonify({"message": "Quantity updated", "updated_price": updated_price}), 200
+    try:
+        data = request.json
+        item_id = data.get("item_id")
+        quantity = data.get("quantity", 1)
 
-    return jsonify({"message": "Item not found in cart"}), 404
+        # Validasi input
+        if not item_id or not isinstance(quantity, int) or quantity < 1:
+            return jsonify({"message": "Invalid item_id or quantity"}), 400
+
+        # Konversi item_id ke ObjectId
+        item_id = ObjectId(item_id)
+
+        # Perbarui item di keranjang berdasarkan _id
+        result = db.cart.update_one({"_id": item_id}, {"$set": {"quantity": quantity}})
+
+        if result.matched_count == 0:
+            return jsonify({"message": "Item not found in cart"}), 404
+
+        # Ambil item yang diperbarui
+        updated_item = db.cart.find_one({"_id": item_id})
+
+        # Serialisasi ObjectId dan hitung ulang subtotal
+        serialized_item = serialize_object_id(updated_item)
+        updated_price = float(serialized_item["harga"]) * int(serialized_item["quantity"])
+
+        return jsonify({"message": "Quantity updated", "updated_price": updated_price}), 200
+
+    except Exception as e:
+        return jsonify({"message": f"An errort occurred: {str(e)}"}), 500
+
+
 
 
 if __name__ == '__main__':

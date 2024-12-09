@@ -32,7 +32,9 @@
       <div class="product-card">
         <a href="/products/product_details/{{ barang['_id'] }}">
           <div class="product-card card shadow-sm">
-            <div class="img-barang d-flex align-content-center justify-content-center">
+            <div
+              class="img-barang d-flex align-content-center justify-content-center"
+            >
               <img
                 src="{{ url_for('static', filename='images/gambar_barang/' ~ barang['foto']) }}"
                 class="card-img-top"
@@ -45,7 +47,9 @@
               <h5 class="card-title fw-bold">{{ barang.brand }}</h5>
               <p class="card-text">{{ barang.kategori }}</p>
               <div class="d-flex justify-content-between align-items-center">
-                <span class="text-primary fw-bold">Rp.{{ barang.harga }}</span>
+                <span class="price-display text-primary fw-bold"
+                  >Rp. {{ barang.harga}}</span
+                >
               </div>
             </div>
           </div>
@@ -61,20 +65,39 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
       $(document).ready(function () {
-        $(".filter-btn").click(function () {
-          const kategori = $(this).data("kategori").toUpperCase();
+        $(document).ready(function () {
+          $(".filter-btn").click(function () {
+            const kategori = $(this).data("kategori").toUpperCase();
 
-          // AJAX request to filter products
-          $.ajax({
-            url: "/products/product_lists/filter",
-            type: "GET",
-            data: { kategori: kategori },
-            success: function (response) {
-              $("#product-container").html(response);
-            },
-            error: function () {
-              alert("Failed to load products. Please try again.");
-            },
+            // AJAX request to filter products
+            $.ajax({
+              url: "/products/product_lists/filter",
+              type: "GET",
+              data: { kategori: kategori },
+              success: function (response) {
+                // Perbarui kontainer produk
+                $("#product-container").html(response);
+
+                // Fungsi untuk memformat angka ke format rupiah
+                function formatCurrency(value) {
+                  return new Intl.NumberFormat("id-ID", {
+                    style: "decimal",
+                    minimumFractionDigits: 0,
+                  }).format(value);
+                }
+
+                // Terapkan format harga ke elemen dengan kelas price-display
+                $(".price-display").each(function () {
+                  const originalValue = parseFloat("{{ barang_data['harga'] }}");
+                  if (!isNaN(originalValue)) {
+                    $(this).text(formatCurrency(originalValue));
+                  }
+                });
+              },
+              error: function () {
+                alert("Failed to load products. Please try again.");
+              },
+            });
           });
         });
       });
