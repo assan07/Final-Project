@@ -7,6 +7,7 @@ from werkzeug.utils import secure_filename
 from flask_bcrypt import Bcrypt
 from dotenv import load_dotenv
 from bson import ObjectId
+from bson.objectid import ObjectId
 from datetime import datetime, timedelta
 import secrets
 
@@ -852,6 +853,37 @@ def update_cart():
     except Exception as e:
         print(f"Error in update_cart: {str(e)}")
         return jsonify({"message": "Terjadi kesalahan"}), 500
+    
+@app.route("/delete-from-cart", methods=["POST"])
+def delete_from_cart():
+    try:
+        # Pastikan autentikasi
+        if 'user_id' not in session:
+            return jsonify({"message": "Silakan login terlebih dahulu"}), 401
+
+        # Ambil data dari request
+        data = request.get_json()
+        item_id = data.get("item_id")
+
+        if not item_id:
+            return jsonify({"message": "ID item tidak valid"}), 400
+
+        # Hapus item dari koleksi cart
+        cart_collection = db.cart
+        result = cart_collection.delete_one({"_id": ObjectId(item_id)})
+
+        # Periksa apakah item berhasil dihapus
+        if result.deleted_count > 0:
+            return jsonify({
+                "message": "Item berhasil dihapus dari keranjang",
+                "status": "success"
+            }), 200
+        else:
+            return jsonify({"message": "Item tidak ditemukan"}), 404
+
+    except Exception as e:
+        print(f"Error in delete_from_cart: {str(e)}")
+        return jsonify({"message": "Terjadi kesalahan saat menghapus item"}), 500
 
 
 @app.route("/carts/order_history")
