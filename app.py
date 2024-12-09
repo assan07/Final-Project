@@ -775,35 +775,39 @@ def cart_quantity():
 # Rute untuk carts
 @app.route("/carts/order_summary", methods=["GET"])
 def order_summary():
-    try:
-        cart_collection = db.cart
-        cart_items = list(cart_collection.find())
+    if 'user_id' in session:
+        try:
+            cart_collection = db.cart
+            cart_items = list(cart_collection.find())
 
-        # Format data untuk template
-        formatted_cart_items = []
-        for item in cart_items:
-            harga = float(item.get("harga", 0))
-            quantity = int(item.get("quantity", 0))
-            formatted_item = {
-                "id": str(item["_id"]),
-                "brand": item.get("brand", ""),
-                "harga": harga,
-                "quantity": quantity,
-                "gambar_barang": item.get("gambar_barang", ""),
-                "kategori": item.get("kategori", ""),
-                "subtotal": harga * quantity
-            }
-            formatted_cart_items.append(formatted_item)
+            # Format data untuk template
+            formatted_cart_items = []
+            for item in cart_items:
+                harga = float(item.get("harga", 0))
+                quantity = int(item.get("quantity", 0))
+                formatted_item = {
+                    "id": str(item["_id"]),
+                    "brand": item.get("brand", ""),
+                    "harga": harga,
+                    "quantity": quantity,
+                    "gambar_barang": item.get("gambar_barang", ""),
+                    "kategori": item.get("kategori", ""),
+                    "subtotal": harga * quantity
+                }
+                formatted_cart_items.append(formatted_item)
 
-        return render_template(
-            "carts/order_summary.html",
-            cart_items=formatted_cart_items,
-            total_price=0  # Set awal ke 0
-        )
+            return render_template(
+                "carts/order_summary.html",
+                cart_items=formatted_cart_items,
+                total_price=0  # Set awal ke 0
+            )
 
-    except Exception as e:
-        print(f"Error in order_summary: {str(e)}")
-        return jsonify({"message": "Terjadi kesalahan"}), 500
+        except Exception as e:
+            print(f"Error in order_summary: {str(e)}")
+            return jsonify({"message": "Terjadi kesalahan"}), 500
+    
+    else:
+        return redirect(url_for('user_login'))
 
 # route untuk mengupdate jumlah barang yang akan di pesan
 @app.route("/carts/order_summary/update-cart", methods=["POST"])

@@ -127,7 +127,7 @@
 
     function updateItemQuantity(itemId, quantity, itemRow) {
       $.ajax({
-        url: "/update-cart",
+        url: "/carts/order_summary/update-cart",  // Ganti bagian ini
         method: "POST",
         contentType: "application/json",
         data: JSON.stringify({ item_id: itemId, quantity: quantity }),
