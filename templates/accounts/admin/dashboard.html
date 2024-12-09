@@ -1,167 +1,135 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="UTF-8" />
-    <link
-      rel="icon"
-      href="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
-      type="image/x-icon"
-    />
-    <link
-      rel="shortcut icon"
-      href="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
-      type="image/x-icon"
-    />
+    <link rel="icon" href="{{ url_for('static', filename='images/icon/logo-brand.png') }}" type="image/x-icon" />
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/icon/logo-brand.png') }}" type="image/x-icon" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Dashboard</title>
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/data_user.css') }}"
-    />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/data_user.css') }}" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
-      .navbar {
-        display: flex;
-        justify-content: space-between;
-        height: 80px;
-        background: transparent;
-        box-shadow: 8px 8px 10px #6166fa96;
-      }
-
-      .sidebar {
-        height: 100vh;
-        position: fixed;
-        top: 87px;
-        left: 0;
-        padding-top: 0.7rem;
-        box-shadow: 8px 8px 10px #06084096;
-      }
-
-      .side-container {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        justify-content: flex-start;
-      }
-
-      .main-content {
-        margin-left: 250px;
-        padding: 20px;
-      }
-
-      .nav-link {
-        color: #333;
-        padding: 0.8rem 1rem;
-        border-radius: 0.25rem;
-        margin: 0.2rem 0;
-      }
-
-      .nav-link:hover {
-        background-color: #c7ddf3;
-      }
-
-      .nav-link.active {
-        background-color: #0d6efd;
-        color: white;
-      }
-
-      .card {
-        margin-top: 6rem;
-      }
-
-      .stats-card {
-        transition: transform 0.2s;
-        border-radius: 0.5rem;
-      }
-
-      .stats-card:hover {
-        transform: translateY(-5px);
-      }
-
-      .navbar-brand {
-        font-size: 1.5rem;
-        font-weight: bold;
-      }
-
-      .bg-blue-dark {
-        background-color: #003366;
-        color: white;
-      }
-
-      .bg-blue-medium {
-        background-color: #004c99;
-        color: white;
-      }
-
-      .bg-blue-light {
-        background-color: #1a75ff;
-        color: white;
-      }
-
-      .bg-blue-lighter {
-        background-color: #66a3ff;
-        color: white;
-      }
-
-      .btn-sm {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.875rem;
-        line-height: 1.5;
-        border-radius: 0.2rem;
-        height: auto;
-        display: inline-flex;
-        align-items: center;
-      }
-
-      .btn-danger {
-        background-color: #dc3545;
-        color: #fff;
-        border: none;
-      }
-
-      .btn i {
-        margin-right: 4px;
-      }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            height: 80px;
+            background: transparent;
+            box-shadow: 8px 8px 10px #6166fa96;
+        }
+        
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            top: 87px;
+            left: 0;
+            padding-top: 0.7rem;
+            box-shadow: 8px 8px 10px #06084096;
+        }
+        
+        .side-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            justify-content: flex-start;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        
+        .nav-link {
+            color: #333;
+            padding: 0.8rem 1rem;
+            border-radius: 0.25rem;
+            margin: 0.2rem 0;
+        }
+        
+        .nav-link:hover {
+            background-color: #c7ddf3;
+        }
+        
+        .nav-link.active {
+            background-color: #0d6efd;
+            color: white;
+        }
+        
+        .card {
+            margin-top: 6rem;
+        }
+        
+        .stats-card {
+            transition: transform 0.2s;
+            border-radius: 0.5rem;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .bg-blue-dark {
+            background-color: #003366;
+            color: white;
+        }
+        
+        .bg-blue-medium {
+            background-color: #004c99;
+            color: white;
+        }
+        
+        .bg-blue-light {
+            background-color: #1a75ff;
+            color: white;
+        }
+        
+        .bg-blue-lighter {
+            background-color: #66a3ff;
+            color: white;
+        }
+        
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            border-radius: 0.2rem;
+            height: auto;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+        }
+        
+        .btn i {
+            margin-right: 4px;
+        }
     </style>
-  </head>
+</head>
 
-  <body>
+<body>
     <!-- Navbar -->
     <nav class="navbar fixed-top">
-      <div class="container-fluid">
-        <a class="navbar-brand d-flex align-items-center mx-3">
-          <img
-            class="bi me-2"
-            width="40"
-            height="40"
-            src="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
-            alt="Logo brand"
-          />
-          <img
-            class="fs-4 bi me-2"
-            width="160"
-            height="40"
-            src="{{ url_for('static', filename='images/icon/logo-title.png') }}"
-            alt="Logo title"
-          />
-        </a>
-        <div class="d-flex">
-          <p class="navbar-text me-3">
-            Welcome, <span class="fw-bold">{{ session['admin_name'] }}</span>
-          </p>
-          <a
-            style="height: 40px"
-            href="{{ url_for('admin_logout') }}"
-            class="btn btn-light btn-m"
-            >Logout</a
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center mx-3">
+                <img class="bi me-2" width="40" height="40" src="{{ url_for('static', filename='images/icon/logo-brand.png') }}" alt="Logo brand" />
+                <img class="fs-4 bi me-2" width="160" height="40" src="{{ url_for('static', filename='images/icon/logo-title.png') }}" alt="Logo title" />
+            </a>
+            <div class="d-flex">
+                <p class="navbar-text me-3">
+                    Welcome, <span class="fw-bold">{{ session['admin_name'] }}</span>
+                </p>
+                <a style="height: 40px" href="{{ url_for('admin_logout') }}" class="btn btn-light btn-m">Logout</a
           >
         </div>
       </div>
@@ -320,6 +288,7 @@
                       <tr>
                         <th>No.</th>
                         <th>Kategori</th>
+                        <th>Nama Barang</th>
                         <th>Brand</th>
                         <th>Netto</th>
                         <th>Warna</th>
@@ -334,6 +303,7 @@
                       <tr>
                         <td>{{ loop.index }}</td>
                         <td>{{ barang.kategori }}</td>
+                        <td>{{ barang.nama_barang }}</td>
                         <td>{{ barang.brand }}</td>
                         <td>{{ barang.netto }}</td>
                         <td>{{ barang.warna }}</td>
@@ -362,6 +332,7 @@
                             type="button"
                             data-id="{{ barang._id }}"
                             data-kategori="{{ barang.kategori }}"
+                            data-nama_barang="{{ barang.nama_barang }}"
                             data-brand="{{ barang.brand }}"
                             data-netto="{{ barang.netto }}"
                             data-warna="{{ barang.warna }}"
@@ -392,7 +363,25 @@
                 <option>CAT</option>
                 <option>TINNER</option>
                 <option>AKSESORIS PVC</option>
+                <option>LEM</option>
+                <option>PERALATAN</option>
+                <option>PAKU</option>
+                <option>ISOLASI</option>
+                <option>CAMPURAN</option>
+                <option>PIPA PVC PARALON</option>
+                <option>PLAT BESI</option>
+                <option>BONDEK</option>
+                <option>POLITUR VERNIS</option>
               </select>
+            </div>
+            <div class="mb-2 col-md-4">
+              <label for="InputNamaBarang" class="form-label">Nama Barang</label>
+              <input
+                type="text"
+                class="form-control"
+                id="nama_barang"
+                placeholder="Nama Barang"
+              />
             </div>
             <div class="mb-2 col-md-4">
               <label for="InputBrand" class="form-label">Brand</label>
@@ -463,7 +452,25 @@
                 <option>CAT</option>
                 <option>TINNER</option>
                 <option>AKSESORIS PVC</option>
+                <option>LEM</option>
+                <option>PERALATAN</option>
+                <option>PAKU</option>
+                <option>ISOLASI</option>
+                <option>CAMPURAN</option>
+                <option>PIPA PVC PARALON</option>
+                <option>PLAT BESI</option>
+                <option>BONDEK</option>
+                <option>POLITUR VERNIS</option>
               </select>
+            </div>
+            <div class="mb-2 col-md-4">
+              <label for="editNamaBarang" class="form-label">Nama Barang</label>
+              <input
+                type="text"
+                class="form-control"
+                id="editNamaBarang"
+                placeholder="Nama Barang"
+              />
             </div>
             <div class="mb-2 col-md-4">
               <label for="editBrand" class="form-label">Brand</label>
@@ -752,6 +759,7 @@
         .getElementById("submitSimpanBarang")
         .addEventListener("click", function () {
           var kategori = document.getElementById("inputState").value;
+          var nama_barang = document.getElementById("nama_barang").value;
           var brand = document.getElementById("brand").value;
           var netto = document.getElementById("netto").value;
           var warna = document.getElementById("warna").value;
@@ -759,7 +767,7 @@
           var stock = document.getElementById("stock").value;
           var foto = document.getElementById("foto").files[0]; // Ambil file foto
 
-          if (!kategori || !brand || !netto || !warna || !harga || !stock) {
+          if (!kategori || !nama_barang || !brand || !netto || !warna || !harga || !stock) {
             alert("Semua kolom harus diisi!");
             return;
           }
@@ -767,6 +775,7 @@
           // Buat FormData untuk mengirim data termasuk file gambar
           var formData = new FormData();
           formData.append("kategori", kategori);
+          formData.append("nama_barang", nama_barang);
           formData.append("brand", brand);
           formData.append("netto", netto);
           formData.append("warna", warna);
@@ -928,6 +937,7 @@
           // Ambil data dari atribut data-* di tombol edit
           var id = button.getAttribute("data-id");
           var kategori = button.getAttribute("data-kategori");
+          var nama_barang = button.getAttribute("data-nama_barang");
           var brand = button.getAttribute("data-brand");
           var netto = button.getAttribute("data-netto");
           var warna = button.getAttribute("data-warna");
@@ -937,6 +947,7 @@
 
           // Isi form dengan data yang diambil
           document.getElementById("editKategori").value = kategori;
+          document.getElementById("editNamaBarang").value = nama_barang;
           document.getElementById("editBrand").value = brand;
           document.getElementById("editNetto").value = netto;
           document.getElementById("editWarna").value = warna;
@@ -950,8 +961,8 @@
           document
             .getElementById("submitEditBarang")
             .addEventListener("click", function () {
-              var updatedKategori =
-                document.getElementById("editKategori").value;
+              var updatedKategori = document.getElementById("editKategori").value;
+              var updatedNamaBarang = document.getElementById("editNamaBarang").value;
               var updatedBrand = document.getElementById("editBrand").value;
               var updatedNetto = document.getElementById("editNetto").value;
               var updatedWarna = document.getElementById("editWarna").value;
@@ -962,6 +973,7 @@
               var formData = new FormData();
               formData.append("id", id);
               formData.append("kategori", updatedKategori);
+              formData.append("nama_barang", updatedNamaBarang);
               formData.append("brand", updatedBrand);
               formData.append("netto", updatedNetto);
               formData.append("warna", updatedWarna);
