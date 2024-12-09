@@ -1,179 +1,257 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Checkout Page</title>
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-      rel="stylesheet"
-    />
 
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/order_summary.css') }}"
-    />
-    
-  </head>
-  <body>
-    {% extends "main/navbar1.html" %}
-    {% block content %} 
-    <div class="container page-summary">
-      <h4>Keranjang Belanja</h4>
-      <form>
-        <div class="row">
-          <!-- Bagian kiri: Daftar Barang -->
-          <div class="col-md-7">
-            {% for item in cart_items %}
-            <div
-              class="form-check d-flex align-items-start mb-3"
-              data-item-id="{{ item.id }}"
-            >
-              <input
-                class="form-check-input me-3"
-                type="checkbox"
-                name="items[]"
-                value="{{ item.id }}"
-                id="{{ item.id }}"
-              />
-              <label class="form-check-label w-100" for="{{ item.id }}">
-                <div class="d-flex align-items-center">
-                  <div class="img-placeholder me-3"></div>
-                  <div>
-                    <p class="mb-1 fw-bold">{{ item.brand }}</p>
-                    <p class="mb-0 text-muted">
-                      RP.
-                      <span class="item-total"
-                        >{{ "{:,.0f}".format(item.harga * item.quantity)
-                        }}</span
-                      >
-                    </p>
-                    <div class="d-flex align-items-center mt-2">
-                      <button
-                        class="btn btn-outline-danger btn-sm me-2 btn-decrease"
-                        type="button"
-                      >
-                        -
-                      </button>
-                      <input
-                        type="text"
-                        class="form-control text-center quantity-input"
-                        value="{{ item.quantity }}"
-                        style="width: 50px"
-                      />
-                      <button
-                        class="btn btn-outline-success btn-sm ms-2 btn-increase"
-                        type="button"
-                      >
-                        +
-                      </button>
-                    </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout Page</title>
+  <!-- Tambahkan SweetAlert2 -->
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/order_summary.css') }}" />
+</head>
+
+<body>
+  {% extends "main/navbar1.html" %}
+  {% block content %}
+  <div class="container page-summary">
+    <h4>Keranjang Belanja</h4>
+    <form id="orderForm">
+      <div class="row">
+        <!-- Bagian kiri: Daftar Barang -->
+        <div class="col-md-7">
+          {% if cart_items %}
+          {% for item in cart_items %}
+          <div class="form-check d-flex align-items-start mb-3" data-item-id="{{ item.id }}">
+            <input class="form-check-input me-3" type="checkbox" name="items[]" value="{{ item.id }}"
+              id="{{ item.id }}" />
+            <label class="form-check-label w-100" for="{{ item.id }}">
+              <div class="d-flex align-items-center">
+                <div class="img-placeholder me-3">
+                  <!-- Gambar produk jika ada -->
+                  <img src="{{ url_for('static', filename='images/gambar_barang/' + item.gambar_barang) }}"
+                    alt="{{ item.brand }}" class="img-fluid" style="object-fit: cover;" />
+                </div>
+                <div>
+                  <p class="mb-1 fw-bold">{{ item.brand }}</p>
+                  <!-- Tambahkan ini untuk harga per item -->
+
+                  <p class="mb-0">
+                    Harga: Rp. <span class="harga">{{ "{:,.0f}".format(item.harga) }}</span>
+                  </p>
+                  <p class="mb-0 text-muted">
+                    Total: Rp. <span class="item-total">{{ "{:,.0f}".format(item.subtotal) }}</span>
+                  </p>
+                  <div class="d-flex align-items-center mt-2">
+                    <button class="btn btn-outline-danger btn-sm me-2 btn-decrease" type="button">-</button>
+                    <input type="text" class="form-control text-center quantity-input" value="{{ item.quantity }}"
+                      style="width: 50px" />
+                    <button class="btn btn-outline-success btn-sm ms-2 btn-increase" type="button">+</button>
+                    <button class="btn btn-outline-danger btn-sm ms-2 btn-delete" type="button">
+                      <i class="fas fa-trash"></i>
+                    </button>
                   </div>
                 </div>
-              </label>
-            </div>
-            {% endfor %}
-          </div>
-
-          <!-- Bagian kanan: Ringkasan -->
-          <div class="col-md-5">
-            <div class="mb-3">
-              <textarea
-                class="form-control form-control-sm"
-                id="alamat"
-                rows="3"
-                placeholder="Alamat anda"
-              ></textarea>
-            </div>
-            <div class="bg-light p-3 rounded shadow">
-              <h6 class="fw-bold">Ringkasan Belanja</h6>
-              <div class="d-flex justify-content-between">
-                <p class="mb-1">Total Harga</p>
-                <p class="mb-1 fw-bold" id="total-harga">
-                  Rp. {{ "{:,.0f}".format(total_price) }}
-                </p>
               </div>
-              <button type="submit" class="btn btn-dark w-100">Beli</button>
+            </label>
+          </div>
+          {% endfor %}
+          {% else %}
+          <div class="alert alert-info">
+            Keranjang belanja Anda kosong. <a href="/products/product_lists">Belanja sekarang!</a>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Bagian kanan: Ringkasan -->
+        <div class="col-md-5">
+          <div class="mb-3">
+            <textarea class="form-control" id="alamat" rows="3" placeholder="Alamat pengiriman Anda"
+              required></textarea>
+          </div>
+          <div class="bg-light p-3 rounded shadow">
+            <h6 class="fw-bold">Ringkasan Belanja</h6>
+            <div class="d-flex justify-content-between">
+              <p class="mb-1">Total Harga</p>
+              <p class="mb-1 fw-bold" id="total-harga">
+                Rp. {{ "{:,.0f}".format(total_price) }}
+              </p>
             </div>
+            <button type="submit" class="btn btn-dark w-100" {% if not cart_items %}disabled{% endif %}>
+              Beli
+            </button>
           </div>
         </div>
-      </form>
-    </div>
-    {% endblock %}
+      </div>
+    </form>
+  </div>
+  {% endblock %}
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-      $(document).ready(function () {
-        // Function to update total price
-        function updateTotalPrice() {
-          let totalPrice = 0;
-          $(".form-check").each(function () {
-            const itemTotal = parseFloat(
-              $(this).find(".item-total").text().replace(/,/g, "")
-            );
-            totalPrice += itemTotal || 0;
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
+  {% block scripts %}
+  <script>
+    function updateTotalPrice() {
+      let totalPrice = 0;
+      try {
+        // Hanya hitung item yang dicentang
+        $("input[name='items[]']:checked").each(function () {
+          const itemRow = $(this).closest('.form-check');
+          // Ambil text harga dan bersihkan dari format Rupiah
+          const priceText = itemRow.find(".harga").text().replace(/[Rp.,\s]/g, '');
+          const price = parseFloat(priceText);
+          const quantity = parseInt(itemRow.find(".quantity-input").val());
+
+          if (!isNaN(price) && !isNaN(quantity)) {
+            totalPrice += (price * quantity);
+          }
+        });
+      } catch (error) {
+        console.error('Error calculating total price:', error);
+      }
+
+      // Format total price ke Rupiah
+      $("#total-harga").text(`Rp. ${totalPrice.toLocaleString('id-ID')}`);
+    }
+
+    function updateItemSubtotal(itemRow) {
+      const priceText = itemRow.find(".harga").text().replace(/[Rp.,\s]/g, '');
+      const price = parseFloat(priceText);
+      const quantity = parseInt(itemRow.find(".quantity-input").val());
+      const subtotal = price * quantity;
+      itemRow.find(".item-total").text(`${subtotal.toLocaleString('id-ID')}`);
+      return subtotal;
+    }
+
+    function updateItemQuantity(itemId, quantity, itemRow) {
+      $.ajax({
+        url: "/update-cart",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({ item_id: itemId, quantity: quantity }),
+        success: function (response) {
+          const newSubtotal = updateItemSubtotal(itemRow);
+          itemRow.find(".item-total").text(`${response.updated_price.toLocaleString('id-ID')}`);
+          updateTotalPrice();
+        },
+        error: function (xhr) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: xhr.responseJSON?.message || 'Terjadi kesalahan'
           });
-          $("#total-harga").text("Rp. " + totalPrice.toLocaleString());
+          // Reset quantity jika error
+          itemRow.find(".quantity-input").val(quantity - 1);
+          updateItemSubtotal(itemRow);
+          updateTotalPrice();
         }
+      });
+    }
 
-        // Function to update item quantity via AJAX
-        function updateItemQuantity(itemId, quantity) {
+    // Event listener untuk checkbox
+    $("input[name='items[]']").on('change', function () {
+      updateTotalPrice();
+    });
+
+    // Event listener untuk tombol decrease
+    $(".btn-decrease").click(function () {
+      const itemRow = $(this).closest(".form-check");
+      const itemId = itemRow.data("item-id");
+      let quantity = parseInt(itemRow.find(".quantity-input").val());
+      if (quantity > 1) {
+        quantity--;
+        itemRow.find(".quantity-input").val(quantity);
+        updateItemQuantity(itemId, quantity, itemRow);
+      }
+    });
+
+    // Event listener untuk tombol increase
+    $(".btn-increase").click(function () {
+      const itemRow = $(this).closest(".form-check");
+      const itemId = itemRow.data("item-id");
+      let quantity = parseInt(itemRow.find(".quantity-input").val());
+      quantity++;
+      itemRow.find(".quantity-input").val(quantity);
+      updateItemQuantity(itemId, quantity, itemRow);
+    });
+
+    // Event listener untuk input quantity
+    $(".quantity-input").on("change", function () {
+      const itemRow = $(this).closest(".form-check");
+      const itemId = itemRow.data("item-id");
+      let quantity = parseInt($(this).val());
+      if (quantity < 1) {
+        quantity = 1;
+        $(this).val(quantity);
+      }
+      updateItemQuantity(itemId, quantity, itemRow);
+    });
+
+
+    // Collect selected items
+    const items = [];
+    $("input[name='items[]']:checked").each(function () {
+      const itemRow = $(this).closest('.form-check');
+      items.push({
+        id: itemRow.data('item-id'),
+        quantity: parseInt(itemRow.find('.quantity-input').val())
+      });
+    });
+
+    // Event listener untuk tombol delete
+    $(".btn-delete").click(function () {
+      const itemRow = $(this).closest(".form-check");
+      const itemId = itemRow.data("item-id");
+
+      Swal.fire({
+        title: 'Hapus item?',
+        text: "Item akan dihapus dari keranjang",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal'
+      }).then((result) => {
+        if (result.isConfirmed) {
           $.ajax({
-            url: "/update-cart",
+            url: "/delete-from-cart",
             method: "POST",
             contentType: "application/json",
-            data: JSON.stringify({ item_id: itemId, quantity: quantity }),
-            success: function (response) {
-              const itemRow = $(`.form-check[data-item-id="${itemId}"]`);
-              const itemTotal = response.updated_price;
-              itemRow.find(".item-total").text(itemTotal.toLocaleString());
-              updateTotalPrice();
+            data: JSON.stringify({ item_id: itemId }),
+            success: function () {
+              // Animasi fadeOut sebelum menghapus element
+              itemRow.fadeOut(300, function () {
+                $(this).remove();
+                updateTotalPrice();
+
+                // Cek jika keranjang kosong
+                if ($('.form-check').length === 0) {
+                  location.reload(); // Reload untuk menampilkan pesan keranjang kosong
+                }
+              });
+
+              Swal.fire(
+                'Terhapus!',
+                'Item telah dihapus dari keranjang',
+                'success'
+              );
             },
             error: function (xhr) {
-              alert(xhr.responseJSON.message);
-            },
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: xhr.responseJSON?.message || 'Terjadi kesalahan'
+              });
+            }
           });
         }
-
-        // Decrease quantity
-        $(".btn-decrease").click(function () {
-          const itemRow = $(this).closest(".form-check");
-          const itemId = itemRow.data("item-id");
-          let quantity = parseInt(itemRow.find(".quantity-input").val());
-          if (quantity > 1) {
-            quantity--;
-            itemRow.find(".quantity-input").val(quantity);
-            updateItemQuantity(itemId, quantity);
-          }
-        });
-
-        // Increase quantity
-        $(".btn-increase").click(function () {
-          const itemRow = $(this).closest(".form-check");
-          const itemId = itemRow.data("item-id");
-          let quantity = parseInt(itemRow.find(".quantity-input").val());
-          quantity++;
-          itemRow.find(".quantity-input").val(quantity);
-          updateItemQuantity(itemId, quantity);
-        });
-
-        // Direct quantity input change
-        $(".quantity-input").on("change", function () {
-          const itemRow = $(this).closest(".form-check");
-          const itemId = itemRow.data("item-id");
-          let quantity = parseInt($(this).val());
-          if (quantity > 0) {
-            updateItemQuantity(itemId, quantity);
-          } else {
-            $(this).val(1); // Reset to 1 if invalid value
-          }
-        });
       });
-    </script>
-  </body>
+    });
+  </script>
+  {% endblock %}
+</body>
+
 </html>
