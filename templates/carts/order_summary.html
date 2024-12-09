@@ -79,6 +79,29 @@
                 Rp. {{ "{:,.0f}".format(total_price) }}
               </p>
             </div>
+            <div class="mt-3 mb-4">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
+                  value="option1">
+                <label class="form-check-label" for="inlineRadio1">
+                  <img src="{{ url_for('static', filename='images/icon/DANA.png') }}" alt="Option 1" class="img-radio">
+                </label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2"
+                  value="option2">
+                <label class="form-check-label" for="inlineRadio2">
+                  <img src="{{ url_for('static', filename='images/icon/BRI.svg') }}" alt="Option 2" class="img-radio">
+                </label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2"
+                  value="option3">
+                <label class="form-check-label" for="inlineRadio2">
+                  <img src="{{ url_for('static', filename='images/icon/ovo.png') }}" alt="Option 2" class="img-radio">
+                </label>
+              </div>
+            </div>
             <button type="submit" class="btn btn-dark w-100" {% if not cart_items %}disabled{% endif %}>
               Beli
             </button>
@@ -128,7 +151,7 @@
 
     function updateItemQuantity(itemId, quantity, itemRow) {
       $.ajax({
-        url: "/carts/order_summary/update-cart",  // Ganti bagian ini
+        url: "/carts/order_summary/update-cart",
         method: "POST",
         contentType: "application/json",
         data: JSON.stringify({ item_id: itemId, quantity: quantity }),

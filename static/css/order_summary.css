@@ -6,8 +6,8 @@
 }
 
 .img-placeholder {
-  width: 60px;
-  height: 60px;
+  width: 100px;
+  height: 100px;
   background-color: #ccc;
   border-radius: 5px;
 }
@@ -24,4 +24,20 @@ hr {
 .product-Cards {
   width: 80%;
   margin-top: 100px;
+}
+
+.img-radio {
+  width: 75px;
+  /* Sesuaikan ukuran */
+  height: auto;
+  /* Mempertahankan rasio gambar */
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+input[type="radio"]:checked+label .img-radio {
+  transform: scale(1.1);
+  border: 1px solid #007bff;
+  border-radius: 5px;
+
 }
