@@ -33,18 +33,13 @@ app.config['UPLOAD_FOLDER_PROFILE'] = UPLOAD_FOLDER_PROFILE
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 
 # Fungsi untuk memeriksa apakah ekstensi file diperbolehkan
-
-
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 # Context Processor : untuk menyediakan variabel seperti full_name dan profile_pic ke semua template.
-
-# injektor apakah ada session yang aktif
 @app.context_processor
 def inject_user():
-    # validasi user apakah sudah logi atau belum
-    if "user_id" in session and "email" in session:
+    if 'user_id' in session:
         # Ambil data user dari session
         full_name = session.get("full_name", "Guest")
         profile_pic = session.get("profile_pic", None)
@@ -62,13 +57,14 @@ def inject_user():
         "profile_pic": None
     }
 
-
 # Home dan halaman about
 @app.route("/")
 def home():
+    # if 'user_id' in session:
     full_name = session.get("full_name", "Guest")
     return render_template("main/index.html", full_name=full_name)
-  
+    # else:
+    #     return redirect(url_for('user_login'))
 
 # Rute untuk accounts/admin
 @app.route("/admin/dashboard")
@@ -104,8 +100,6 @@ def admin_dashboard():
                            data_user=data_user, data_admin=data_admin)
 
 # Rute untuk delete admin
-
-
 @app.route("/accounts/admin/data_admin/delete_admin", methods=["POST"])
 def delete_admin():
     admin_id = request.form.get('id')
@@ -125,13 +119,11 @@ def delete_admin():
     else:
         return jsonify({"status": "error", "message": "Admin tidak ditemukan"}), 404
 
-
 @app.route("/accounts/admin/logout")
 def admin_logout():
     session.clear()
     flash('Anda telah logout', 'success')
     return redirect(url_for('admin_login'))
-
 
 @app.route("/accounts/admin/login_adm", methods=['GET', 'POST'])
 def admin_login():
@@ -155,7 +147,6 @@ def admin_login():
         return redirect(url_for('admin_login'))
 
     return render_template("accounts/admin/login_adm.html")
-
 
 @app.route("/accounts/admin/register_adm", methods=['GET', 'POST'])
 def admin_register():
@@ -189,8 +180,6 @@ def admin_register():
     return render_template("accounts/admin/register_adm.html")
 
 # Rute untuk halaman data barang admin
-
-
 @app.route("/accounts/admin/data_barang")
 def admin_data_barang():
     barang_collection = db.barang
@@ -198,8 +187,6 @@ def admin_data_barang():
     return render_template("accounts/admin/data_barang.html", barang_data=barang_data)
 
 # Rute untuk menambah barang
-
-
 @app.route("/accounts/admin/data_barang/tambah_barang", methods=["GET", "POST"])
 def tambah_barang():
     if request.method == "GET":
@@ -207,6 +194,7 @@ def tambah_barang():
 
     # Proses metode POST
     kategori = request.form.get('kategori')
+    nama_barang = request.form.get('nama_barang')
     brand = request.form.get('brand')
     netto = request.form.get('netto')
     warna = request.form.get('warna')
@@ -237,6 +225,7 @@ def tambah_barang():
     # Simpan ke database
     db.barang.insert_one({
         "kategori": kategori,
+        "nama_barang": nama_barang,
         "brand": brand,
         "netto": netto,
         "warna": warna,
@@ -246,7 +235,6 @@ def tambah_barang():
     })
 
     return jsonify({"status": "success"}), 200
-
 
 # Rute untuk delete barang
 @app.route("/accounts/admin/data_barang/delete_barang", methods=["POST"])
@@ -279,12 +267,11 @@ def delete_barang():
         return jsonify({"status": "error", "message": "Barang tidak ditemukan"}), 404
 
 # Rute untuk edit barang
-
-
 @app.route("/accounts/admin/data_barang/edit_barang", methods=["POST"])
 def edit_barang():
     barang_id = request.form.get('id')
     kategori = request.form.get('kategori')
+    nama_barang = request.form.get('nama_barang')
     brand = request.form.get('brand')
     netto = request.form.get('netto')
     warna = request.form.get('warna')
@@ -301,6 +288,7 @@ def edit_barang():
     barang_collection = db.barang
     update_data = {
         "kategori": kategori,
+        "nama_barang": nama_barang,
         "brand": brand,
         "netto": netto,
         "warna": warna,
@@ -318,7 +306,6 @@ def edit_barang():
     else:
         return jsonify({"status": "error", "message": "Barang tidak ditemukan atau tidak ada perubahan."}), 400
 
-
 @app.route("/accounts/admin/data_user")
 def admin_data_user():
     user_collection = db.user
@@ -326,8 +313,6 @@ def admin_data_user():
     return render_template("accounts/admin/data_user.html", user_data=user_data)
 
 # Rute untuk delete user
-
-
 @app.route("/accounts/admin/data_user/delete_user", methods=["POST"])
 def delete_user():
     user_id = request.form.get('id')
@@ -348,8 +333,6 @@ def delete_user():
         return jsonify({"status": "error", "message": "User tidak ditemukan"}), 404
 
 # rute untuk register
-
-
 @app.route("/accounts/users/register", methods=['GET', 'POST'])
 def user_register():
     if request.method == 'POST':
@@ -388,8 +371,6 @@ def user_register():
     return render_template("accounts/users/register.html")
 
 # rute untuk login
-
-
 @app.route("/accounts/users/login", methods=['GET', 'POST'])
 def user_login():
     if request.method == 'POST':
@@ -425,8 +406,8 @@ def user_login():
 # route untuk mencek apakah user sudah login atau blum
 @app.route("/accounts/users/status", methods=["GET"])
 def user_status():
-    # validasi user apakah sudah logi atau belum
-    if "user_id" in session and "email" in session:
+    # Cek apakah ada sesi aktif
+    if "user_id" in session:
         return jsonify({
             "is_logged_in": True,
             "full_name": session.get("full_name", "User"),
@@ -439,8 +420,6 @@ def user_status():
         })
 
 # rute unutk edit dan tampilan info user
-
-
 @app.route("/accounts/users/profile", methods=['GET', 'POST'])
 def user_profile():
     if 'user_id' in session and 'email' in session:
@@ -540,71 +519,62 @@ def user_profile():
 # route logout
 @app.route("/accounts/users/logout", methods=["GET"])
 def user_logout():
-    # validasi user apakah sudah logi atau belum
-    if "user_id" in session and "email" in session:
-        # Hapus sesi user
-        session.clear()
-        flash("Anda telah logout.", "success")
-        return redirect(url_for("home"))
-    return redirect(url_for('user_login'))
+    # Hapus sesi user
+    session.clear()
+    flash("Anda telah logout.", "success")
+    return redirect(url_for("home"))
 
 # rute untuk reset password
 @app.route("/accounts/users/reset-password/<token>", methods=['GET', 'POST'])
 def reset_password(token):
-    # validasi user apakah sudah logi atau belum
-    if "user_id" in session and "email" in session:
-        reset_data = db.password_resets.find_one({
-            'token': token,
-            'expiry': {'$gt': datetime.utcnow()}
-        })
+    reset_data = db.password_resets.find_one({
+        'token': token,
+        'expiry': {'$gt': datetime.utcnow()}
+    })
 
-        if not reset_data:
-            flash('Link tidak valid atau sudah kadaluarsa', 'error')
-            return redirect(url_for('user_login'))
+    if not reset_data:
+        flash('Link tidak valid atau sudah kadaluarsa', 'error')
+        return redirect(url_for('user_login'))
 
-        if request.method == 'POST':
-            new_password = bcrypt.generate_password_hash(
-                request.form['password']).decode('utf-8')
+    if request.method == 'POST':
+        new_password = bcrypt.generate_password_hash(
+            request.form['password']).decode('utf-8')
 
-            db.user.update_one(
-                {'email': reset_data['email']},
-                {'$set': {'password': new_password}}
-            )
+        db.user.update_one(
+            {'email': reset_data['email']},
+            {'$set': {'password': new_password}}
+        )
 
-            db.password_resets.delete_one({'token': token})
+        db.password_resets.delete_one({'token': token})
 
-            flash('Password berhasil diubah', 'success')
-            return redirect(url_for('user_login'))
+        flash('Password berhasil diubah', 'success')
+        return redirect(url_for('user_login'))
 
-        return render_template('accounts/users/reset_password.html')
-    return redirect(url_for('user_login'))
+    return render_template('accounts/users/reset_password.html')
 
 # rute untuk lupa password
 @app.route("/accounts/users/forget-password", methods=['GET', 'POST'])
 def forget_password():
-    # validasi user apakah sudah logi atau belum
-    if "user_id" in session and "email" in session:
-        if request.method == 'POST':
-            email = request.form['email']
-            user = db.user.find_one({'email': email})
+    if request.method == 'POST':
+        email = request.form['email']
+        user = db.user.find_one({'email': email})
 
-            if user:
-                token = secrets.token_urlsafe(32)
-                expiry = datetime.utcnow() + timedelta(hours=1)
+        if user:
+            token = secrets.token_urlsafe(32)
+            expiry = datetime.utcnow() + timedelta(hours=1)
 
-                db.password_resets.insert_one({
-                    'email': email,
-                    'token': token,
-                    'expiry': expiry
-                })
+            db.password_resets.insert_one({
+                'email': email,
+                'token': token,
+                'expiry': expiry
+            })
 
-                reset_link = url_for('reset_password', token=token, _external=True)
-                flash(f'Link reset password: {reset_link}', 'success')
-                return redirect(url_for('user_login'))
+            reset_link = url_for('reset_password', token=token, _external=True)
+            flash(f'Link reset password: {reset_link}', 'success')
+            return redirect(url_for('user_login'))
 
-            flash('Email tidak ditemukan', 'error')
-        return render_template('accounts/users/forget_password.html')
-    return redirect(url_for('user_login'))
+        flash('Email tidak ditemukan', 'error')
+    return render_template('accounts/users/forget_password.html')
 
 # route edit password
 @app.route("/accounts/users/edit_password", methods=["GET", "POST"])
@@ -660,8 +630,7 @@ def edit_password():
 # Rute untuk products list
 @app.route("/products/product_lists")
 def product_lists():
-    # validasi user apakah sudah logi atau belum
-    if "user_id" in session and "email" in session:
+    if 'user_id' in session:
         barang_collection = db.barang
         barang_data = list(barang_collection.find())
         return render_template("products/product_lists.html", barang_data=barang_data)
@@ -671,40 +640,37 @@ def product_lists():
 # filter 
 @app.route("/products/product_lists/filter", methods=["GET"])
 def filter_products():
-    # validasi user apakah sudah logi atau belum
-    if "user_id" in session and "email" in session:
-        try:
-            # Koleksi barang
-            barang_collection = db.barang
 
-            # Ambil parameter kategori dari URL, default ke string kosong
-            kategori = request.args.get('kategori', '').strip().upper()
+    try:
+        # Koleksi barang
+        barang_collection = db.barang
 
-            # Filter data barang berdasarkan kategori
-            if kategori and kategori != "ALL":
-                # Pencarian case-insensitive menggunakan regex
-                barang_data = list(barang_collection.find({"kategori": {"$regex": f"^{kategori}$", "$options": "i"}}))
-            else:
-                # Jika kategori tidak disediakan atau 'ALL', ambil semua barang
-                barang_data = list(barang_collection.find())
+        # Ambil parameter kategori dari URL, default ke string kosong
+        kategori = request.args.get('kategori', '').strip().upper()
 
-            # Konversi harga menjadi float untuk semua data barang
-            for barang in barang_data:
-                barang['harga'] = float(barang.get('harga', 0))
+        # Filter data barang berdasarkan kategori
+        if kategori and kategori != "ALL":
+            # Pencarian case-insensitive menggunakan regex
+            barang_data = list(barang_collection.find({"kategori": {"$regex": f"^{kategori}$", "$options": "i"}}))
+        else:
+            # Jika kategori tidak disediakan atau 'ALL', ambil semua barang
+            barang_data = list(barang_collection.find())
 
-            # Render template dengan data barang
-            return render_template("products/product_list_filter.html", barang_data=barang_data)
+        # Konversi harga menjadi float untuk semua data barang
+        for barang in barang_data:
+            barang['harga'] = float(barang.get('harga', 0))
 
-        except Exception as e:
-            print(f"Error: {str(e)}")  # Log error untuk debugging
-            return jsonify({"message": "An error occurred", "error": str(e)}), 500
-    else:
-        return redirect(url_for('user_login'))
+        # Render template dengan data barang
+        return render_template("products/product_list_filter.html", barang_data=barang_data)
+
+    except Exception as e:
+        print(f"Error: {str(e)}")  # Log error untuk debugging
+        return jsonify({"message": "An error occurred", "error": str(e)}), 500
+
 # route produk detail
 @app.route("/products/product_details/<product_id>")
 def product_details(product_id):
-    # validasi user apakah sudah logi atau belum
-    if "user_id" in session and "email" in session:
+    if "user_id" in session:
         barang_collection = db.barang
 
         # Ambil produk berdasarkan ID
@@ -722,78 +688,73 @@ def product_details(product_id):
 # route untuk menambahkan barang ke keranjang
 @app.route("/products/product_details/add", methods=["POST"])
 def add_to_cart():
-    # validasi user apakah sudah logi atau belum
-    if "user_id" in session and "email" in session:
-        data = request.get_json()
-        product_id = data.get("product_id")
-        quantity = int(data.get("quantity", 1))
+    data = request.get_json()
+    product_id = data.get("product_id")
+    quantity = int(data.get("quantity", 1))
 
-        barang_collection = db.barang
-        cart_collection = db.cart
+    barang_collection = db.barang
+    cart_collection = db.cart
 
-        for item in barang_collection.find():
-            try:
-                stock_value = int(item.get("stock", 0))  # Konversi ke int
-                barang_collection.update_one(
-                    {"_id": item["_id"]},
-                    {"$set": {"stock": stock_value}}
-                )
-                print(f"Updated item {item['_id']} with stock {stock_value}")
-            except ValueError:
-                print(f"Skipping item {item['_id']} due to invalid stock value")
-
-        # Cari produk berdasarkan ID
-        product = barang_collection.find_one({"_id": ObjectId(product_id)})
-
-        if not product:
-            return jsonify({"message": "Produk tidak ditemukan"}), 404
-
+    for item in barang_collection.find():
         try:
-            # Validasi stok barang
-            stock = int(product.get("stock", 0))
-            if stock < quantity:
-                return jsonify({"message": "Stok tidak mencukupi"}), 400
-
-            # Kurangi stok barang di database
+            stock_value = int(item.get("stock", 0))  # Konversi ke int
             barang_collection.update_one(
-                {"_id": ObjectId(product_id)},
-                {"$inc": {"stock": - quantity}}
+                {"_id": item["_id"]},
+                {"$set": {"stock": stock_value}}
             )
+            print(f"Updated item {item['_id']} with stock {stock_value}")
         except ValueError:
-            return jsonify({"message": "Nilai stok tidak valid"}), 400
+            print(f"Skipping item {item['_id']} due to invalid stock value")
 
-        # Tambahkan produk ke keranjang
-        existing_cart_item = cart_collection.find_one(
-            {"product_id": str(product_id)})
-        if existing_cart_item:
-            # Update quantity jika produk sudah ada di keranjang
-            cart_collection.update_one(
-                {"product_id": str(product_id)},
-                {"$inc": {"quantity": quantity}}
-            )
-        else:
-            # Tambahkan item baru ke keranjang
-            cart_collection.insert_one({
-                "product_id": str(product["_id"]),
-                "gambar_barang": product.get("foto"),
-                "brand": product.get("brand"),
-                "harga": product.get("harga"),
-                "quantity": quantity,
-            })
+    # Cari produk berdasarkan ID
+    product = barang_collection.find_one({"_id": ObjectId(product_id)})
 
-        return jsonify({
-            "message": "Produk berhasil ditambahkan ke keranjang!",
-            "remaining_stock": stock - quantity  # Tampilkan stok yang tersisa
-        }), 200
+    if not product:
+        return jsonify({"message": "Produk tidak ditemukan"}), 404
+
+    try:
+        # Validasi stok barang
+        stock = int(product.get("stock", 0))
+        if stock < quantity:
+            return jsonify({"message": "Stok tidak mencukupi"}), 400
+
+        # Kurangi stok barang di database
+        barang_collection.update_one(
+            {"_id": ObjectId(product_id)},
+            {"$inc": {"stock": - quantity}}
+        )
+    except ValueError:
+        return jsonify({"message": "Nilai stok tidak valid"}), 400
+
+    # Tambahkan produk ke keranjang
+    existing_cart_item = cart_collection.find_one(
+        {"product_id": str(product_id)})
+    if existing_cart_item:
+        # Update quantity jika produk sudah ada di keranjang
+        cart_collection.update_one(
+            {"product_id": str(product_id)},
+            {"$inc": {"quantity": quantity}}
+        )
     else:
-        return redirect(url_for('user_login'))
+        # Tambahkan item baru ke keranjang
+        cart_collection.insert_one({
+            "product_id": str(product["_id"]),
+            "gambar_barang": product.get("foto"),
+            "brand": product.get("brand"),
+            "harga": product.get("harga"),
+            "quantity": quantity,
+        })
+
+    return jsonify({
+        "message": "Produk berhasil ditambahkan ke keranjang!",
+        "remaining_stock": stock - quantity  # Tampilkan stok yang tersisa
+    }), 200
 
 # route detail injektor 
 @app.context_processor
-    # """Menghitung total jumlah barang di keranjang untuk semua pengguna."""
 def inject_cart_quantity():
-    # validasi user apakah sudah logi atau belum
-    if "user_id" in session and "email" in session:
+    # """Menghitung total jumlah barang di keranjang untuk semua pengguna."""
+    if 'user_id' in session:
         cart_collection = db.cart
         cart_items = list(cart_collection.find({}))
         total_quantity = sum(item.get("quantity", 0) for item in cart_items)
@@ -802,10 +763,9 @@ def inject_cart_quantity():
 
 # route untuk menghitung jumlah barang di keranjang
 @app.route("/cart/quantity")
-    # """API untuk mendapatkan jumlah total barang di keranjang."""
 def cart_quantity():
-    # validasi user apakah sudah logi atau belum
-    if "user_id" in session and "email" in session:
+    # """API untuk mendapatkan jumlah total barang di keranjang."""
+    if 'user_id' in session:
         cart_collection = db.cart
         cart_items = list(cart_collection.find({}))
         total_quantity = sum(item.get("quantity", 0) for item in cart_items)
@@ -815,40 +775,36 @@ def cart_quantity():
 # Rute untuk carts
 @app.route("/carts/order_summary", methods=["GET"])
 def order_summary():
-    # validasi user apakah sudah logi atau belum
-    if "user_id" in session and "email" in session:
+    try:
+        cart_collection = db.cart
+        cart_items = list(cart_collection.find())
 
-        try:
-            cart_collection = db.cart
-            cart_items = list(cart_collection.find())
+        # Format data untuk template
+        formatted_cart_items = []
+        for item in cart_items:
+            harga = float(item.get("harga", 0))
+            quantity = int(item.get("quantity", 0))
+            formatted_item = {
+                "id": str(item["_id"]),
+                "brand": item.get("brand", ""),
+                "harga": harga,
+                "quantity": quantity,
+                "gambar_barang": item.get("gambar_barang", ""),
+                "kategori": item.get("kategori", ""),
+                "subtotal": harga * quantity
+            }
+            formatted_cart_items.append(formatted_item)
 
-            # Format data untuk template
-            formatted_cart_items = []
-            for item in cart_items:
-                harga = float(item.get("harga", 0))
-                quantity = int(item.get("quantity", 0))
-                formatted_item = {
-                    "id": str(item["_id"]),
-                    "brand": item.get("brand", ""),
-                    "harga": harga,
-                    "quantity": quantity,
-                    "gambar_barang": item.get("gambar_barang", ""),
-                    "kategori": item.get("kategori", ""),
-                    "subtotal": harga * quantity
-                }
-                formatted_cart_items.append(formatted_item)
+        return render_template(
+            "carts/order_summary.html",
+            cart_items=formatted_cart_items,
+            total_price=0  # Set awal ke 0
+        )
 
-            return render_template(
-                "carts/order_summary.html",
-                cart_items=formatted_cart_items,
-                total_price=0  # Set awal ke 0
-            )
+    except Exception as e:
+        print(f"Error in order_summary: {str(e)}")
+        return jsonify({"message": "Terjadi kesalahan"}), 500
 
-        except Exception as e:
-            print(f"Error in order_summary: {str(e)}")
-            return jsonify({"message": "Terjadi kesalahan"}), 500
-    else:
-        return redirect(url_for('user_login'))
 # route untuk mengupdate jumlah barang yang akan di pesan
 @app.route("/carts/order_summary/update-cart", methods=["POST"])
 def update_cart():
@@ -893,7 +849,7 @@ def update_cart():
         print(f"Error in update_cart: {str(e)}")
         return jsonify({"message": "Terjadi kesalahan"}), 500
 
-# route untuk melihat histori pemebelian
+
 @app.route("/carts/order_history")
 def order_history():
     if "user_id" in session and "email" in session:
@@ -911,7 +867,6 @@ def serialize_object_id(data):
         data["_id"] = str(data["_id"])
         return data
     return data
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
