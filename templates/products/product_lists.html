@@ -33,30 +33,14 @@
     <!-- Product List Page -->
     <!-- List Collection -->
     <div class="list-collection">
+      {% for kategori in barang_data %}
       <button
         class="btn btn-link text-decoration-none filter-btn"
-        data-kategori="Cat"
+        data-kategori="{{kategori.kategori}}"
       >
-        Sort by: Cat
+        Sort by: {{kategori.kategori}}
       </button>
-      <button
-        class="btn btn-link text-decoration-none filter-btn"
-        data-kategori="Tinner"
-      >
-        Sort by: Tinner
-      </button>
-      <button
-        class="btn btn-link text-decoration-none filter-btn"
-        data-kategori="Aksesoris PVC"
-      >
-        Sort by: Aksesoris PVC
-      </button>
-      <button
-        class="btn btn-link text-decoration-none filter-btn"
-        data-kategori="Lem"
-      >
-        Sort by: Lem
-      </button>
+      {% endfor %}
       <button
         class="btn btn-link text-decoration-none filter-btn"
         data-kategori="All"
