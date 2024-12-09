@@ -584,8 +584,6 @@ def reset_password(token):
     return render_template('accounts/users/reset_password.html')
 
 # rute untuk lupa password
-
-
 @app.route("/accounts/users/forget-password", methods=['GET', 'POST'])
 def forget_password():
     if request.method == 'POST':
@@ -609,7 +607,7 @@ def forget_password():
         flash('Email tidak ditemukan', 'error')
     return render_template('accounts/users/forget_password.html')
 
-
+# route edit password
 @app.route("/accounts/users/edit_password", methods=["GET", "POST"])
 def edit_password():
     if "user_id" in session and "email" in session:
@@ -660,9 +658,7 @@ def edit_password():
     else:
         return redirect(url_for("user_login"))
 
-# Rute untuk products
-
-
+# Rute untuk products list
 @app.route("/products/product_lists")
 def product_lists():
     if 'user_id' in session:
@@ -672,9 +668,7 @@ def product_lists():
     else:
         return redirect(url_for('user_login'))
 
-# filter data
-
-
+# filter 
 @app.route("/products/product_lists/filter", methods=["GET"])
 def filter_products():
 
@@ -703,25 +697,8 @@ def filter_products():
     except Exception as e:
         print(f"Error: {str(e)}")  # Log error untuk debugging
         return jsonify({"message": "An error occurred", "error": str(e)}), 500
-    # if 'user_id' in session:
-    kategori = request.args.get('kategori', ' ').upper()
-    print(request.args.get('kategori'))
-    barang_collection = db.barang
-
-    if kategori and kategori != "ALL":
-       # Cari dengan case-insensitive menggunakan regex
-        barang_data = list(barang_collection.find(
-            {"kategori": {"$regex": f"^{kategori}$", "$options": "i"}}))
-    else:
-        barang_data = list(barang_collection.find())
-
-
-    # else:
-    #     return redirect(url_for('user_login'))
 
 # route produk detail
-
-
 @app.route("/products/product_details/<product_id>")
 def product_details(product_id):
     if "user_id" in session:
@@ -739,7 +716,7 @@ def product_details(product_id):
     else:
         return redirect(url_for("user_login"))
 
-
+# route untuk menambahkan barang ke keranjang
 @app.route("/products/product_details/add", methods=["POST"])
 def add_to_cart():
     data = request.get_json()
@@ -804,7 +781,7 @@ def add_to_cart():
         "remaining_stock": stock - quantity  # Tampilkan stok yang tersisa
     }), 200
 
-
+# route detail injektor 
 @app.context_processor
 def inject_cart_quantity():
     # """Menghitung total jumlah barang di keranjang untuk semua pengguna."""
@@ -815,7 +792,7 @@ def inject_cart_quantity():
         return {"quantity": total_quantity}
     return {"quantity": 0}
 
-
+# route untuk menghitung jumlah barang di keranjang
 @app.route("/cart/quantity")
 def cart_quantity():
     # """API untuk mendapatkan jumlah total barang di keranjang."""
@@ -827,7 +804,6 @@ def cart_quantity():
     return jsonify({"quantity": 0})
 
 # Rute untuk carts
-
 @app.route("/carts/order_summary", methods=["GET"])
 def order_summary():
     try:
@@ -860,8 +836,8 @@ def order_summary():
         print(f"Error in order_summary: {str(e)}")
         return jsonify({"message": "Terjadi kesalahan"}), 500
 
-
-@app.route("/update-cart", methods=["POST"])
+# route untuk mengupdate jumlah barang yang akan di pesan
+@app.route("/carts/order_summary/update-cart", methods=["POST"])
 def update_cart():
     try:
         data = request.get_json()
@@ -922,7 +898,6 @@ def serialize_object_id(data):
         data["_id"] = str(data["_id"])
         return data
     return data
-
 
 
 if __name__ == '__main__':

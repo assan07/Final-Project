@@ -141,19 +141,21 @@
             const $amount = $(".amount");
             if (response.quantity && response.quantity > 0) {
               $amount.find("span").text(response.quantity);
-              $amount.show(); // Tampilkan elemen jika ada item
+              $amount.show();
             } else {
-              $amount.hide(); // Sembunyikan elemen jika kosong
+              $amount.hide();
             }
+             // Panggil saat halaman dimuat
+            updateNavbarQuantity();
           },
           error: function () {
             console.error("Gagal memperbarui jumlah keranjang");
           },
+          
         });
+       
       }
-
-      // Panggil saat halaman dimuat
-      updateNavbarQuantity();
+      
     });
   </script>
   <!-- Blok Skrip untuk Halaman Anak -->
