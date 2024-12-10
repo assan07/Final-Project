@@ -75,35 +75,53 @@ def home():
 
 # Rute untuk accounts/admin
 
-
 @app.route("/admin/dashboard")
 def admin_dashboard():
+    # Cek apakah admin sudah login
     if 'admin_id' not in session:
         return redirect(url_for('admin_login'))
 
-    # Dashboard data
-    total_users = db.user.count_documents({})
-    total_barang = db.barang.count_documents({})
-    total_admin = db.admin.count_documents({})
-    recent_activities = list(db.activity_log.find().sort('date', -1).limit(10))
+    # Mengambil data untuk dashboard
+    try:
+        # Total data
+        total_users = db.user.count_documents({})  # Total pengguna
+        total_barang = db.barang.count_documents({})  # Total barang
+        total_admin = db.admin.count_documents({})  # Total admin
+        total_orders = db.orders.count_documents({})  # Total pesanan
 
-    # Data Barang
-    barang_data = list(db.barang.find())
+        # Data tambahan
+        recent_activities = list(
+            db.activity_log.find().sort('date', -1).limit(10)  # Aktivitas terakhir
+        )
+        barang_data = list(db.barang.find())  # Data barang
+        data_user = list(db.user.find({}, {'password': 0}))  # Data pengguna
+        data_admin = list(db.admin.find({}, {'password': 0}))  # Data admin
 
-    # Data User
-    data_user = list(db.user.find({}, {'password': 0}))
+        # Data Orders
+        orders_data = list(db.orders.find().sort("created_at", -1))  # Data pesanan terbaru
+    except Exception as e:
+        # Tangani jika terjadi error
+        return render_template(
+            'accounts/admin/dashboard.html',
+            active_page='dashboard',
+            error_message=f"Terjadi kesalahan: {str(e)}"
+        )
 
-    # Data Admin
-    data_admin = list(db.admin.find({}, {'password': 0}))
+    # Render template dengan data dashboard
+    return render_template(
+        'accounts/admin/dashboard.html',
+        active_page='dashboard',
+        total_users=total_users,
+        total_barang=total_barang,
+        total_admin=total_admin,
+        total_orders=total_orders,  # Kirim total orders
+        recent_activities=recent_activities,
+        barang_data=barang_data,
+        data_user=data_user,
+        data_admin=data_admin,
+        orders_data=orders_data  # Kirim data orders
+    )
 
-    return render_template('accounts/admin/dashboard.html',
-                           active_page='dashboard',
-                           total_users=total_users,
-                           total_barang=total_barang,
-                           total_admin=total_admin,
-                           recent_activities=recent_activities,
-                           barang_data=barang_data,
-                           data_user=data_user, data_admin=data_admin)
 
 # Rute untuk delete admin
 
@@ -867,6 +885,9 @@ def order_summary():
 @app.route("/carts/order_summary/update-cart", methods=["POST"])
 def update_cart():
     try:
+        if 'user_id' not in session:
+            return jsonify({"message": "Silakan login terlebih dahulu"}), 401
+        
         data = request.get_json()
         item_id = data.get("item_id")
         quantity = int(data.get("quantity", 1))
@@ -963,6 +984,14 @@ def submit_order():
         orders_collection = db.orders
         cart_collection = db.cart
         barang_collection = db.barang
+        users_collection = db.user
+
+        # Ambil data pengguna
+        user = users_collection.find_one({"_id": ObjectId(session['user_id'])})
+        if not user:
+            return jsonify({"message": "Pengguna tidak ditemukan"}), 404
+
+        full_name = user.get('full_name', 'Anonymous')  # Default jika nama tidak ditemukan
 
         # Hitung total dan validasi stok
         total_amount = 0
@@ -1004,6 +1033,7 @@ def submit_order():
         # Buat order baru
         order_data = {
             "user_id": session['user_id'],
+            "full_name": full_name,
             "items": order_items,
             "total_amount": total_amount,
             "payment_method": data['payment_method'],
@@ -1029,6 +1059,36 @@ def submit_order():
     except Exception as e:
         print(f"Error in submit_order: {str(e)}")
         return jsonify({"message": "Terjadi kesalahan saat memproses pesanan"}), 500
+
+@app.route('/orders/details/<order_id>', methods=['GET'])
+def get_order_details(order_id):
+    from bson import ObjectId  # Untuk konversi ObjectId
+    # Cari detail pesanan berdasarkan _id
+    orders_collection = db.orders
+    order = orders_collection.find_one({'_id': ObjectId(order_id)})
+    if order:
+        return jsonify({
+            'id': str(order['_id']),
+            'user_id': order['user_id'],
+            'full_name': order['full_name'],
+            'total_amount': order['total_amount'],
+            'payment_method': order['payment_method'],
+            'alamat': order['alamat'],
+            'status': order['status'],
+            'created_at': order['created_at'],
+            'items': order.get('items', []),  # Pastikan data items ada
+        })
+    return jsonify({'error': 'Order not found'}), 404
+
+@app.route('/orders/delete/<order_id>', methods=['POST'])
+def delete_order(order_id):
+    from bson import ObjectId  # Untuk konversi ObjectId
+    # Hapus pesanan berdasarkan _id
+    orders_collection = db.orders
+    result = orders_collection.delete_one({'_id': ObjectId(order_id)})
+    if result.deleted_count > 0:
+        return jsonify({'success': True})
+    return jsonify({'error': 'Order not found'}), 404
 
 
 @app.route("/carts/order_history")
