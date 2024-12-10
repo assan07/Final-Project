@@ -1124,7 +1124,7 @@ def order_history():
         return redirect(url_for('user_login'))
     
 
-@app.route('/remove-from-order', methods=['POST'])
+@app.route('/carts/order_history/remove-from-order', methods=['POST'])
 def remove_from_order():
     try:
         data = request.json

@@ -136,52 +136,56 @@
         </div>
 
         <!-- Riwayat Pembelian -->
-        <div class="history-cont my-5 col-md-6 mt-5">
-          <div class="card bg-light p-3">
-            <!-- Product List -->
-            <div class="container">
-              {% for order in orders %}
-              <div class="order-items">
-                {% for item in order.get('items', []) %}
-                <div class="row mb-3 align-items-center">
-                  <div class="col-2">
-                    <img
-                      src="{{ url_for('static', filename='images/gambar_barang/' + item.get('gambar_barang', 'placeholder.png')) }}"
-                      class="img-fluid rounded"
-                      alt="{{ item.get('nama_barang', 'Product Image') }}"
-                    />
-                  </div>
-                  <div class="col-8">
-                    <h5>{{ item.get('nama_barang', 'Nama Produk') }}</h5>
-                    <p>Quantity: {{ item.get('quantity', 0) }}</p>
-                    <p>Total: Rp. {{ item.get('subtotal', 0) }}</p>
-                  </div>
-                  <div class="col-2 button-fiture">
-                    <!-- Beli Lagi Button -->
-                    <a
-                      href="{{ url_for('product_details', product_id=item.get('product_id')) }}"
-                      class="btn btn-success mb-2"
-                    >
-                      <i class="fa-solid fa-cart-arrow-down"></i> Beli Lagi
-                    </a>
-
-                    <div class="item-row">
-                      <span>Nama Produk: {{ item['nama'] }}</span>
-                      <button
-                        class="btn btn-danger remove-item-btn"
-                        data-order-id="{{ order['_id'] }}"
-                        data-product-id="{{ item['product_id'] }}"
-                      >
-                        <i class="fa-solid fa-trash-arrow-up"></i> Hapus
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                {% endfor %}
+        <div class="history-cont card my-5 col-md-7 mt-5">
+          <!-- Product List -->
+          {% if order %} {% for order in orders %}
+          <div class="order-items">
+            {% for item in order.get('items', []) %}
+            <div class="row mb-3 align-items-center">
+              <div class="col-3">
+                <img
+                  src="{{ url_for('static', filename='images/gambar_barang/' + item.get('gambar_barang', 'placeholder.png')) }}"
+                  class="img-fluid rounded"
+                  alt="{{ item.get('nama_barang', 'Product Image') }}"
+                />
               </div>
-              {% endfor %}
+              <div class="col-6">
+                <h5>{{ item.get('nama_barang', 'Nama Produk') }}</h5>
+                <p>Quantity: {{ item.get('quantity', 0) }}</p>
+                <p>Total: Rp. {{ item.get('subtotal', 0) }}</p>
+              </div>
+              <div class="col-3 button-fiture">
+                <!-- Beli Lagi Button -->
+                <div class="btn-beli">
+                  <a
+                    href="{{ url_for('product_details', product_id=item.get('product_id')) }}"
+                    class="btn btn-success mb-2 w-100"
+                  >
+                    <i class="fa-solid fa-cart-arrow-down"></i> Beli Lagi
+                  </a>
+                </div>
+
+                <div class="item-row">
+                  <button
+                    class="btn btn-danger remove-item-btn"
+                    data-order-id="{{ order['_id'] }}"
+                    data-product-id="{{ item['product_id'] }}"
+                  >
+                    <i class="fa-solid fa-trash-arrow-up"></i> Hapus
+                  </button>
+                </div>
+              </div>
             </div>
+            {% endfor %}
           </div>
+          {% endfor %} {% else %}
+          <div class="alert alert-info mt-3">
+            Anda belum melakukan checkout barang.
+            <a href="/products/product_lists" class="text-decoration-underline"
+              >Belanja sekarang!</a
+            >
+          </div>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -206,22 +210,17 @@
           return;
         }
 
-        // Konfirmasi sebelum menghapus
-        //if (!confirm("Apakah Anda yakin ingin menghapus item ini?")) {
-         // return;
-        //}
-
         $.ajax({
-          url: "/remove-from-order",
+          url: "/carts/order_history/remove-from-order",
           type: "POST",
           contentType: "application/json",
           data: JSON.stringify({ order_id: orderId, product_id: productId }),
           success: function (response) {
-            alert(response.message);
+            
+            location.reload();
 
             // Hapus elemen item dari DOM
             $button.closest(".item-row").remove();
-            location.reload()
 
             // Tambahkan logika tambahan jika diperlukan, misalnya memperbarui total harga
           },
