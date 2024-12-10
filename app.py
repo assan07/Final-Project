@@ -786,6 +786,7 @@ def add_to_cart():
         cart_collection.insert_one({
             "product_id": str(product["_id"]),
             "gambar_barang": product.get("foto"),
+            "nama_barang": product.get("nama_barang"),
             "brand": product.get("brand"),
             "harga": product.get("harga"),
             "quantity": quantity,
@@ -840,6 +841,7 @@ def order_summary():
                 formatted_item = {
                     "id": str(item["_id"]),
                     "brand": item.get("brand", ""),
+                    "nama_barang": item.get("nama_barang", "Nama Barang"),
                     "harga": harga,
                     "quantity": quantity,
                     "gambar_barang": item.get("gambar_barang", ""),
@@ -988,6 +990,8 @@ def submit_order():
             # Siapkan item untuk order
             order_items.append({
                 "product_id": cart_item["product_id"],
+                "gambar_barang": cart_item.get("gambar_barang", "Gambar Barang"),
+                "nama_barang": cart_item.get("nama_barang", "Nama Barang"),
                 "brand": cart_item.get("brand", ""),
                 "harga": cart_item.get("harga", 0),
                 "quantity": item['quantity'],
@@ -1029,19 +1033,70 @@ def submit_order():
     except Exception as e:
         print(f"Error in submit_order: {str(e)}")
         return jsonify({"message": "Terjadi kesalahan saat memproses pesanan"}), 500
+    
+@app.template_filter('format_currency')
+def format_currency(value):
+    try:
+        return "{:,.0f}".format(value).replace(",", ".")
+    except:
+        return value
 
 
+# route histori pembelian
+    
 @app.route("/carts/order_history")
 def order_history():
-    if "user_id" in session and "email" in session:
-        email = session["email"]
-        full_name = session.get("full_name", "Guest")
-        return render_template("carts/order_history.html", full_name=full_name, email=email)
+    if "user_id" in session:
+        orders_collection = db.orders
+        user_id = session["user_id"]
+
+        # Ambil semua pesanan berdasarkan user_id
+        orders = list(orders_collection.find({"user_id": user_id}))
+        
+        # Konversi ObjectId ke string untuk menghindari error di template
+        for order in orders:
+            order["_id"] = str(order["_id"])
+            for item in order.get("items", []):
+                item["product_id"] = str(item["product_id"])
+
+        return render_template("carts/order_history.html", orders=orders)
     else:
         return redirect(url_for('user_login'))
+    
+
+@app.route('/remove-from-order', methods=['POST'])
+def remove_from_order():
+    try:
+        data = request.json
+        order_id = data.get("order_id")
+        product_id = data.get("product_id")
+
+        if not order_id or not product_id:
+            return jsonify({"message": "Order ID atau Product ID tidak valid"}), 400
+
+        # Akses koleksi orders
+        orders_collection = db.orders
+
+        # Hapus item berdasarkan product_id dari order_id
+        result = orders_collection.update_one(
+            {"_id": ObjectId(order_id)},
+            {"$pull": {"items": {"product_id": product_id}}}  # Menggunakan product_id sebagai filter
+        )
+
+        if result.modified_count == 0:
+            return jsonify({"message": "Item tidak ditemukan dalam order"}), 404
+
+        # Kembalikan respons sukses
+        return jsonify({"message": "Item berhasil dihapus"}), 200
+
+    except Exception as e:
+        print(f"Error in remove_from_order: {str(e)}")
+        return jsonify({"message": "Terjadi kesalahan saat menghapus item"}), 500
+
+
+
 
 # Fungsi untuk mengubah ObjectId menjadi string
-
 
 def serialize_object_id(data):
     if isinstance(data, list):

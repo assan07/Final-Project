@@ -35,7 +35,7 @@
                     alt="{{ item.brand }}" class="img-fluid" style="object-fit: cover;" />
                 </div>
                 <div>
-                  <p class="mb-1 fw-bold">{{ item.brand }}</p>
+                  <p class="mb-1 fw-bold">{{ item.nama_barang }}</p>
                   <!-- Tambahkan ini untuk harga per item -->
 
                   <p class="mb-0">
@@ -360,7 +360,7 @@
             confirmButtonText: 'OK'
           }).then((result) => {
             if (result.isConfirmed) {
-              window.location.href = "/products/product_lists";
+              window.location.href = "/carts/order_summary";
             }
           });
         },
