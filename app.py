@@ -971,14 +971,14 @@ def submit_order():
             return jsonify({"message": "Silakan login terlebih dahulu"}), 401
         
          # Validasi: cek apakah user memiliki pesanan yang belum selesai
-        pending_order = db.orders.find_one({
-            "user_id": session['user_id'],
-            "status": "pending"
-        })
-        if pending_order:
-            return jsonify({
-                "message": "Anda sudah memiliki pesanan yang belum diproses. Selesaikan pesanan tersebut sebelum membuat pesanan baru."
-            }), 400
+        # pending_order = db.orders.find_one({
+        #     "user_id": session['user_id'],
+        #     "status": "pending"
+        # })
+        # if pending_order:
+        #     return jsonify({
+        #         "message": "Anda sudah memiliki pesanan yang belum diproses. Selesaikan pesanan tersebut sebelum membuat pesanan baru."
+        #     }), 400
 
 
         data = request.get_json()
@@ -1044,6 +1044,9 @@ def submit_order():
                 {"_id": ObjectId(cart_item["product_id"])},
                 {"$set": {"stock": new_stock}}
             )
+            
+        current_time = datetime.now()
+        formatted_date = current_time.strftime("%A %d-%m-%Y %H:%M:%S")
 
         # Buat order baru
         order_data = {
@@ -1054,7 +1057,7 @@ def submit_order():
             "payment_method": data['payment_method'],
             "alamat": data['alamat'],
             "status": "pending",
-            "created_at": datetime.now()
+            "created_at": formatted_date
         }
 
         # Insert order
