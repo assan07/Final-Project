@@ -43,13 +43,14 @@
 
         <!-- Product Details -->
         <div class="col-md-8">
-          <h4>{{ product['nama_barang'] }}</h4>
-          <p class="text-muted">Kategori: {{ product['kategori'] }}</p>
+          <h3>{{ product['nama_barang'] }}</h3>
+          <p class="text-muted mb-0  pt-3">Kategori: {{ product['kategori'] }}</p>
+          <p class="text-muted">Brand: {{ product['brand'] }}</p>
           <h5 class="text-danger">
             Rp {{ "{:,.0f}".format(product['harga']) }}
           </h5>
           <p class="mb-0">Terjual: <strong>{{ product['terjual'] }}</strong></p>
-          <p>Info Produk: <strong>{{ product['netto'] }}</strong></p>
+          <p>Deskripsi Produk: <strong>{{ product['netto'] }}</strong></p>
 
           <!-- Quantity and Add to Cart -->
           <div class="d-flex align-items-center mt-3">
