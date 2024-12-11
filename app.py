@@ -969,6 +969,17 @@ def submit_order():
         # Cek autentikasi
         if 'user_id' not in session:
             return jsonify({"message": "Silakan login terlebih dahulu"}), 401
+        
+         # Validasi: cek apakah user memiliki pesanan yang belum selesai
+        pending_order = db.orders.find_one({
+            "user_id": session['user_id'],
+            "status": "pending"
+        })
+        if pending_order:
+            return jsonify({
+                "message": "Anda sudah memiliki pesanan yang belum diproses. Selesaikan pesanan tersebut sebelum membuat pesanan baru."
+            }), 400
+
 
         data = request.get_json()
 
