@@ -41,7 +41,6 @@ def allowed_file(filename):
 
 # Context Processor : untuk menyediakan variabel seperti full_name dan profile_pic ke semua template.
 
-
 @app.context_processor
 def inject_user():
     if 'user_id' in session:
@@ -223,7 +222,7 @@ def admin_data_barang():
 
 @app.route("/accounts/admin/data_barang/tambah_barang", methods=["GET", "POST"])
 def tambah_barang():
-    if 'admin_id' not in session:  # Tambahkan pengecekan login admin
+    if 'admin_id' not in session: 
         return jsonify({"status": "error", "message": "Unauthorized"}), 401
 
     if request.method == "GET":
