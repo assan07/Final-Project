@@ -75,6 +75,7 @@ def home():
 
 # Rute untuk accounts/admin
 
+
 @app.route("/admin/dashboard")
 def admin_dashboard():
     # Cek apakah admin sudah login
@@ -98,7 +99,8 @@ def admin_dashboard():
         data_admin = list(db.admin.find({}, {'password': 0}))  # Data admin
 
         # Data Orders
-        orders_data = list(db.orders.find().sort("created_at", -1))  # Data pesanan terbaru
+        orders_data = list(db.orders.find().sort(
+            "created_at", -1))  # Data pesanan terbaru
     except Exception as e:
         # Tangani jika terjadi error
         return render_template(
@@ -221,52 +223,96 @@ def admin_data_barang():
 
 @app.route("/accounts/admin/data_barang/tambah_barang", methods=["GET", "POST"])
 def tambah_barang():
+    if 'admin_id' not in session:  # Tambahkan pengecekan login admin
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
     if request.method == "GET":
         return render_template("accounts/admin/data_barang.html")
 
-    # Proses metode POST
-    kategori = request.form.get('kategori')
-    nama_barang = request.form.get('nama_barang')
-    brand = request.form.get('brand')
-    netto = request.form.get('netto')
-    warna = request.form.get('warna')
-    harga = request.form.get('harga')  # Harga akan dikonversi menjadi float
-    stock = request.form.get('stock')  # Stok akan dikonversi menjadi integer
-
-    # Konversi harga menjadi float
     try:
-        harga = float(harga)
-    except ValueError:
-        return jsonify({"status": "error", "message": "Nilai harga harus berupa angka."}), 400
+        # Validasi input wajib
+        required_fields = ['kategori', 'nama_barang',
+                           'brand', 'netto', 'warna', 'harga', 'stock']
+        for field in required_fields:
+            if not request.form.get(field):
+                return jsonify({
+                    "status": "error",
+                    "message": f"Field {field} harus diisi."
+                }), 400
 
-    # Konversi stok menjadi integer
-    try:
-        stock = int(stock)
-    except ValueError:
-        return jsonify({"status": "error", "message": "Nilai stok harus berupa angka."}), 400
+        # Proses metode POST
+        kategori = request.form.get('kategori')
+        nama_barang = request.form.get('nama_barang')
+        brand = request.form.get('brand')
+        netto = request.form.get('netto')
+        warna = request.form.get('warna')
 
-    # Mengambil file foto
-    foto = request.files.get('foto')
-    if foto and allowed_file(foto.filename):
+        # Konversi harga menjadi float
+        try:
+            harga = float(request.form.get('harga'))
+        except ValueError:
+            return jsonify({
+                "status": "error",
+                "message": "Nilai harga harus berupa angka."
+            }), 400
+
+        # Konversi stok menjadi integer
+        try:
+            stock = int(request.form.get('stock'))
+        except ValueError:
+            return jsonify({
+                "status": "error",
+                "message": "Nilai stok harus berupa angka."
+            }), 400
+
+        # Mengambil file foto
+        foto = request.files.get('foto')
+        if not foto:
+            return jsonify({
+                "status": "error",
+                "message": "File foto harus diupload."
+            }), 400
+
+        if not allowed_file(foto.filename):
+            return jsonify({
+                "status": "error",
+                "message": "Format file tidak didukung. Gunakan PNG, JPG, atau JPEG."
+            }), 400
+
         foto_filename = secure_filename(foto.filename)
+
+        # Pastikan direktori upload ada
+        if not os.path.exists(app.config['UPLOAD_FOLDER_BARANG']):
+            os.makedirs(app.config['UPLOAD_FOLDER_BARANG'])
+
+        # Save foto
         foto.save(os.path.join(
             app.config['UPLOAD_FOLDER_BARANG'], foto_filename))
-    else:
-        return jsonify({"status": "error", "message": "File tidak valid atau tidak ada."}), 400
 
-    # Simpan ke database
-    db.barang.insert_one({
-        "kategori": kategori,
-        "nama_barang": nama_barang,
-        "brand": brand,
-        "netto": netto,
-        "warna": warna,
-        "harga": harga,
-        "stock": stock,
-        "foto": foto_filename
-    })
+        # Simpan ke database
+        result = db.barang.insert_one({
+            "kategori": kategori,
+            "nama_barang": nama_barang,
+            "brand": brand,
+            "netto": netto,
+            "warna": warna,
+            "harga": harga,
+            "stock": stock,
+            "foto": foto_filename
+        })
 
-    return jsonify({"status": "success"}), 200
+        return jsonify({
+            "status": "success",
+            "message": "Barang berhasil ditambahkan"
+        }), 200
+
+    except Exception as e:
+        print(f"Error in tambah_barang: {str(e)}")  # Logging error
+        return jsonify({
+            "status": "error",
+            "message": "Terjadi kesalahan saat menambah barang",
+            "error": str(e)
+        }), 500
 
 # Rute untuk delete barang
 
@@ -889,7 +935,7 @@ def update_cart():
     try:
         if 'user_id' not in session:
             return jsonify({"message": "Silakan login terlebih dahulu"}), 401
-        
+
         data = request.get_json()
         item_id = data.get("item_id")
         quantity = int(data.get("quantity", 1))
@@ -969,7 +1015,7 @@ def submit_order():
         # Cek autentikasi
         if 'user_id' not in session:
             return jsonify({"message": "Silakan login terlebih dahulu"}), 401
-        
+
         data = request.get_json()
 
         # Validasi data
@@ -993,7 +1039,8 @@ def submit_order():
         if not user:
             return jsonify({"message": "Pengguna tidak ditemukan"}), 404
 
-        full_name = user.get('full_name', 'Anonymous')  # Default jika nama tidak ditemukan
+        # Default jika nama tidak ditemukan
+        full_name = user.get('full_name', 'Anonymous')
 
         # Hitung total dan validasi stok
         total_amount = 0
@@ -1033,7 +1080,7 @@ def submit_order():
                 {"_id": ObjectId(cart_item["product_id"])},
                 {"$set": {"stock": new_stock}}
             )
-            
+
         current_time = datetime.now()
         formatted_date = current_time.strftime("%A %d-%m-%Y %H:%M:%S")
 
@@ -1066,7 +1113,8 @@ def submit_order():
     except Exception as e:
         print(f"Error in submit_order: {str(e)}")
         return jsonify({"message": "Terjadi kesalahan saat memproses pesanan"}), 500
-    
+
+
 @app.template_filter('format_currency')
 def format_currency(value):
     try:
@@ -1074,39 +1122,104 @@ def format_currency(value):
     except:
         return value
 
-@app.route('/orders/details/<order_id>', methods=['GET'])
-def get_order_details(order_id):
-    from bson import ObjectId  # Untuk konversi ObjectId
-    # Cari detail pesanan berdasarkan _id
-    orders_collection = db.orders
-    order = orders_collection.find_one({'_id': ObjectId(order_id)})
-    if order:
-        return jsonify({
-            'id': str(order['_id']),
-            'user_id': order['user_id'],
-            'full_name': order['full_name'],
-            'total_amount': order['total_amount'],
-            'payment_method': order['payment_method'],
-            'alamat': order['alamat'],
-            'status': order['status'],
-            'created_at': order['created_at'],
-            'items': order.get('items', []),  # Pastikan data items ada
-        })
-    return jsonify({'error': 'Order not found'}), 404
 
-@app.route('/orders/delete/<order_id>', methods=['POST'])
+@app.route("/admin/delete-order/<order_id>", methods=["DELETE"])
 def delete_order(order_id):
-    from bson import ObjectId  # Untuk konversi ObjectId
-    # Hapus pesanan berdasarkan _id
-    orders_collection = db.orders
-    result = orders_collection.delete_one({'_id': ObjectId(order_id)})
-    if result.deleted_count > 0:
-        return jsonify({'success': True})
-    return jsonify({'error': 'Order not found'}), 404
+    # Cek apakah admin sudah login
+    if 'admin_id' not in session:
+        return jsonify({"success": False, "message": "Silakan login terlebih dahulu"}), 401
+
+    try:
+        # Validasi ObjectId
+        if not ObjectId.is_valid(order_id):
+            return jsonify({"success": False, "message": "ID order tidak valid"}), 400
+
+        # Hapus order
+        result = db.orders.delete_one({"_id": ObjectId(order_id)})
+
+        if result.deleted_count == 0:
+            return jsonify({"success": False, "message": "Order tidak ditemukan"}), 404
+
+        return jsonify({"success": True, "message": "Order berhasil dihapus"}), 200
+
+    except Exception as e:
+        print(f"Error in delete_order: {str(e)}")
+        return jsonify({
+            "success": False,
+            "message": "Terjadi kesalahan saat menghapus order",
+            "error": str(e)
+        }), 500
+
+
+@app.route("/admin/order-details/<order_id>")
+def get_order_details(order_id):
+    # Cek apakah admin sudah login
+    if 'admin_id' not in session:
+        return jsonify({"success": False, "message": "Silakan login terlebih dahulu"}), 401
+
+    try:
+        # Validasi ObjectId
+        if not ObjectId.is_valid(order_id):
+            return jsonify({"success": False, "message": "ID order tidak valid"}), 400
+
+        # Ambil detail order
+        order = db.orders.find_one({"_id": ObjectId(order_id)})
+
+        if not order:
+            return jsonify({"success": False, "message": "Order tidak ditemukan"}), 404
+
+        # Convert ObjectId ke string untuk JSON
+        order['_id'] = str(order['_id'])
+
+        return jsonify({"success": True, "data": order}), 200
+
+    except Exception as e:
+        print(f"Error in get_order_details: {str(e)}")
+        return jsonify({
+            "success": False,
+            "message": "Terjadi kesalahan saat mengambil detail order",
+            "error": str(e)
+        }), 500
+
+
+@app.route("/admin/update-order-status/<order_id>", methods=["POST"])
+def update_order_status(order_id):
+    if 'admin_id' not in session:
+        return jsonify({"success": False, "message": "Silakan login terlebih dahulu"}), 401
+
+    try:
+        new_status = request.json.get('status')
+
+        # Validasi status
+        if new_status not in ['pending', 'confirmed', 'completed']:
+            return jsonify({"success": False, "message": "Status tidak valid"}), 400
+
+        # Update status
+        result = db.orders.update_one(
+            {"_id": ObjectId(order_id)},
+            {"$set": {"status": new_status}}
+        )
+
+        if result.modified_count == 0:
+            return jsonify({"success": False, "message": "Order tidak ditemukan atau status tidak berubah"}), 404
+
+        return jsonify({
+            "success": True,
+            "message": f"Status berhasil diubah menjadi {new_status}"
+        }), 200
+
+    except Exception as e:
+        print(f"Error in update_order_status: {str(e)}")
+        return jsonify({
+            "success": False,
+            "message": "Terjadi kesalahan saat mengupdate status",
+            "error": str(e)
+        }), 500
 
 
 # route histori pembelian
-    
+
+
 @app.route("/carts/order_history")
 def order_history():
     if "user_id" in session:
@@ -1115,7 +1228,7 @@ def order_history():
 
         # Ambil semua pesanan berdasarkan user_id
         orders = list(orders_collection.find({"user_id": user_id}))
-        
+
         # Konversi ObjectId ke string untuk menghindari error di template
         for order in orders:
             order["_id"] = str(order["_id"])
@@ -1125,7 +1238,7 @@ def order_history():
         return render_template("carts/order_history.html", orders=orders)
     else:
         return redirect(url_for('user_login'))
-    
+
 
 @app.route('/carts/order_history/remove-from-order', methods=['POST'])
 def remove_from_order():
@@ -1143,7 +1256,8 @@ def remove_from_order():
         # Hapus item berdasarkan product_id dari order_id
         result = orders_collection.update_one(
             {"_id": ObjectId(order_id)},
-            {"$pull": {"items": {"product_id": product_id}}}  # Menggunakan product_id sebagai filter
+            # Menggunakan product_id sebagai filter
+            {"$pull": {"items": {"product_id": product_id}}}
         )
 
         if result.modified_count == 0:
@@ -1156,10 +1270,8 @@ def remove_from_order():
         print(f"Error in remove_from_order: {str(e)}")
         return jsonify({"message": "Terjadi kesalahan saat menghapus item"}), 500
 
-
-
-
 # Fungsi untuk mengubah ObjectId menjadi string
+
 
 def serialize_object_id(data):
     if isinstance(data, list):

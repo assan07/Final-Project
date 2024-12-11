@@ -11,6 +11,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/data_user.css') }}" />
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     .navbar {
       display: flex;
@@ -113,6 +114,51 @@
 
     .btn i {
       margin-right: 4px;
+    }
+
+    .detail-modal-container {
+      padding: 15px;
+    }
+
+    /* Modal popup - mengatur ukuran dan tampilan kotak modal */
+    .detail-modal-popup {
+      width: auto !important;
+      max-width: 700px !important;
+      margin: 1.75rem auto;
+      font-size: 0.9rem !important;
+    }
+
+    /* Header modal */
+    .detail-modal-header {
+      border-bottom: 1px solid #e9ecef;
+      padding-bottom: 1rem;
+    }
+
+    /* Tombol close */
+    .detail-modal-close {
+      padding: 0.5rem !important;
+    }
+
+    /* Styling tambahan untuk tabel */
+    .table {
+      font-size: 0.9rem;
+    }
+
+    .table th {
+      background-color: #f8f9fa;
+      white-space: nowrap;
+    }
+
+    /* Responsif untuk layar kecil */
+    @media (max-width: 768px) {
+      .detail-modal-popup {
+        width: 90% !important;
+        margin: 1rem auto;
+      }
+
+      .table {
+        font-size: 0.8rem;
+      }
     }
   </style>
 </head>
@@ -283,7 +329,7 @@
                         {% else %} No Image {% endif %}
                       </td>
                       <td>
-                        <button class="btn btn-danger btn-sm delete-btn" type="button" data-id="{{ barang._id }}">
+                        <button class="btn btn-danger btn-sm delete-barang-btn" type="button" data-id="{{ barang._id }}">
                           <i class="fa fa-trash"></i> Delete
                         </button>
                         <button class="btn btn-danger btn-sm edit-btn" type="button" data-id="{{ barang._id }}"
@@ -454,7 +500,7 @@
                       <td>*****</td>
                       <td>
                         <!-- Tombol Delete untuk Data User -->
-                        <button class="btn btn-danger btn-sm delete-btn" type="button" data-id="{{ user._id }}">
+                        <button class="btn btn-danger btn-sm delete-user-btn" type="button" data-id="{{ user._id }}">
                           <i class="fa fa-trash"></i> Delete
                         </button>
                       </td>
@@ -504,7 +550,7 @@
                       <td>*****</td>
                       <td>
                         <!-- Tombol Delete untuk Data Admin -->
-                        <button class="btn btn-danger btn-sm delete-btn" type="button" data-id="{{ admin._id }}">
+                        <button class="btn btn-danger btn-sm delete-admin-btn" data-id="{{ admin._id }}">
                           <i class="fa fa-trash"></i> Delete
                         </button>
                       </td>
@@ -568,7 +614,17 @@
                       <!-- <td>{{ item.get('nama_barang', 'Nama Produk') }}</td> -->
                       <td>{{ order.total_amount }}</td>
                       <td>{{ order.payment_method }}</td>
-                      <td>{{ order.status }}</td>
+                      <td>
+                        {% if order.status == 'pending' %}
+                        <span class="badge text-bg-warning">Pending</span>
+                        {% elif order.status == 'confirmed' %}
+                        <span class="badge text-bg-info">Confirmed</span>
+                        {% elif order.status == 'completed' %}
+                        <span class="badge text-bg-success">Completed</span>
+                        {% else %}
+                        <span class="badge text-bg-secondary">{{ order.status }}</span>
+                        {% endif %}
+                      </td>
                       <td>
                         <!-- Tombol Details -->
                         <button class="btn btn-info btn-sm detail-btn" data-id="{{ order._id }}">
@@ -709,16 +765,12 @@
         var stock = document.getElementById("stock").value;
         var foto = document.getElementById("foto").files[0]; // Ambil file foto
 
-        if (
-          !kategori ||
-          !nama_barang ||
-          !brand ||
-          !netto ||
-          !warna ||
-          !harga ||
-          !stock
-        ) {
-          alert("Semua kolom harus diisi!");
+        if (!kategori || !nama_barang || !brand || !netto || !warna || !harga || !stock) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Semua kolom harus diisi!'
+          });
           return;
         }
 
@@ -740,98 +792,133 @@
           url: "/accounts/admin/data_barang/tambah_barang",
           type: "POST",
           data: formData,
-          processData: false, // Jangan memproses data sebagai string
-          contentType: false, // Biarkan jQuery mengatur content type sesuai kebutuhan
+          processData: false,
+          contentType: false,
           success: function (response) {
-            alert("Barang berhasil disimpan");
-            location.reload();
+            Swal.fire({
+              icon: 'success',
+              title: 'Berhasil!',
+              text: 'Barang berhasil disimpan',
+              showConfirmButton: false,
+              timer: 1500
+            }).then(() => {
+              location.reload();
+            });
           },
           error: function () {
-            alert("Terjadi kesalahan. Silakan coba lagi...");
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'Terjadi kesalahan. Silakan coba lagi...'
+            });
           },
         });
       });
 
     // Delete Barang
     $(document).ready(function () {
-      // Event listener untuk tombol delete
-      $("#barangTableBody").on("click", ".delete-btn", function () {
+      $("#barangTableBody").on("click", ".delete-barang-btn", function () {
         const barangId = $(this).data("id");
 
-        // Tampilkan dialog konfirmasi
-        const confirmation = confirm("Anda yakin akan menghapus barang ini?");
-        if (confirmation) {
-          // Kirim permintaan DELETE menggunakan AJAX
-          $.ajax({
-            url: "/accounts/admin/data_barang/delete_barang",
-            type: "POST",
-            data: {
-              id: barangId,
-            },
-            success: function (response) {
-              if (response.status === "success") {
-                alert(response.message);
-
-                // Hapus baris barang dari tabel
-                $(
-                  `#barangTableBody tr:has(td button[data-id='${barangId}'])`
-                ).remove();
-
-                // Perbarui nomor urut secara dinamis
-                $("#barangTableBody tr").each(function (index) {
-                  $(this)
-                    .find("td:first")
-                    .text(index + 1);
+        Swal.fire({
+          title: 'Apakah Anda yakin?',
+          text: "Barang yang dihapus tidak dapat dikembalikan!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Ya, hapus!',
+          cancelButtonText: 'Batal'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $.ajax({
+              url: "/accounts/admin/data_barang/delete_barang",
+              type: "POST",
+              data: { id: barangId },
+              success: function (response) {
+                if (response.status === "success") {
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: response.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                  }).then(() => {
+                    // Hapus baris dari tabel
+                    $(`#barangTableBody tr:has(td button[data-id='${barangId}'])`).remove();
+                    // Update nomor urut
+                    $("#barangTableBody tr").each(function (index) {
+                      $(this).find("td:first").text(index + 1);
+                    });
+                  });
+                } else {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Gagal menghapus data.'
+                  });
+                }
+              },
+              error: function () {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'Terjadi kesalahan pada server.'
                 });
-              } else {
-                alert("Gagal menghapus data.");
               }
-            },
-            error: function () {
-              alert("Terjadi kesalahan pada server.");
-            },
-          });
-        }
+            });
+          }
+        });
       });
     });
 
     // Delete user
-    $(document).ready(function () {
-      // Event listener untuk tombol delete
-      $("#userTableBody").on("click", ".delete-btn", function () {
-        const userId = $(this).data("id");
+    $("#userTableBody").on("click", ".delete-user-btn", function () {
+      const userId = $(this).data("id");
 
-        // Tampilkan dialog konfirmasi
-        const confirmation = confirm("Anda yakin akan menghapus user ini?");
-        if (confirmation) {
-          // Kirim permintaan DELETE menggunakan AJAX
+      Swal.fire({
+        title: 'Apakah Anda yakin?',
+        text: "User yang dihapus tidak dapat dikembalikan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal'
+      }).then((result) => {
+        if (result.isConfirmed) {
           $.ajax({
             url: "/accounts/admin/data_user/delete_user",
             type: "POST",
-            data: {
-              id: userId,
-            },
+            data: { id: userId },
             success: function (response) {
               if (response.status === "success") {
-                alert(response.message);
-
-                // Hapus baris user dari tabel
-                $(
-                  `#userTableBody tr:has(td button[data-id='${userId}'])`
-                ).remove();
-
-                // Perbarui nomor urut secara dinamis
-                $("#userTableBody tr").each(function (index) {
-                  $(this)
-                    .find("td:first")
-                    .text(index + 1);
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Berhasil!',
+                  text: response.message,
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  $(`#userTableBody tr:has(td button[data-id='${userId}'])`).remove();
+                  $("#userTableBody tr").each(function (index) {
+                    $(this).find("td:first").text(index + 1);
+                  });
                 });
               } else {
-                alert("Gagal menghapus data.");
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'Gagal menghapus data.'
+                });
               }
             },
             error: function () {
-              alert("Terjadi kesalahan pada server.");
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Terjadi kesalahan pada server.'
+              });
             },
           });
         }
@@ -839,49 +926,64 @@
     });
 
     // Delete admin
+    // Delete Admin
     $(document).ready(function () {
-      // Event listener untuk tombol delete
-      $("#adminTableBody").on("click", ".delete-btn", function () {
+      // Gunakan class yang lebih spesifik: delete-admin-btn
+      $("#adminTableBody").on("click", ".delete-admin-btn", function () {
         const adminId = $(this).data("id");
 
-        // Tampilkan dialog konfirmasi
-        const confirmation = confirm("Anda yakin akan menghapus admin ini?");
-        if (confirmation) {
-          // Kirim permintaan DELETE menggunakan AJAX
-          $.ajax({
-            url: "/accounts/admin/data_admin/delete_admin",
-            type: "POST",
-            data: {
-              id: adminId,
-            },
-            success: function (response) {
-              if (response.status === "success") {
-                alert(response.message);
-
-                // Hapus baris admin dari tabel
-                $(
-                  `#adminTableBody tr:has(td button[data-id='${adminId}'])`
-                ).remove();
-
-                // Perbarui nomor urut secara dinamis
-                $("#adminTableBody tr").each(function (index) {
-                  $(this)
-                    .find("td:first")
-                    .text(index + 1);
+        Swal.fire({
+          title: 'Apakah Anda yakin?',
+          text: "Admin yang dihapus tidak dapat dikembalikan!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Ya, hapus!',
+          cancelButtonText: 'Batal'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $.ajax({
+              url: "/accounts/admin/data_admin/delete_admin",
+              type: "POST",
+              data: { id: adminId },
+              success: function (response) {
+                if (response.status === "success") {
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: response.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                  }).then(() => {
+                    // Hapus baris admin dari tabel
+                    $(`#adminTableBody tr:has(td button[data-id='${adminId}'])`).remove();
+                    // Perbarui nomor urut secara dinamis
+                    $("#adminTableBody tr").each(function (index) {
+                      $(this).find("td:first").text(index + 1);
+                    });
+                  });
+                } else {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Gagal menghapus data.'
+                  });
+                }
+              },
+              error: function () {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'Terjadi kesalahan pada server.'
                 });
-              } else {
-                alert("Gagal menghapus data.");
               }
-            },
-            error: function () {
-              alert("Terjadi kesalahan pada server.");
-            },
-          });
-        }
+            });
+          }
+        });
       });
     });
 
-    // Menangani klik tombol Edit
     document.querySelectorAll(".edit-btn").forEach(function (button) {
       button.addEventListener("click", function () {
         // Ambil data dari atribut data-* di tombol edit
@@ -908,51 +1010,89 @@
         document.getElementById("edit-box").style.display = "block";
 
         // Menangani pengiriman data edit ke server
-        document
-          .getElementById("submitEditBarang")
-          .addEventListener("click", function () {
-            var updatedKategori =
-              document.getElementById("editKategori").value;
-            var updatedNamaBarang =
-              document.getElementById("editNamaBarang").value;
-            var updatedBrand = document.getElementById("editBrand").value;
-            var updatedNetto = document.getElementById("editNetto").value;
-            var updatedWarna = document.getElementById("editWarna").value;
-            var updatedHarga = document.getElementById("editHarga").value;
-            var updatedStock = document.getElementById("editStock").value;
-            var updatedFoto = document.getElementById("editFoto").files[0];
+        document.getElementById("submitEditBarang").addEventListener("click", function () {
+          var updatedKategori = document.getElementById("editKategori").value;
+          var updatedNamaBarang = document.getElementById("editNamaBarang").value;
+          var updatedBrand = document.getElementById("editBrand").value;
+          var updatedNetto = document.getElementById("editNetto").value;
+          var updatedWarna = document.getElementById("editWarna").value;
+          var updatedHarga = document.getElementById("editHarga").value;
+          var updatedStock = document.getElementById("editStock").value;
+          var updatedFoto = document.getElementById("editFoto").files[0];
 
-            var formData = new FormData();
-            formData.append("id", id);
-            formData.append("kategori", updatedKategori);
-            formData.append("nama_barang", updatedNamaBarang);
-            formData.append("brand", updatedBrand);
-            formData.append("netto", updatedNetto);
-            formData.append("warna", updatedWarna);
-            formData.append("harga", updatedHarga);
-            formData.append("stock", updatedStock);
-            formData.append("foto", updatedFoto); // Untuk mengirim foto jika ada
-
-            // Kirim data ke server menggunakan AJAX (jQuery)
-            $.ajax({
-              url: "/accounts/admin/data_barang/edit_barang", // Ubah URL jika perlu
-              method: "POST",
-              data: formData,
-              contentType: false,
-              processData: false,
-              success: function (response) {
-                if (response.status === "success") {
-                  alert("Barang berhasil diperbarui!");
-                  location.reload(); // Reload halaman setelah berhasil
-                } else {
-                  alert("Terjadi kesalahan saat memperbarui barang.");
-                }
-              },
-              error: function () {
-                alert("Terjadi kesalahan saat mengirim data.");
-              },
+          // Validasi input
+          if (!updatedKategori || !updatedNamaBarang || !updatedBrand || !updatedNetto ||
+            !updatedWarna || !updatedHarga || !updatedStock) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'Semua field harus diisi!'
             });
+            return;
+          }
+
+          var formData = new FormData();
+          formData.append("id", id);
+          formData.append("kategori", updatedKategori);
+          formData.append("nama_barang", updatedNamaBarang);
+          formData.append("brand", updatedBrand);
+          formData.append("netto", updatedNetto);
+          formData.append("warna", updatedWarna);
+          formData.append("harga", updatedHarga);
+          formData.append("stock", updatedStock);
+          if (updatedFoto) {
+            formData.append("foto", updatedFoto);
+          }
+
+          // Konfirmasi sebelum update
+          Swal.fire({
+            title: 'Konfirmasi Update',
+            text: "Apakah Anda yakin ingin memperbarui data barang ini?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, update!',
+            cancelButtonText: 'Batal'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Kirim data ke server menggunakan AJAX
+              $.ajax({
+                url: "/accounts/admin/data_barang/edit_barang",
+                method: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                  if (response.status === "success") {
+                    Swal.fire({
+                      icon: 'success',
+                      title: 'Berhasil!',
+                      text: 'Barang berhasil diperbarui!',
+                      showConfirmButton: false,
+                      timer: 1500
+                    }).then(() => {
+                      location.reload();
+                    });
+                  } else {
+                    Swal.fire({
+                      icon: 'error',
+                      title: 'Oops...',
+                      text: 'Terjadi kesalahan saat memperbarui barang.'
+                    });
+                  }
+                },
+                error: function () {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Terjadi kesalahan saat mengirim data.'
+                  });
+                },
+              });
+            }
           });
+        });
       });
     });
 
@@ -969,6 +1109,216 @@
         });
       });
     });
+
+    $(document).ready(function () {
+      // Handle Delete Button
+      $(document).on('click', '.delete-btn', function (e) {
+        e.preventDefault();
+        const orderId = $(this).data('id');
+
+        Swal.fire({
+          title: 'Apakah Anda yakin?',
+          text: "Order yang dihapus tidak dapat dikembalikan!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Ya, hapus!',
+          cancelButtonText: 'Batal'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            deleteOrder(orderId);
+          }
+        });
+      });
+
+      // Handle Detail Button
+      $(document).on('click', '.detail-btn', function (e) {
+        e.preventDefault();
+        const orderId = $(this).data('id');
+        showOrderDetails(orderId);
+      });
+    });
+    function deleteOrder(orderId) {
+      $.ajax({
+        url: `/admin/delete-order/${orderId}`,
+        type: 'DELETE',
+        success: function (response) {
+          if (response.success) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Berhasil!',
+              text: response.message,
+              showConfirmButton: false,
+              timer: 1500
+            }).then(() => {
+              location.reload();
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: response.message
+            });
+          }
+        },
+        error: function (xhr) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Terjadi kesalahan saat menghapus order'
+          });
+        }
+      });
+    }
+
+    function showOrderDetails(orderId) {
+      $.ajax({
+        url: `/admin/order-details/${orderId}`,
+        type: 'GET',
+        success: function (response) {
+          if (response.success) {
+            const order = response.data;
+
+            const itemsList = order.items.map(item => `
+                    <tr>
+                        <td>${item.nama_barang} ${item.brand}</td>
+                        <td>${item.quantity}</td>
+                        <td>Rp ${item.harga.toLocaleString()}</td>
+                        <td>Rp ${item.subtotal.toLocaleString()}</td>
+                    </tr>
+                `).join('');
+
+            const getStatusBadgeColor = (status) => {
+              switch (status) {
+                case 'pending': return 'warning';
+                case 'confirmed': return 'info';
+                case 'completed': return 'success';
+                default: return 'secondary';
+              }
+            };
+
+            const modalContent = `
+                    <div class="container-fluid">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>Tanggal:</strong> ${order.created_at}</p>
+                                <p class="mb-2"><strong>Nama:</strong> ${order.full_name}</p>
+                                <p class="mb-2"><strong>Payment Method:</strong> ${order.payment_method}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>Status:</strong> 
+                                    <select id="orderStatus" class="form-select form-select-sm d-inline-block w-auto ms-2">
+                                        <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                        <option value="confirmed" ${order.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
+                                        <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Completed</option>
+                                    </select>
+                                    <button class="btn btn-sm btn-primary ms-2" onclick="updateOrderStatus('${order._id}')">
+                                        Update Status
+                                    </button>
+                                </p>
+                                <p class="mb-2"><strong>Total Amount:</strong> Rp ${order.total_amount.toLocaleString()}</p>
+                                <p class="mb-2"><strong>Alamat:</strong> ${order.alamat}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <h6 class="mb-3">Detail Items:</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Produk</th>
+                                                <th>Jumlah</th>
+                                                <th>Harga</th>
+                                                <th>Subtotal</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${itemsList}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+            Swal.fire({
+              title: '<h5 class="mb-0">Detail Order</h5>',
+              html: modalContent,
+              showCloseButton: true,
+              showConfirmButton: false,
+              customClass: {
+                container: 'detail-modal-container',
+                popup: 'detail-modal-popup'
+              }
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: response.message
+            });
+          }
+        },
+        error: function (xhr) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Terjadi kesalahan saat mengambil detail order'
+          });
+        }
+      });
+    }
+    function updateOrderStatus(orderId) {
+      const newStatus = document.getElementById('orderStatus').value;
+
+      Swal.fire({
+        title: 'Konfirmasi',
+        text: `Apakah Anda yakin ingin mengubah status menjadi ${newStatus}?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, ubah!',
+        cancelButtonText: 'Batal'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
+            url: `/admin/update-order-status/${orderId}`,
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ status: newStatus }),
+            success: function (response) {
+              if (response.success) {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Berhasil!',
+                  text: response.message,
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  // Refresh halaman setelah update
+                  location.reload();
+                });
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: response.message
+                });
+              }
+            },
+            error: function (xhr) {
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Terjadi kesalahan saat mengupdate status'
+              });
+            }
+          });
+        }
+      });
+    }
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
