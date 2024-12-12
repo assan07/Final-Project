@@ -85,7 +85,7 @@ body {
   transition: all 0.3s ease-in-out;
 }
 
-.nav-item .amount{
+.nav-item .amount {
   position: relative;
   display: flex;
   justify-content: center;
@@ -201,6 +201,11 @@ h1 {
 
 .fa-circle-left:hover {
   transform: translateX(-8px);
+  color: #1552fb;
+}
+.fa-circle-left:active {
+  transform: translateX(10px);
+  color: #120470;
 }
 
 /* button navigasi kanan */
@@ -213,6 +218,11 @@ h1 {
 
 .fa-circle-right:hover {
   transform: translateX(8px);
+  color: #1552fb;
+}
+.fa-circle-right:active {
+  transform: translateX(15px);
+  color: #120470;
 }
 
 /* about */
@@ -226,7 +236,6 @@ h1 {
   background: linear-gradient(135deg, #2f1cff, #15d4fb);
   color: white;
   padding: 50px 15px;
-  
 }
 .about-section h2 {
   font-size: 2.5rem;

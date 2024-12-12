@@ -975,10 +975,10 @@ def submit_order():
             "user_id": session['user_id'],
             "status": "pending"
         })
-        if pending_order:
-            return jsonify({
-                "message": "Anda sudah memiliki pesanan yang belum diproses. Selesaikan pesanan tersebut sebelum membuat pesanan baru."
-            }), 400
+        # if pending_order:
+        #     return jsonify({
+        #         "message": "Anda sudah memiliki pesanan yang belum diproses. Selesaikan pesanan tersebut sebelum membuat pesanan baru."
+        #     }), 400
 
 
         data = request.get_json()

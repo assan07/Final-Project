@@ -30,8 +30,7 @@
   </head>
   <body>
     <!-- Navbar -->
-    {% extends "main/navbar1.html" %}
-    {% block content %}
+    {% extends "main/navbar1.html" %} {% block content %}
     <!-- Main content -->
     <div class="main">
       <!-- Kontainer slide -->
@@ -45,7 +44,6 @@
             <div>
               <h1 class="mb-3">Cat Zinc</h1>
               <h1 class="mb-3">Chromate</h1>
-              
             </div>
             <div class="item-collection">
               <img
@@ -67,7 +65,7 @@
             </div>
             <div class="item-collection">
               <img
-                src="{{ url_for('static', filename='images/cat/cet-zc-2.png') }}"
+                src="{{ url_for('static', filename='images/cat/cet-zc.png') }}"
                 alt="image toko"
                 class="img-fluid"
               />
@@ -229,38 +227,39 @@
     </section>
 
     <!-- Footer -->
-    {% endblock %}
-
+    {% endblock %} {% block scripts %}
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const slidesContainer = document.querySelector(".slides-container");
-        const slides = document.querySelectorAll(".slide");
-        const prevButton = document.querySelector(".nav-button.left");
-        const nextButton = document.querySelector(".nav-button.right");
+      $(document).ready(function () {
+        const $slidesContainer = $(".slides-container");
+        const $slides = $(".slide");
+        const $prevButton = $(".nav-button.left");
+        const $nextButton = $(".nav-button.right");
 
         let currentSlideIndex = 0;
 
-        const updateSlidePosition = () => {
-          const offset = -(currentSlideIndex * 100); // Geser slide berdasarkan index
-          slidesContainer.style.transform = `translateX(${offset}%)`;
+        const updateSlides = () => {
+          const offset = -(currentSlideIndex * 100);
+          $slidesContainer.css("transform", `translateX(${offset}%)`);
         };
 
-        prevButton.addEventListener("click", () => {
+        $prevButton.on("click", function () {
           currentSlideIndex =
-            (currentSlideIndex - 1 + slides.length) % slides.length; // Navigasi ke kiri
-          updateSlidePosition();
+            (currentSlideIndex - 1 + $slides.length) % $slides.length;
+          updateSlides();
         });
 
-        nextButton.addEventListener("click", () => {
-          currentSlideIndex = (currentSlideIndex + 1) % slides.length; // Navigasi ke kanan
-          updateSlidePosition();
+        $nextButton.on("click", function () {
+          currentSlideIndex = (currentSlideIndex + 1) % $slides.length;
+          updateSlides();
         });
       });
     </script>
+
+    {% endblock %}
   </body>
 </html>
