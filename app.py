@@ -1121,7 +1121,6 @@ def format_currency(value):
     except:
         return value
 
-
 @app.route("/admin/delete-order/<order_id>", methods=["DELETE"])
 def delete_order(order_id):
     # Cek apakah admin sudah login
