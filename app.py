@@ -496,6 +496,7 @@ def user_login():
 
 @app.route("/accounts/users/status", methods=["GET"])
 def user_status():
+    print(session)  
     # Cek apakah ada sesi aktif
     if "user_id" in session:
         return jsonify({
@@ -506,7 +507,7 @@ def user_status():
         })
     else:
         return jsonify({
-            "is_logged_in": False
+            "is_logged_in": False,
         })
 
 # rute unutk edit dan tampilan info user
