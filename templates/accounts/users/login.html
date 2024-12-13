@@ -50,9 +50,20 @@
             type="password"
             class="form-control"
             placeholder="Password"
+            id="password-input"
             aria-label="Password"
             name="password"
           />
+          <div class="form-check mt-2">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="show-password"
+            />
+            <label class="form-check-label" for="show-password"
+              >Show Password</label
+            >
+          </div>
           <button type="submit" class="btn btn-primary">Login Now</button>
           <p class="text-center mt-3">
             Forgot your password?
@@ -82,5 +93,17 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <script>
+      $(document).ready(function () {
+        $("#show-password").change(function () {
+          const passwordInput = $("#password-input");
+          if ($(this).is(":checked")) {
+            passwordInput.attr("type", "text"); // Tampilkan password
+          } else {
+            passwordInput.attr("type", "password"); // Sembunyikan password
+          }
+        });
+      });
+    </script>
   </body>
 </html>

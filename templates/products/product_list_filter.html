@@ -26,7 +26,7 @@
     />
   </head>
   <body>
-    <div class="card-list-barang row g-lg-2 g-sm-2 gx-1 gy-1  col-12">
+    <div class="card-list-barang row g-lg-2 g-sm-2 gx-1 gy-1 col-12">
       <!-- Product 1 -->
       {% for barang in barang_data %}
       <div class="product-card col-12 d-flex flex-wrap">
@@ -63,6 +63,7 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {% block scripts %}
     <script>
       $(document).ready(function () {
         $(document).ready(function () {
@@ -88,7 +89,9 @@
 
                 // Terapkan format harga ke elemen dengan kelas price-display
                 $(".price-display").each(function () {
-                  const originalValue = parseFloat("{{ barang_data['harga'] }}");
+                  const originalValue = parseFloat(
+                    "{{ barang_data['harga'] }}"
+                  );
                   if (!isNaN(originalValue)) {
                     $(this).text(formatCurrency(originalValue));
                   }
@@ -102,5 +105,6 @@
         });
       });
     </script>
+    {% endblock %}
   </body>
 </html>
