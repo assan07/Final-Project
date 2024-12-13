@@ -478,11 +478,11 @@ h1 {
     display: none;
   }
 
-  .link-href .nav-item.product-card {
+  /* .link-href .nav-item.product-card {
     display: block;
     font-size: 15px;
     margin-top: 6px;
-  }
+  } */
 
   /* cart */
   .link-href .nav-item.cart {
