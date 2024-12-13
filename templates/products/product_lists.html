@@ -32,10 +32,10 @@
     {% block content %} 
     <!-- Product List Page -->
     <!-- List Collection -->
-    <div class="list-collection">
+    <div class="list-collection col-4 d-flex flex-wrap ">
       {% for kategori in barang_data %}
       <button
-        class="btn btn-link text-decoration-none filter-btn"
+        class="btn btn-link text-decoration-none filter-btn "
         data-kategori="{{kategori.kategori}}"
       >
         Sort by: {{kategori.kategori}}

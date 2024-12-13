@@ -152,7 +152,9 @@
               <div class="col-6">
                 <h5>{{ item.get('nama_barang', 'Nama Produk') }}</h5>
                 <p>Quantity: {{ item.get('quantity', 0) }}</p>
+                <p>status: {{order.status}}</p>
                 <p>Total: Rp. {{ item.get('subtotal', 0) }}</p>
+
               </div>
               <div class="col-3 button-fiture">
                 <!-- Beli Lagi Button -->

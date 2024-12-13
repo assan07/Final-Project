@@ -9,8 +9,22 @@ body {
   height: 80px;
   background: #ffffff;
   box-shadow: 8px 8px 10px #6166fa96;
+  z-index: 100;
+}
+/* icon brand */
+#icon-brand {
+  width: 56px;
+  height: 56px;
+  margin-left: 40px;
+  margin-right: 10px;
 }
 
+#icon-title {
+  width: 160px;
+  height: 40px;
+  margin-top: 7px;
+}
+/* =========== */
 .nav .link-href {
   display: flex;
   justify-content: space-between;
@@ -59,6 +73,7 @@ body {
   background: #ffffffe6;
 }
 
+/* icon user */
 .icon-user {
   color: #120470;
   margin-right: 20px;
@@ -108,6 +123,67 @@ body {
   font-weight: bold;
 }
 
+/* haburget menu */
+.openbtn {
+  position: relative;
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+}
+
+.openbtn span {
+  background: #2d0ff6;
+  display: inline-block;
+  position: absolute;
+  left: 14px;
+  height: 2px;
+  border-radius: 5px;
+  width: 45%;
+  transition: all 0.4s;
+  &:nth-of-type(1) {
+    top: 13px;
+  }
+  &:nth-of-type(2) {
+    top: 19px;
+  }
+  &:nth-of-type(3) {
+    top: 25px;
+  }
+  &:nth-of-type(3)::after {
+    content: "menu";
+    position: absolute;
+    top: 5px;
+    left: -2px;
+    color: #2d0ff6;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+  }
+}
+
+.openbtn.active span {
+  &:nth-of-type(1) {
+    top: 14px;
+    left: 18px;
+    transform: translateY(6px) rotate(-45deg);
+    width: 30%;
+  }
+  &:nth-of-type(2) {
+    opacity: 0;
+  }
+  &:nth-of-type(3) {
+    top: 26px;
+    left: 18px;
+    transform: translateY(-6px) rotate(45deg);
+    width: 30%;
+  }
+  &:nth-of-type(3)::after {
+    content: "close";
+    transform: translateY(0) rotate(-45deg);
+    top: 5px;
+    left: 4px;
+  }
+}
 /* hero */
 .main {
   display: flex;
@@ -131,7 +207,7 @@ body {
 
 h1 {
   font-weight: bold;
-  filter: drop-shadow(8px 8px 10px #1017f4);
+  filter: drop-shadow(6px 6px 10px #1017f4);
   color: #120470 !important;
   font-size: 43px;
 }
@@ -165,11 +241,6 @@ h1 {
   height: 360px;
   background: transparent;
   transition: all 0.3s ease-in-out;
-}
-
-.item-collection:hover {
-  cursor: pointer;
-  transform: scale(1.1);
 }
 
 .btn {
@@ -293,4 +364,136 @@ a {
 
 .rounded-2:hover {
   transform: scale(1.05);
+}
+
+/* hp */
+@media only screen and (max-width: 480px) {
+  /* humberger menu */
+  .openbtn {
+    display: block;
+  }
+
+  .link-href .nav-item {
+    display: none;
+  }
+
+  .link-href .nav-item.product-card {
+    display: block;
+    font-size: 15px;
+    margin-top: 6px;
+  }
+
+  /* cart */
+  .link-href .nav-item.cart {
+    display: block;
+    margin-top: 6px;
+  }
+
+  .main {
+    background-image: none;
+    background-size: 100% 100%;
+    background-position: center;
+  }
+
+  .box-item {
+    margin-left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .nav-button {
+    top: 90%;
+  }
+
+  .item-collection {
+    width: 200px;
+    height: 200px;
+    margin-left: 59px;
+    border: none;
+  }
+
+  .item-collection img {
+    height: 250px;
+    margin-left: 10px;
+  }
+  #icon-brand {
+    width: 40px;
+    height: 40px;
+    margin-left: 15px;
+    margin-right: 4px;
+    margin-top: 7px;
+  }
+  #icon-title {
+    width: 110px;
+    height: 30px;
+    margin-top: 7px;
+  }
+
+  .icon-user {
+    display: none;
+  }
+
+  .icon-user img {
+    display: none;
+  }
+
+  .profile-item {
+    display: none;
+  }
+
+  .nav-item .amount {
+  }
+
+  /* Ketika .icon-user dihover, tampilkan elemen dengan class .profile-item */
+  .icon-user:hover .profile-item {
+    display: block;
+  }
+  .navbar-usernm {
+    font-weight: bold;
+  }
+
+  /* haburget menu */
+  .openbtn {
+    margin-right: -40px;
+    margin-top: 2px;
+  }
+
+  .openbtn span {
+    background: #120470;
+    display: inline-block;
+    position: absolute;
+    left: 14px;
+    height: 2px;
+    border-radius: 5px;
+    width: 45%;
+    transition: all 0.4s;
+    &:nth-of-type(1) {
+      top: 13px;
+    }
+    &:nth-of-type(2) {
+      top: 19px;
+    }
+    &:nth-of-type(3) {
+      top: 25px;
+    }
+    &:nth-of-type(3)::after {
+      content: "menu";
+      position: absolute;
+      top: 5px;
+      left: -2px;
+      color: #120470;
+      font-size: 0.6rem;
+      text-transform: uppercase;
+    }
+  }
+}
+
+
+/* laptop */
+@media only screen and (min-width: 1024px) {
+  .openbtn {
+    display: none;
+  }
 }

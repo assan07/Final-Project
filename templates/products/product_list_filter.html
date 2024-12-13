@@ -26,12 +26,12 @@
     />
   </head>
   <body>
-    <div class="card-list-barang row g-4">
+    <div class="card-list-barang row g-lg-2 g-sm-2 gx-1 gy-1  col-12">
       <!-- Product 1 -->
       {% for barang in barang_data %}
-      <div class="product-card">
+      <div class="product-card col-12 d-flex flex-wrap">
         <a href="/products/product_details/{{ barang['_id'] }}">
-          <div class="product-card card shadow-sm">
+          <div class="product-card card shadow-sm col-3 d-flex flex-wrap">
             <div
               class="img-barang d-flex align-content-center justify-content-center"
             >

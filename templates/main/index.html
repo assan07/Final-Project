@@ -35,17 +35,17 @@
     <div class="main">
       <!-- Kontainer slide -->
       <div
-        class="slides-container"
+        class="slides-container col-6"
         id="carouselExampleAutoplaying"
         data-bs-ride="carousel"
       >
-        <div class="slide active">
-          <div class="box-item">
+        <div class="slide active col-6">
+          <div class="box-item col-6">
             <div>
               <h1 class="mb-3">Cat Zinc</h1>
               <h1 class="mb-3">Chromate</h1>
             </div>
-            <div class="item-collection">
+            <div class="item-collection col-6">
               <img
                 src="{{ url_for('static', filename='images/cat/cet-zc.png') }}"
                 alt="image toko"
@@ -59,9 +59,6 @@
             <div>
               <h1 class="mb-3">Cat Zinc 2</h1>
               <h1 class="mb-3">Chromate 2</h1>
-              <button type="button" class="btn btn-outline-primary">
-                Detail
-              </button>
             </div>
             <div class="item-collection">
               <img
@@ -77,9 +74,6 @@
             <div>
               <h1 class="mb-3">Cat Zinc 3</h1>
               <h1 class="mb-3">Chromate 3</h1>
-              <button type="button" class="btn btn-outline-primary">
-                Detail
-              </button>
             </div>
             <div class="item-collection">
               <img
@@ -95,9 +89,6 @@
             <div>
               <h1 class="mb-3">Cat Zinc 4</h1>
               <h1 class="mb-3">Chromate 4</h1>
-              <button type="button" class="btn btn-outline-primary">
-                Detail
-              </button>
             </div>
             <div class="item-collection">
               <img
@@ -241,6 +232,7 @@
         const $nextButton = $(".nav-button.right");
 
         let currentSlideIndex = 0;
+        const totalSlides = $slides.length;
 
         const updateSlides = () => {
           const offset = -(currentSlideIndex * 100);
@@ -257,6 +249,19 @@
           currentSlideIndex = (currentSlideIndex + 1) % $slides.length;
           updateSlides();
         });
+        // Set interval untuk animasi otomatis
+        let autoSlideInterval = setInterval(goToNextSlide, 1000);
+
+        // Reset interval jika tombol navigasi ditekan
+        const resetAutoSlide = () => {
+          clearInterval(autoSlideInterval);
+          autoSlideInterval = setInterval(goToNextSlide, 1000);
+        };
+        // Pause on hover (Optional)
+        $(".slider").hover(
+          () => clearInterval(autoSlideInterval), // Pause saat hover
+          () => (autoSlideInterval = setInterval(goToNextSlide, 1000)) // Resume saat tidak hover
+        );
       });
     </script>
 
