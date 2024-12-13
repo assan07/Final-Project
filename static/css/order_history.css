@@ -162,3 +162,7 @@ body {
 
   margin-left: 30px;
 }
+
+.img-fluid {
+  height: 200px;
+}
