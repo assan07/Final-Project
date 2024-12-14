@@ -16,7 +16,7 @@
     />
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename='css/index.css') }}"
+      href="{{ url_for('static', filename='css/nav_footer2.css') }}"
     />
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -26,7 +26,7 @@
     <header>
       <div class="container w-100 col-12">
         <nav
-          class="nav fixed-top nav-pills"
+          class="nav2 fixed-top nav-pills col-12"
           aria-label="Main navigation"
         >
           <a
@@ -49,27 +49,18 @@
             <li class="nav-item">
               <a href="/#about" class="nav-link">Tentang Kami</a>
             </li>
-            <li class="nav-item product-link">
-              <a href="/products/product_lists" class="nav-link">Produk Kami</a>
-            </li>
-            <li class="nav-item cart">
-              <a
-                class="nav-link fa-solid fa-cart-arrow-down"
-                href="/carts/order_summary"
-                role="button"
-                style="font-size: 24px"
-              >
-              </a>
-              {% if quantity and quantity > 0 %}
-              <div class="amount">
-                <span>{{ quantity }}</span>
+            <li class="nav-item product-link row">
+              <div class="col">
+                <a
+                  href="/products/product_lists"
+                  class="nav-link d-flex align-items-center"
+                >
+                  <span class="me-2">Produk Kami</span>
+                  <span class="icon-produk fa-solid fa-shop"></span>
+                </a>
               </div>
-              {% else %}
-              <div class="amount" style="display: none">
-                <span>0</span>
-              </div>
-              {% endif %}
             </li>
+
             <div class="icon-user">
               <div class="profile-user">
                 {% if profile_pic %}
@@ -87,30 +78,13 @@
                     class="img-thumbnail"
                 /></a>
                 {% endif %}
-                <span class="navbar-usernm">{{ full_name }}</span>
               </div>
               <div class="profile-item">
                 <a
                   href="/accounts/users/profile"
                   id="profile-link"
                   class="nav-link profile_menu d-none"
-                  >Profile</a
-                >
-
-                <a href="/accounts/users/login" id="login-link" class="nav-link"
-                  >Login</a
-                >
-                <a
-                  href="/accounts/users/register"
-                  id="register-link"
-                  class="nav-link"
-                  >Register</a
-                >
-                <a
-                  href="/accounts/users/logout"
-                  id="logout-link"
-                  class="nav-link d-none"
-                  >Log Out</a
+                  >{{ full_name }}</a
                 >
               </div>
             </div>
@@ -121,10 +95,11 @@
         <!-- side menu -->
 
         <!-- Sidebar -->
+
+        <!-- ============================= -->
         <div class="side-menu">
           <ul class="link-side">
             <li class="nav-item side">
-             
               <div class="profile-user-side">
                 {% if profile_pic %}
                 <a href="/accounts/users/profile">

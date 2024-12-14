@@ -8,11 +8,11 @@
   padding: 70px;
 }
 
-.title{
+.title {
   margin-bottom: 100px;
 }
 
-.login-form h1{
+.login-form h1 {
   font-size: 40px;
   font-weight: bold;
   margin-bottom: 90px;
@@ -61,4 +61,29 @@
 }
 .login-right button {
   margin-top: 20px;
+}
+.image-logo-hp{
+ display: flex;
+ justify-content: center;
+
+}
+.img-hp {
+  display: none;
+  width: 100px;
+  height: 100px;
+}
+
+.register-for-hp{
+  display: none;
+}
+@media only screen and (max-width: 480px) {
+  .login-right {
+    display: none;
+  }
+  .img-hp {
+    display: block;
+  }
+  .register-for-hp{
+    display: block;
+  }
 }

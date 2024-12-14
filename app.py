@@ -27,11 +27,11 @@ app.secret_key = 'my_super_secret_key_12345'
 bcrypt = Bcrypt(app)
 
 # Direktori untuk menyimpan gambar
-UPLOAD_FOLDER_BARANG = 'Final-Project/static/images/gambar_barang'
-UPLOAD_FOLDER_PROFILE = 'Final-Project/static/images/profile_pics'
+UPLOAD_FOLDER_BARANG = 'static/images/gambar_barang'
+UPLOAD_FOLDER_PROFILE = 'static/images/profile_pics'
 app.config['UPLOAD_FOLDER_BARANG'] = UPLOAD_FOLDER_BARANG
 app.config['UPLOAD_FOLDER_PROFILE'] = UPLOAD_FOLDER_PROFILE
-app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
 # Fungsi untuk memeriksa apakah ekstensi file diperbolehkan
 
@@ -1233,7 +1233,8 @@ def update_order_status(order_id):
 
 @app.route("/carts/order_history")
 def order_history():
-    if "user_id" in session:
+    if "user_id" in session and "email" in session:
+        email = session["email"]    
         orders_collection = db.orders
         user_id = session["user_id"]
 
@@ -1246,40 +1247,41 @@ def order_history():
             for item in order.get("items", []):
                 item["product_id"] = str(item["product_id"])
 
-        return render_template("carts/order_history.html", orders=orders)
+        return render_template("carts/order_history.html", orders=orders, email=email)
     else:
         return redirect(url_for('user_login'))
 
 
 @app.route('/carts/order_history/remove-from-order', methods=['POST'])
 def remove_from_order():
-    try:
-        data = request.json
-        order_id = data.get("order_id")
-        product_id = data.get("product_id")
+   
+        try:
+            data = request.json
+            order_id = data.get("order_id")
+            product_id = data.get("product_id")
 
-        if not order_id or not product_id:
-            return jsonify({"message": "Order ID atau Product ID tidak valid"}), 400
+            if not order_id or not product_id:
+                return jsonify({"message": "Order ID atau Product ID tidak valid"}), 400
 
-        # Akses koleksi orders
-        orders_collection = db.orders
+            # Akses koleksi orders
+            orders_collection = db.orders
 
-        # Hapus item berdasarkan product_id dari order_id
-        result = orders_collection.update_one(
-            {"_id": ObjectId(order_id)},
-            # Menggunakan product_id sebagai filter
-            {"$pull": {"items": {"product_id": product_id}}}
-        )
+            # Hapus item berdasarkan product_id dari order_id
+            result = orders_collection.update_one(
+                {"_id": ObjectId(order_id)},
+                # Menggunakan product_id sebagai filter
+                {"$pull": {"items": {"product_id": product_id}}}
+            )
 
-        if result.modified_count == 0:
-            return jsonify({"message": "Item tidak ditemukan dalam order"}), 404
+            if result.modified_count == 0:
+                return jsonify({"message": "Item tidak ditemukan dalam order"}), 404
 
-        # Kembalikan respons sukses
-        return jsonify({"message": "Item berhasil dihapus"}), 200
+            # Kembalikan respons sukses
+            return jsonify({"message": "Item berhasil dihapus"}), 200
 
-    except Exception as e:
-        print(f"Error in remove_from_order: {str(e)}")
-        return jsonify({"message": "Terjadi kesalahan saat menghapus item"}), 500
+        except Exception as e:
+            print(f"Error in remove_from_order: {str(e)}")
+            return jsonify({"message": "Terjadi kesalahan saat menghapus item"}), 500
 
 # Fungsi untuk mengubah ObjectId menjadi string
 

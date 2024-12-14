@@ -82,7 +82,7 @@
   .product-card {
     display: flex;
     flex-wrap: wrap;
-    gap: 2px;
+    gap: 3px;
     height: 200px;
     width: 160px;
    

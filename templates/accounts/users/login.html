@@ -24,6 +24,11 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.js"
+      integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+      crossorigin="anonymous"
+    ></script>
     <title>Login</title>
   </head>
 
@@ -31,8 +36,15 @@
     <div class="login-container d-flex">
       <!-- Login Form Section -->
       <div class="login-form col-md-6">
+        <div class="image-logo-hp">
+          <img
+            src="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
+            alt="Logo"
+            class="col-lg-2 img-hp"
+          />
+        </div>
         <div class="title">
-          <h1 class="text-start">Sign in to your account</h1>
+          <h1 class="text-center">Sign in to your account</h1>
         </div>
         {% with messages = get_flashed_messages(with_categories=true) %} {% if
         messages %} {% for category, message in messages %}
@@ -54,7 +66,7 @@
             aria-label="Password"
             name="password"
           />
-          <div class="form-check mt-2">
+          <div class="form-check mt-2 mb-2">
             <input
               type="checkbox"
               class="form-check-input"
@@ -65,6 +77,7 @@
             >
           </div>
           <button type="submit" class="btn btn-primary">Login Now</button>
+          <p class="register-for-hp text-center">Create Your Account? <a class="text-decoration-none " href="{{ url_for('user_register') }}">Register</a></p>
           <p class="text-center mt-3">
             Forgot your password?
             <a href="{{ url_for('forget_password') }}">Click here</a>
@@ -97,6 +110,8 @@
       $(document).ready(function () {
         $("#show-password").change(function () {
           const passwordInput = $("#password-input");
+          console.log("Clicked");
+
           if ($(this).is(":checked")) {
             passwordInput.attr("type", "text"); // Tampilkan password
           } else {

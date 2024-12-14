@@ -44,7 +44,7 @@
             </div>
 
             <div class="card-body">
-              <h5 class="card-title fw-bold">{{ barang.nama_barang }}</h5>
+              <h6 class="card-title fw-bold">{{ barang.nama_barang }}</h6>
               <p class="card-text">{{ barang.kategori }}</p>
               <div class="d-flex justify-content-between align-items-center">
                 <span class="price-display text-primary fw-bold"
@@ -63,12 +63,13 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    {% block scripts %}
+
     <script>
       $(document).ready(function () {
         $(document).ready(function () {
           $(".filter-btn").click(function () {
             const kategori = $(this).data("kategori").toUpperCase();
+            const originalValue = parseFloat("{{ barang_data['harga'] }}");
 
             // AJAX request to filter products
             $.ajax({
@@ -86,16 +87,6 @@
                     minimumFractionDigits: 0,
                   }).format(value);
                 }
-
-                // Terapkan format harga ke elemen dengan kelas price-display
-                $(".price-display").each(function () {
-                  const originalValue = parseFloat(
-                    "{{ barang_data['harga'] }}"
-                  );
-                  if (!isNaN(originalValue)) {
-                    $(this).text(formatCurrency(originalValue));
-                  }
-                });
               },
               error: function () {
                 alert("Failed to load products. Please try again.");
@@ -105,6 +96,5 @@
         });
       });
     </script>
-    {% endblock %}
   </body>
 </html>
