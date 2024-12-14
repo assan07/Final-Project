@@ -171,13 +171,10 @@ body {
   margin-left: 30px;
 }
 
-.img-fluid {
-  height: 150px;
-}
 
 .img-histori img {
-  width: 70px;
-  height: 75px;
+  width: 100px;
+  height: 90px;
 }
 
 .order-items p {

@@ -1,911 +1,677 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <link
-      rel="icon"
-      href="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
-      type="image/x-icon"
-    />
-    <link
-      rel="shortcut icon"
-      href="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
-      type="image/x-icon"
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Dashboard</title>
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/data_user.css') }}"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/dashboardadm.css') }}"
-    />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  </head>
 
-  <body>
-    <!-- Navbar -->
-    <nav class="navbar fixed-top">
-      <div class="container-fluid">
-        <a class="navbar-brand d-flex align-items-center mx-3">
-          <img
-            class="bi me-2"
-            width="40"
-            height="40"
-            src="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
-            alt="Logo brand"
-          />
-          <img
-            class="fs-4 bi me-2"
-            width="160"
-            height="40"
-            src="{{ url_for('static', filename='images/icon/logo-title.png') }}"
-            alt="Logo title"
-          />
-        </a>
-        <div class="d-flex">
-          <p class="navbar-text me-3">
-            Welcome, <span class="fw-bold">{{ session['admin_name'] }}</span>
-          </p>
-          <a
-            style="height: 40px"
-            href="{{ url_for('admin_logout') }}"
-            class="btn btn-light btn-m"
-            >Logout</a
-          >
-        </div>
-      </div>
-    </nav>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" href="{{ url_for('static', filename='images/icon/logo-brand.png') }}" type="image/x-icon" />
+  <link rel="shortcut icon" href="{{ url_for('static', filename='images/icon/logo-brand.png') }}" type="image/x-icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/data_user.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboardadm.css') }}" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
 
-    <!-- Sidebar -->
-    <div class="sidebar bg-white" style="width: 250px">
-      <div
-        class="side-container p-3"
-        role="tablist"
-        aria-orientation="vertical"
-      >
-        <button
-          class="nav-link active"
-          data-bs-toggle="tab"
-          data-bs-target="#dashboard"
-          type="button"
-          role="tab"
-        >
-          Dashboard
-        </button>
-        <button
-          class="nav-link"
-          data-bs-toggle="tab"
-          data-bs-target="#dataBarang"
-          type="button"
-          role="tab"
-        >
-          Data Barang
-        </button>
-        <button
-          class="nav-link"
-          data-bs-toggle="tab"
-          data-bs-target="#dataUser"
-          type="button"
-          role="tab"
-        >
-          Data User
-        </button>
-        <button
-          class="nav-link"
-          data-bs-toggle="tab"
-          data-bs-target="#dataAdmin"
-          type="button"
-          role="tab"
-        >
-          Data Admin
-        </button>
-        <button
-          class="nav-link"
-          data-bs-toggle="tab"
-          data-bs-target="#dataOrders"
-          type="button"
-          role="tab"
-        >
-          Data Orders
-        </button>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center mx-3">
+        <img class="bi me-2" width="40" height="40" src="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
+          alt="Logo brand" />
+        <img class="fs-4 bi me-2" width="160" height="40"
+          src="{{ url_for('static', filename='images/icon/logo-title.png') }}" alt="Logo title" />
+      </a>
+      <div class="d-flex">
+        <p class="navbar-text me-3">
+          Welcome, <span class="fw-bold">{{ session['admin_name'] }}</span>
+        </p>
+        <a style="height: 40px" href="{{ url_for('admin_logout') }}" class="btn btn-light btn-m">Logout</a>
       </div>
     </div>
+  </nav>
 
-    <!-- Main Content with Tabs -->
-    <div class="main-content">
-      <div class="tab-content">
-        <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
-          <div class="row mb-4 mt-lg-5 pt-5">
-            <!-- Total Users -->
-            <div class="col-md-3">
-              <div class="card stats-card bg-blue-dark text-white">
-                <div class="card-body">
-                  <h5 class="card-title">Total Users</h5>
-                  <h2 class="card-text">{{ total_users }}</h2>
-                </div>
-              </div>
-            </div>
-            <!-- Total Admin -->
-            <div class="col-md-3">
-              <div class="card stats-card bg-blue-medium text-white">
-                <div class="card-body">
-                  <h5 class="card-title">Total Admin</h5>
-                  <h2 class="card-text">{{ total_admin }}</h2>
-                </div>
-              </div>
-            </div>
-            <!-- Total Barang -->
-            <div class="col-md-3">
-              <div class="card stats-card bg-blue-light text-white">
-                <div class="card-body">
-                  <h5 class="card-title">Total Barang</h5>
-                  <h2 class="card-text">{{ total_barang }}</h2>
-                </div>
-              </div>
-            </div>
-            <!-- Total Transaksi -->
-            <div class="col-md-3">
-              <div class="card stats-card bg-blue-lighter text-white">
-                <div class="card-body">
-                  <h5 class="card-title">Total Transaksi</h5>
-                  <h2 class="card-text">{{ total_orders }}</h2>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+  <!-- Sidebar -->
+  <div class="sidebar bg-white" style="width: 250px">
+    <div class="side-container p-3" role="tablist" aria-orientation="vertical">
+      <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#dashboard" type="button" role="tab">
+        Dashboard
+      </button>
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dataBarang" type="button" role="tab">
+        Data Barang
+      </button>
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dataUser" type="button" role="tab">
+        Data User
+      </button>
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dataAdmin" type="button" role="tab">
+        Data Admin
+      </button>
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dataOrders" type="button" role="tab">
+        Data Orders
+      </button>
+    </div>
+  </div>
 
-        <!-- Recent Activity -->
-
-        <!-- Data Barang Tab -->
-        <div class="tab-pane fade" id="dataBarang" role="tabpanel">
-          <div class="container mt-4">
-            <div class="card mt-4">
+  <!-- Main Content with Tabs -->
+  <div class="main-content">
+    <div class="tab-content">
+      <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
+        <div class="row mb-4 mt-lg-5 pt-5">
+          <!-- Total Users -->
+          <div class="col-md-3">
+            <div class="card stats-card bg-blue-dark text-white">
               <div class="card-body">
-                <h2 class="card-title">DATA BARANG</h2>
-
-                <!-- Search Bar for Data Barang -->
-                <div class="d-flex justify-content-end mb-3">
-                  <input
-                    type="text"
-                    class="form-control w-25 me-2"
-                    id="searchInputBarang"
-                    placeholder="Search Barang"
-                  />
-                  <button class="btn btn-dark" id="searchButtonBarang">
-                    Search
-                  </button>
-                  <button
-                    id="tambahBtn"
-                    type="button"
-                    class="btn btn-danger mx-2"
-                  >
-                    Tambah Barang
-                  </button>
-                </div>
-
-                <!-- Table -->
-                <div class="table-responsive">
-                  <table class="table table-bordered text-center">
-                    <thead class="table-secondary">
-                      <tr>
-                        <th>No.</th>
-                        <th>Kategori</th>
-                        <th>Nama Barang</th>
-                        <th>Brand</th>
-                        <th>Netto</th>
-                        <th>Warna</th>
-                        <th>Harga</th>
-                        <th>Stok</th>
-                        <th>Image</th>
-                        <th>Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody id="barangTableBody">
-                      {% for barang in barang_data %}
-                      <tr>
-                        <td>{{ loop.index }}</td>
-                        <td>{{ barang.kategori }}</td>
-                        <td>{{ barang.nama_barang }}</td>
-                        <td>{{ barang.brand }}</td>
-                        <td>{{ barang.netto }}</td>
-                        <td>{{ barang.warna }}</td>
-                        <td>{{ barang.harga }}</td>
-                        <td>{{ barang.stock }}</td>
-                        <td>
-                          {% if barang.foto %}
-                          <img
-                            src="{{ url_for('static', filename='images/gambar_barang/' + barang.foto) }}"
-                            alt="Foto Barang"
-                            width="70"
-                            height="50"
-                          />
-                          {% else %} No Image {% endif %}
-                        </td>
-                        <td>
-                          <button
-                            class="btn btn-danger btn-sm delete-barang-btn"
-                            type="button"
-                            data-id="{{ barang._id }}"
-                          >
-                            <i class="fa fa-trash"></i> Delete
-                          </button>
-                          <button
-                            class="btn btn-danger btn-sm edit-btn"
-                            type="button"
-                            data-id="{{ barang._id }}"
-                            data-kategori="{{ barang.kategori }}"
-                            data-nama_barang="{{ barang.nama_barang }}"
-                            data-brand="{{ barang.brand }}"
-                            data-netto="{{ barang.netto }}"
-                            data-warna="{{ barang.warna }}"
-                            data-harga="{{ barang.harga }}"
-                            data-stock="{{ barang.stock }}"
-                            data-foto="{{ barang.foto }}"
-                          >
-                            <i class="fa fa-edit"></i> Edit
-                          </button>
-                        </td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                </div>
+                <h5 class="card-title">Total Users</h5>
+                <h2 class="card-text">{{ total_users }}</h2>
+              </div>
+            </div>
+          </div>
+          <!-- Total Admin -->
+          <div class="col-md-3">
+            <div class="card stats-card bg-blue-medium text-white">
+              <div class="card-body">
+                <h5 class="card-title">Total Admin</h5>
+                <h2 class="card-text">{{ total_admin }}</h2>
+              </div>
+            </div>
+          </div>
+          <!-- Total Barang -->
+          <div class="col-md-3">
+            <div class="card stats-card bg-blue-light text-white">
+              <div class="card-body">
+                <h5 class="card-title">Total Barang</h5>
+                <h2 class="card-text">{{ total_barang }}</h2>
+              </div>
+            </div>
+          </div>
+          <!-- Total Transaksi -->
+          <div class="col-md-3">
+            <div class="card stats-card bg-blue-lighter text-white">
+              <div class="card-body">
+                <h5 class="card-title">Total Transaksi</h5>
+                <h2 class="card-text">{{ total_orders }}</h2>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Form Tambah Barang -->
-        <div id="input-box" style="display: none">
-          <div class="row g-2 mt-5 border border-2 p-4">
-            <div class="col-md-4">
-              <label for="inputState" class="form-label">Kategori</label>
-              <select id="inputState" class="form-select">
-                <option selected>Choose...</option>
-                <option>CAT</option>
-                <option>TINNER</option>
-                <option>AKSESORIS PVC</option>
-                <option>LEM</option>
-                <option>PERALATAN</option>
-                <option>PAKU</option>
-                <option>ISOLASI</option>
-                <option>CAMPURAN</option>
-                <option>PIPA PVC PARALON</option>
-                <option>PLAT BESI</option>
-                <option>BONDEK</option>
-                <option>POLITUR VERNIS</option>
-              </select>
-            </div>
-            <div class="mb-2 col-md-4">
-              <label for="InputNamaBarang" class="form-label"
-                >Nama Barang</label
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="nama_barang"
-                placeholder="Nama Barang"
-              />
-            </div>
-            <div class="mb-2 col-md-4">
-              <label for="InputBrand" class="form-label">Brand</label>
-              <input
-                type="text"
-                class="form-control"
-                id="brand"
-                placeholder="Brand Name"
-              />
-            </div>
-            <div class="col-md-4">
-              <label for="InputNetto" class="form-label">Netto</label>
-              <input
-                type="text"
-                class="form-control"
-                id="netto"
-                placeholder="Netto Product"
-              />
-            </div>
-            <div class="col-md-4">
-              <label for="inputWarna" class="form-label">Warna</label>
-              <input
-                type="text"
-                class="form-control"
-                id="warna"
-                placeholder="Warna Product"
-              />
-            </div>
-            <div class="col-md-4">
-              <label for="inputHarga" class="form-label">Harga</label>
-              <input
-                type="text"
-                class="form-control"
-                id="harga"
-                placeholder="Harga Product"
-              />
-            </div>
-            <div class="col-md-4">
-              <label for="inputStock" class="form-label">Stock</label>
-              <input
-                type="text"
-                class="form-control"
-                id="stock"
-                placeholder="Stock Product"
-              />
-            </div>
-            <div class="col-md-12">
-              <label for="formFileMultiple" class="form-label"
-                >Foto Product</label
-              >
-              <input class="form-control" type="file" id="foto" multiple />
-            </div>
-            <div class="mt-4 col-12">
-              <button id="submitSimpanBarang" class="btn btn-primary">
-                Simpan
-              </button>
-            </div>
-          </div>
-        </div>
+      <!-- Recent Activity -->
 
-        <!-- Form Edit Barang -->
-        <div id="edit-box" style="display: none">
-          <div class="row g-2 mt-5 border border-2 p-4">
-            <div class="col-md-4">
-              <label for="editKategori" class="form-label">Kategori</label>
-              <select id="editKategori" class="form-select">
-                <option selected>Choose...</option>
-                <option>CAT</option>
-                <option>TINNER</option>
-                <option>AKSESORIS PVC</option>
-                <option>LEM</option>
-                <option>PERALATAN</option>
-                <option>PAKU</option>
-                <option>ISOLASI</option>
-                <option>CAMPURAN</option>
-                <option>PIPA PVC PARALON</option>
-                <option>PLAT BESI</option>
-                <option>BONDEK</option>
-                <option>POLITUR VERNIS</option>
-              </select>
-            </div>
-            <div class="mb-2 col-md-4">
-              <label for="editNamaBarang" class="form-label">Nama Barang</label>
-              <input
-                type="text"
-                class="form-control"
-                id="editNamaBarang"
-                placeholder="Nama Barang"
-              />
-            </div>
-            <div class="mb-2 col-md-4">
-              <label for="editBrand" class="form-label">Brand</label>
-              <input
-                type="text"
-                class="form-control"
-                id="editBrand"
-                placeholder="Brand Name"
-              />
-            </div>
-            <div class="col-md-4">
-              <label for="editNetto" class="form-label">Netto</label>
-              <input
-                type="text"
-                class="form-control"
-                id="editNetto"
-                placeholder="Netto Product"
-              />
-            </div>
-            <div class="col-md-4">
-              <label for="editWarna" class="form-label">Warna</label>
-              <input
-                type="text"
-                class="form-control"
-                id="editWarna"
-                placeholder="Warna Product"
-              />
-            </div>
-            <div class="col-md-4">
-              <label for="editHarga" class="form-label">Harga</label>
-              <input
-                type="text"
-                class="form-control"
-                id="editHarga"
-                placeholder="Harga Product"
-              />
-            </div>
-            <div class="col-md-4">
-              <label for="editStock" class="form-label">Stock</label>
-              <input
-                type="text"
-                class="form-control"
-                id="editStock"
-                placeholder="Stock Product"
-              />
-            </div>
-            <div class="col-md-12">
-              <label for="editFoto" class="form-label">Foto Product</label>
-              <input class="form-control" type="file" id="editFoto" />
-            </div>
-            <div class="mt-4 col-12">
-              <button id="submitEditBarang" class="btn btn-primary">
-                Simpan Perubahan
-              </button>
-            </div>
-          </div>
-        </div>
+      <!-- Data Barang Tab -->
+      <div class="tab-pane fade" id="dataBarang" role="tabpanel">
+        <div class="container mt-4">
+          <div class="card mt-4">
+            <div class="card-body">
+              <h2 class="card-title">DATA BARANG</h2>
 
-        <!-- Data User Tab -->
-        <div class="tab-pane fade" id="dataUser" role="tabpanel">
-          <div class="container mt-4">
-            <div class="card mt-4">
-              <div class="card-body">
-                <h2 class="card-title">DATA USER</h2>
+              <!-- Search Bar for Data Barang -->
+              <div class="d-flex justify-content-end mb-3">
+                <input type="text" class="form-control w-25 me-2" id="searchInputBarang" placeholder="Search Barang" />
+                <button class="btn btn-dark" id="searchButtonBarang">
+                  Search
+                </button>
+                <button id="tambahBtn" type="button" class="btn btn-danger mx-2">
+                  Tambah Barang
+                </button>
+              </div>
 
-                <!-- Search Bar for Data User -->
-                <div class="d-flex justify-content-end mb-3">
-                  <input
-                    type="text"
-                    class="form-control w-25 me-2"
-                    id="searchInputUser"
-                    placeholder="Search User"
-                  />
-                  <button class="btn btn-dark" id="searchButtonUser">
-                    Search
-                  </button>
-                </div>
-
-                <!-- Tabel Data User -->
-                <div class="table-responsive">
-                  <table class="table table-bordered text-center">
-                    <thead class="table-secondary">
-                      <tr>
-                        <th>No.</th>
-                        <th>Nama</th>
-                        <th>Email</th>
-                        <th>Password</th>
-                        <th>Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody id="userTableBody">
-                      {% for user in data_user %}
-                      <tr>
-                        <td>{{ loop.index }}</td>
-                        <td>{{ user.full_name }}</td>
-                        <td>{{ user.email }}</td>
-                        <td>*****</td>
-                        <td>
-                          <!-- Tombol Delete untuk Data User -->
-                          <button
-                            class="btn btn-danger btn-sm delete-user-btn"
-                            type="button"
-                            data-id="{{ user._id }}"
-                          >
-                            <i class="fa fa-trash"></i> Delete
-                          </button>
-                        </td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                </div>
+              <!-- Table -->
+              <div class="table-responsive">
+                <table class="table table-bordered text-center">
+                  <thead class="table-secondary">
+                    <tr>
+                      <th>No.</th>
+                      <th>Kategori</th>
+                      <th>Nama Barang</th>
+                      <th>Brand</th>
+                      <th>Netto</th>
+                      <th>Warna</th>
+                      <th>Harga</th>
+                      <th>Stok</th>
+                      <th>Image</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="barangTableBody">
+                    {% for barang in barang_data %}
+                    <tr>
+                      <td>{{ loop.index }}</td>
+                      <td>{{ barang.kategori }}</td>
+                      <td>{{ barang.nama_barang }}</td>
+                      <td>{{ barang.brand }}</td>
+                      <td>{{ barang.netto }}</td>
+                      <td>{{ barang.warna }}</td>
+                      <td>{{ barang.harga }}</td>
+                      <td>{{ barang.stock }}</td>
+                      <td>
+                        {% if barang.foto %}
+                        <img src="{{ url_for('static', filename='images/gambar_barang/' + barang.foto) }}"
+                          alt="Foto Barang" width="70" height="50" />
+                        {% else %} No Image {% endif %}
+                      </td>
+                      <td>
+                        <button class="btn btn-danger btn-sm delete-barang-btn" type="button"
+                          data-id="{{ barang._id }}">
+                          <i class="fa fa-trash"></i> Delete
+                        </button>
+                        <button class="btn btn-danger btn-sm edit-btn" type="button" data-id="{{ barang._id }}"
+                          data-kategori="{{ barang.kategori }}" data-nama_barang="{{ barang.nama_barang }}"
+                          data-brand="{{ barang.brand }}" data-netto="{{ barang.netto }}"
+                          data-warna="{{ barang.warna }}" data-harga="{{ barang.harga }}"
+                          data-stock="{{ barang.stock }}" data-foto="{{ barang.foto }}">
+                          <i class="fa fa-edit"></i> Edit
+                        </button>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Data Admin -->
-        <div class="tab-pane fade" id="dataAdmin" role="tabpanel">
-          <div class="container mt-4">
-            <div class="card mt-4">
-              <div class="card-body">
-                <h2 class="card-title">DATA ADMIN</h2>
+      <!-- Form Tambah Barang -->
+      <div id="input-box" style="display: none">
+        <div class="row g-2 mt-5 border border-2 p-4">
+          <div class="col-md-4">
+            <label for="inputState" class="form-label">Kategori</label>
+            <select id="inputState" class="form-select">
+              <option selected>Choose...</option>
+              <option>CAT</option>
+              <option>TINNER</option>
+              <option>AKSESORIS PVC</option>
+              <option>LEM</option>
+              <option>PERALATAN</option>
+              <option>PAKU</option>
+              <option>ISOLASI</option>
+              <option>CAMPURAN</option>
+              <option>PIPA PVC PARALON</option>
+              <option>PLAT BESI</option>
+              <option>BONDEK</option>
+              <option>POLITUR VERNIS</option>
+            </select>
+          </div>
+          <div class="mb-2 col-md-4">
+            <label for="InputNamaBarang" class="form-label">Nama Barang</label>
+            <input type="text" class="form-control" id="nama_barang" placeholder="Nama Barang" />
+          </div>
+          <div class="mb-2 col-md-4">
+            <label for="InputBrand" class="form-label">Brand</label>
+            <input type="text" class="form-control" id="brand" placeholder="Brand Name" />
+          </div>
+          <div class="col-md-4">
+            <label for="InputNetto" class="form-label">Netto</label>
+            <input type="text" class="form-control" id="netto" placeholder="Netto Product" />
+          </div>
+          <div class="col-md-4">
+            <label for="inputWarna" class="form-label">Warna</label>
+            <input type="text" class="form-control" id="warna" placeholder="Warna Product" />
+          </div>
+          <div class="col-md-4">
+            <label for="inputHarga" class="form-label">Harga</label>
+            <input type="text" class="form-control" id="harga" placeholder="Harga Product" />
+          </div>
+          <div class="col-md-4">
+            <label for="inputStock" class="form-label">Stock</label>
+            <input type="text" class="form-control" id="stock" placeholder="Stock Product" />
+          </div>
+          <div class="col-md-12">
+            <label for="formFileMultiple" class="form-label">Foto Product</label>
+            <input class="form-control" type="file" id="foto" multiple />
+          </div>
+          <div class="mt-4 col-12">
+            <button id="submitSimpanBarang" class="btn btn-primary">
+              Simpan
+            </button>
+          </div>
+        </div>
+      </div>
 
-                <!-- Search Bar for Data Admin -->
-                <div class="d-flex justify-content-end mb-3">
-                  <input
-                    type="text"
-                    class="form-control w-25 me-2"
-                    id="searchInputAdmin"
-                    placeholder="Search Admin"
-                  />
-                  <button class="btn btn-dark" id="searchButtonAdmin">
-                    Search
-                  </button>
-                </div>
+      <!-- Form Edit Barang -->
+      <div id="edit-box" style="display: none">
+        <div class="row g-2 mt-5 border border-2 p-4">
+          <div class="col-md-4">
+            <label for="editKategori" class="form-label">Kategori</label>
+            <select id="editKategori" class="form-select">
+              <option selected>Choose...</option>
+              <option>CAT</option>
+              <option>TINNER</option>
+              <option>AKSESORIS PVC</option>
+              <option>LEM</option>
+              <option>PERALATAN</option>
+              <option>PAKU</option>
+              <option>ISOLASI</option>
+              <option>CAMPURAN</option>
+              <option>PIPA PVC PARALON</option>
+              <option>PLAT BESI</option>
+              <option>BONDEK</option>
+              <option>POLITUR VERNIS</option>
+            </select>
+          </div>
+          <div class="mb-2 col-md-4">
+            <label for="editNamaBarang" class="form-label">Nama Barang</label>
+            <input type="text" class="form-control" id="editNamaBarang" placeholder="Nama Barang" />
+          </div>
+          <div class="mb-2 col-md-4">
+            <label for="editBrand" class="form-label">Brand</label>
+            <input type="text" class="form-control" id="editBrand" placeholder="Brand Name" />
+          </div>
+          <div class="col-md-4">
+            <label for="editNetto" class="form-label">Netto</label>
+            <input type="text" class="form-control" id="editNetto" placeholder="Netto Product" />
+          </div>
+          <div class="col-md-4">
+            <label for="editWarna" class="form-label">Warna</label>
+            <input type="text" class="form-control" id="editWarna" placeholder="Warna Product" />
+          </div>
+          <div class="col-md-4">
+            <label for="editHarga" class="form-label">Harga</label>
+            <input type="text" class="form-control" id="editHarga" placeholder="Harga Product" />
+          </div>
+          <div class="col-md-4">
+            <label for="editStock" class="form-label">Stock</label>
+            <input type="text" class="form-control" id="editStock" placeholder="Stock Product" />
+          </div>
+          <div class="col-md-12">
+            <label for="editFoto" class="form-label">Foto Product</label>
+            <input class="form-control" type="file" id="editFoto" />
+          </div>
+          <div class="mt-4 col-12">
+            <button id="submitEditBarang" class="btn btn-primary">
+              Simpan Perubahan
+            </button>
+          </div>
+        </div>
+      </div>
 
-                <!-- Tabel Data Admin -->
-                <div class="table-responsive">
-                  <table class="table table-bordered text-center">
-                    <thead class="table-secondary">
-                      <tr>
-                        <th>No.</th>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Password</th>
-                        <th>Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody id="adminTableBody">
-                      {% for admin in data_admin %}
-                      <tr>
-                        <td>{{ loop.index }}</td>
-                        <td>{{ admin.username }}</td>
-                        <td>{{ admin.email }}</td>
-                        <td>*****</td>
-                        <td>
-                          <!-- Tombol Delete untuk Data Admin -->
-                          <button
-                            class="btn btn-danger btn-sm delete-admin-btn"
-                            data-id="{{ admin._id }}"
-                          >
-                            <i class="fa fa-trash"></i> Delete
-                          </button>
-                        </td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                </div>
+      <!-- Data User Tab -->
+      <div class="tab-pane fade" id="dataUser" role="tabpanel">
+        <div class="container mt-4">
+          <div class="card mt-4">
+            <div class="card-body">
+              <h2 class="card-title">DATA USER</h2>
+
+              <!-- Search Bar for Data User -->
+              <div class="d-flex justify-content-end mb-3">
+                <input type="text" class="form-control w-25 me-2" id="searchInputUser" placeholder="Search User" />
+                <button class="btn btn-dark" id="searchButtonUser">
+                  Search
+                </button>
+              </div>
+
+              <!-- Tabel Data User -->
+              <div class="table-responsive">
+                <table class="table table-bordered text-center">
+                  <thead class="table-secondary">
+                    <tr>
+                      <th>No.</th>
+                      <th>Nama</th>
+                      <th>Email</th>
+                      <th>Password</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="userTableBody">
+                    {% for user in data_user %}
+                    <tr>
+                      <td>{{ loop.index }}</td>
+                      <td>{{ user.full_name }}</td>
+                      <td>{{ user.email }}</td>
+                      <td>*****</td>
+                      <td>
+                        <!-- Tombol Delete untuk Data User -->
+                        <button class="btn btn-danger btn-sm delete-user-btn" type="button" data-id="{{ user._id }}">
+                          <i class="fa fa-trash"></i> Delete
+                        </button>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="tab-pane fade" id="dataOrders" role="tabpanel">
-          <div class="container mt-4">
-            <div class="card mt-4">
-              <div class="card-body">
-                <h2 class="card-title">DATA ORDERS</h2>
+      <!-- Data Admin -->
+      <div class="tab-pane fade" id="dataAdmin" role="tabpanel">
+        <div class="container mt-4">
+          <div class="card mt-4">
+            <div class="card-body">
+              <h2 class="card-title">DATA ADMIN</h2>
 
-                <!-- Search Bar for Data Orders -->
-                <div class="d-flex justify-content-end mb-3">
-                  <input
-                    type="text"
-                    class="form-control w-25 me-2"
-                    id="searchInputOrders"
-                    placeholder="Search Orders"
-                  />
-                  <button class="btn btn-dark" id="searchButtonOrders">
-                    Search
-                  </button>
-                </div>
+              <!-- Search Bar for Data Admin -->
+              <div class="d-flex justify-content-end mb-3">
+                <input type="text" class="form-control w-25 me-2" id="searchInputAdmin" placeholder="Search Admin" />
+                <button class="btn btn-dark" id="searchButtonAdmin">
+                  Search
+                </button>
+              </div>
 
-                <!-- Tabel Data Orders -->
-                <div class="table-responsive">
-                  <table
-                    class="table table-bordered text-center"
-                    id="ordersTable"
-                  >
-                    <thead class="table-secondary">
-                      <tr>
-                        <th>No.</th>
-                        <th>Tanggal Pesanan</th>
-                        <th>Nama User</th>
-                        <th>Alamat</th>
-                        <th>Items</th>
-                        <th>Total Harga</th>
-                        <th>Payment Method</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for order in orders_data %} {% for item in
-                      order.get('items', []) %}
-                      <tr>
-                        <td>{{ loop.index }}</td>
-                        <td>{{ order.created_at }}</td>
-                        <td>{{ order.full_name }}</td>
-                        <td>{{ order.alamat }}</td>
-                        <td>
-                          {% for item in order.get('items', []) %}
-                          <div>
-                            {{ item.get('nama_barang', 'Nama Produk') }} {{
-                            item.get('brand','brand')}} ({{ item.get('quantity',
-                            0) }})
-                          </div>
-                          {% endfor %}
-                        </td>
-                        <!-- <td>{{ item.get('nama_barang', 'Nama Produk') }}</td> -->
-                        <td>{{ order.total_amount }}</td>
-                        <td>{{ order.payment_method }}</td>
-                        <td>
-                          {% if order.status == 'pending' %}
-                          <span class="badge text-bg-warning">Pending</span>
-                          {% elif order.status == 'confirmed' %}
-                          <span class="badge text-bg-info">Confirmed</span>
-                          {% elif order.status == 'completed' %}
-                          <span class="badge text-bg-success">Completed</span>
-                          {% else %}
-                          <span class="badge text-bg-secondary"
-                            >{{ order.status }}</span
-                          >
-                          {% endif %}
-                        </td>
-                        <td>
+              <!-- Tabel Data Admin -->
+              <div class="table-responsive">
+                <table class="table table-bordered text-center">
+                  <thead class="table-secondary">
+                    <tr>
+                      <th>No.</th>
+                      <th>Username</th>
+                      <th>Email</th>
+                      <th>Password</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adminTableBody">
+                    {% for admin in data_admin %}
+                    <tr>
+                      <td>{{ loop.index }}</td>
+                      <td>{{ admin.username }}</td>
+                      <td>{{ admin.email }}</td>
+                      <td>*****</td>
+                      <td>
+                        <!-- Tombol Delete untuk Data Admin -->
+                        <button class="btn btn-danger btn-sm delete-admin-btn" data-id="{{ admin._id }}">
+                          <i class="fa fa-trash"></i> Delete
+                        </button>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="dataOrders" role="tabpanel">
+        <div class="container mt-4">
+          <div class="card mt-4">
+            <div class="card-body">
+              <h2 class="card-title">DATA ORDERS</h2>
+
+              <!-- Search Bar for Data Orders -->
+              <div class="d-flex justify-content-end mb-3">
+                <input type="text" class="form-control w-25 me-2" id="searchInputOrders" placeholder="Search Orders" />
+                <button class="btn btn-dark" id="searchButtonOrders">
+                  Search
+                </button>
+              </div>
+
+              <!-- Tabel Data Orders -->
+              <div class="table-responsive">
+                <table class="table table-bordered text-center" id="ordersTable">
+                  <thead class="table-secondary">
+                    <tr>
+                      <th class="sortable" data-sort="index">
+                        No. <i class="fas fa-sort"></i>
+                      </th>
+                      <th class="sortable" data-sort="date">
+                        Tanggal Pesanan <i class="fas fa-sort"></i>
+                      </th>
+                      <th class="sortable" data-sort="name">
+                        Nama User <i class="fas fa-sort"></i>
+                      </th>
+                      <th class="sortable" data-sort="address">
+                        Alamat <i class="fas fa-sort"></i>
+                      </th>
+                      <th class="sortable" data-sort="items">
+                        Items <i class="fas fa-sort"></i>
+                      </th>
+                      <th class="sortable" data-sort="total">
+                        Total Harga <i class="fas fa-sort"></i>
+                      </th>
+                      <th class="sortable" data-sort="payment">
+                        Payment Method <i class="fas fa-sort"></i>
+                      </th>
+                      <th class="sortable" data-sort="status">
+                        Status <i class="fas fa-sort"></i>
+                      </th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for order in orders_data %}
+                    <tr>
+                      <td>{{ loop.index }}</td>
+                      <td>{{ order.created_at }}</td>
+                      <td>{{ order.full_name }}</td>
+                      <td>{{ order.alamat }}</td>
+                      <td>
+                        {% for item in order.get('items', []) %}
+                        <div>
+                          {{ item.get('nama_barang', 'Nama Produk') }}
+                          {{ item.get('brand', 'brand') }}
+                          ({{ item.get('quantity', 0) }})
+                        </div>
+                        {% endfor %}
+                      </td>
+                      <td>{{ order.total_amount }}</td>
+                      <td>{{ order.payment_method }}</td>
+                      <td>
+                        {% if order.status == 'pending' %}
+                        <span class="badge text-bg-warning">Pending</span>
+                        {% elif order.status == 'confirmed' %}
+                        <span class="badge text-bg-info">Confirmed</span>
+                        {% elif order.status == 'completed' %}
+                        <span class="badge text-bg-success">Completed</span>
+                        {% else %}
+                        <span class="badge text-bg-secondary">{{ order.status }}</span>
+                        {% endif %}
+                      </td>
+                      <td class="align-middle">
+                        <div class="d-flex align-items-center gap-1">
                           <!-- Tombol Details -->
-                          <button
-                            class="btn btn-info btn-sm detail-btn"
-                            data-id="{{ order._id }}"
-                          >
+                          <button class="btn btn-info btn-sm detail-btn" data-id="{{ order._id }}">
                             <i class="fa fa-eye"></i> Details
                           </button>
                           <!-- Tombol Delete -->
-                          <button
-                            class="btn btn-danger btn-sm delete-btn"
-                            data-id="{{ order._id }}"
-                          >
+                          <button class="btn btn-danger btn-sm delete-btn" data-id="{{ order._id }}">
                             <i class="fa fa-trash"></i> Delete
                           </button>
-                        </td>
-                      </tr>
-                      {% endfor %} {% endfor %}
-                    </tbody>
-                  </table>
-                </div>
+                        </div>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- Scripts -->
-    <script>
-      // Fungsi untuk mencari Data Barang
-      document
-        .getElementById("searchButtonBarang")
-        .addEventListener("click", function () {
-          var input = document
-            .getElementById("searchInputBarang")
-            .value.toLowerCase(); // Ambil nilai pencarian
-          var table = document.querySelector("#barangTableBody"); // Dapatkan tbody dari tabel barang
-          var rows = table.getElementsByTagName("tr"); // Ambil semua baris dalam tabel barang
+  <!-- Scripts -->
+  <script>
+    // Fungsi untuk mencari Data Barang
+    document
+      .getElementById("searchButtonBarang")
+      .addEventListener("click", function () {
+        var input = document
+          .getElementById("searchInputBarang")
+          .value.toLowerCase(); // Ambil nilai pencarian
+        var table = document.querySelector("#barangTableBody"); // Dapatkan tbody dari tabel barang
+        var rows = table.getElementsByTagName("tr"); // Ambil semua baris dalam tabel barang
 
-          // Loop melalui setiap baris tabel dan sembunyikan yang tidak sesuai dengan pencarian
-          for (var i = 0; i < rows.length; i++) {
-            var cells = rows[i].getElementsByTagName("td"); // Ambil semua sel dalam baris
-            var match = false;
+        // Loop melalui setiap baris tabel dan sembunyikan yang tidak sesuai dengan pencarian
+        for (var i = 0; i < rows.length; i++) {
+          var cells = rows[i].getElementsByTagName("td"); // Ambil semua sel dalam baris
+          var match = false;
 
-            // Loop melalui setiap sel dalam baris untuk mencari kata kunci
-            for (var j = 0; j < cells.length; j++) {
-              if (cells[j].textContent.toLowerCase().indexOf(input) > -1) {
-                match = true;
-                break; // Jika ditemukan kecocokan, berhenti mencari di sel lain
-              }
-            }
-
-            // Menyembunyikan atau menampilkan baris berdasarkan hasil pencarian
-            if (match) {
-              rows[i].style.display = "";
-            } else {
-              rows[i].style.display = "none";
+          // Loop melalui setiap sel dalam baris untuk mencari kata kunci
+          for (var j = 0; j < cells.length; j++) {
+            if (cells[j].textContent.toLowerCase().indexOf(input) > -1) {
+              match = true;
+              break; // Jika ditemukan kecocokan, berhenti mencari di sel lain
             }
           }
-        });
 
-      // Fungsi untuk mencari Data User
-      document
-        .getElementById("searchButtonUser")
-        .addEventListener("click", function () {
-          var input = document
-            .getElementById("searchInputUser")
-            .value.toLowerCase(); // Ambil nilai pencarian
-          var table = document.getElementById("userTableBody"); // Dapatkan tbody dari tabel user
-          var rows = table.getElementsByTagName("tr"); // Ambil semua baris dalam tabel user
+          // Menyembunyikan atau menampilkan baris berdasarkan hasil pencarian
+          if (match) {
+            rows[i].style.display = "";
+          } else {
+            rows[i].style.display = "none";
+          }
+        }
+      });
 
-          // Loop melalui setiap baris tabel dan sembunyikan yang tidak sesuai dengan pencarian
-          for (var i = 0; i < rows.length; i++) {
-            var cells = rows[i].getElementsByTagName("td"); // Ambil semua sel dalam baris
-            var match = false;
+    // Fungsi untuk mencari Data User
+    document
+      .getElementById("searchButtonUser")
+      .addEventListener("click", function () {
+        var input = document
+          .getElementById("searchInputUser")
+          .value.toLowerCase(); // Ambil nilai pencarian
+        var table = document.getElementById("userTableBody"); // Dapatkan tbody dari tabel user
+        var rows = table.getElementsByTagName("tr"); // Ambil semua baris dalam tabel user
 
-            // Loop melalui setiap sel dalam baris untuk mencari kata kunci
-            for (var j = 0; j < cells.length; j++) {
-              if (cells[j].textContent.toLowerCase().indexOf(input) > -1) {
-                match = true;
-                break; // Jika ditemukan kecocokan, berhenti mencari di sel lain
-              }
-            }
+        // Loop melalui setiap baris tabel dan sembunyikan yang tidak sesuai dengan pencarian
+        for (var i = 0; i < rows.length; i++) {
+          var cells = rows[i].getElementsByTagName("td"); // Ambil semua sel dalam baris
+          var match = false;
 
-            // Menyembunyikan atau menampilkan baris berdasarkan hasil pencarian
-            if (match) {
-              rows[i].style.display = ""; // Tampilkan baris
-            } else {
-              rows[i].style.display = "none"; // Sembunyikan baris
+          // Loop melalui setiap sel dalam baris untuk mencari kata kunci
+          for (var j = 0; j < cells.length; j++) {
+            if (cells[j].textContent.toLowerCase().indexOf(input) > -1) {
+              match = true;
+              break; // Jika ditemukan kecocokan, berhenti mencari di sel lain
             }
           }
-        });
 
-      // Fungsi untuk mencari Data Admin
-      document
-        .getElementById("searchButtonAdmin")
-        .addEventListener("click", function () {
-          var input = document
-            .getElementById("searchInputAdmin")
-            .value.toLowerCase(); // Ambil nilai pencarian
-          var table = document.getElementById("adminTableBody"); // Dapatkan tbody dari tabel admin
-          var rows = table.getElementsByTagName("tr"); // Ambil semua baris dalam tabel admin
+          // Menyembunyikan atau menampilkan baris berdasarkan hasil pencarian
+          if (match) {
+            rows[i].style.display = ""; // Tampilkan baris
+          } else {
+            rows[i].style.display = "none"; // Sembunyikan baris
+          }
+        }
+      });
 
-          // Loop melalui setiap baris tabel dan sembunyikan yang tidak sesuai dengan pencarian
-          for (var i = 0; i < rows.length; i++) {
-            var cells = rows[i].getElementsByTagName("td"); // Ambil semua sel dalam baris
-            var match = false;
+    // Fungsi untuk mencari Data Admin
+    document
+      .getElementById("searchButtonAdmin")
+      .addEventListener("click", function () {
+        var input = document
+          .getElementById("searchInputAdmin")
+          .value.toLowerCase(); // Ambil nilai pencarian
+        var table = document.getElementById("adminTableBody"); // Dapatkan tbody dari tabel admin
+        var rows = table.getElementsByTagName("tr"); // Ambil semua baris dalam tabel admin
 
-            // Loop melalui setiap sel dalam baris untuk mencari kata kunci
-            for (var j = 0; j < cells.length; j++) {
-              if (cells[j].textContent.toLowerCase().indexOf(input) > -1) {
-                match = true;
-                break; // Jika ditemukan kecocokan, berhenti mencari di sel lain
-              }
-            }
+        // Loop melalui setiap baris tabel dan sembunyikan yang tidak sesuai dengan pencarian
+        for (var i = 0; i < rows.length; i++) {
+          var cells = rows[i].getElementsByTagName("td"); // Ambil semua sel dalam baris
+          var match = false;
 
-            // Menyembunyikan atau menampilkan baris berdasarkan hasil pencarian
-            if (match) {
-              rows[i].style.display = ""; // Tampilkan baris
-            } else {
-              rows[i].style.display = "none"; // Sembunyikan baris
+          // Loop melalui setiap sel dalam baris untuk mencari kata kunci
+          for (var j = 0; j < cells.length; j++) {
+            if (cells[j].textContent.toLowerCase().indexOf(input) > -1) {
+              match = true;
+              break; // Jika ditemukan kecocokan, berhenti mencari di sel lain
             }
           }
-        });
 
-      // Tampilkan input form
-      document
-        .getElementById("tambahBtn")
-        .addEventListener("click", function () {
-          document.getElementById("input-box").style.display = "block";
-        });
+          // Menyembunyikan atau menampilkan baris berdasarkan hasil pencarian
+          if (match) {
+            rows[i].style.display = ""; // Tampilkan baris
+          } else {
+            rows[i].style.display = "none"; // Sembunyikan baris
+          }
+        }
+      });
 
-      // Menambahkan barang baru ke dalam database
-      document
-        .getElementById("submitSimpanBarang")
-        .addEventListener("click", function () {
-          var kategori = document.getElementById("inputState").value;
-          var nama_barang = document.getElementById("nama_barang").value;
-          var brand = document.getElementById("brand").value;
-          var netto = document.getElementById("netto").value;
-          var warna = document.getElementById("warna").value;
-          var harga = document.getElementById("harga").value;
-          var stock = document.getElementById("stock").value;
-          var foto = document.getElementById("foto").files[0]; // Ambil file foto
+    // Tampilkan input form
+    document
+      .getElementById("tambahBtn")
+      .addEventListener("click", function () {
+        document.getElementById("input-box").style.display = "block";
+      });
 
-          if (
-            !kategori ||
-            !nama_barang ||
-            !brand ||
-            !netto ||
-            !warna ||
-            !harga ||
-            !stock
-          ) {
+    // Menambahkan barang baru ke dalam database
+    document
+      .getElementById("submitSimpanBarang")
+      .addEventListener("click", function () {
+        var kategori = document.getElementById("inputState").value;
+        var nama_barang = document.getElementById("nama_barang").value;
+        var brand = document.getElementById("brand").value;
+        var netto = document.getElementById("netto").value;
+        var warna = document.getElementById("warna").value;
+        var harga = document.getElementById("harga").value;
+        var stock = document.getElementById("stock").value;
+        var foto = document.getElementById("foto").files[0]; // Ambil file foto
+
+        if (
+          !kategori ||
+          !nama_barang ||
+          !brand ||
+          !netto ||
+          !warna ||
+          !harga ||
+          !stock
+        ) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Semua kolom harus diisi!",
+          });
+          return;
+        }
+
+        // Buat FormData untuk mengirim data termasuk file gambar
+        var formData = new FormData();
+        formData.append("kategori", kategori);
+        formData.append("nama_barang", nama_barang);
+        formData.append("brand", brand);
+        formData.append("netto", netto);
+        formData.append("warna", warna);
+        formData.append("harga", harga);
+        formData.append("stock", stock);
+        if (foto) {
+          formData.append("foto", foto);
+        }
+
+        // Kirim data menggunakan AJAX
+        $.ajax({
+          url: "/accounts/admin/data_barang/tambah_barang",
+          type: "POST",
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function (response) {
+            Swal.fire({
+              icon: "success",
+              title: "Berhasil!",
+              text: "Barang berhasil disimpan",
+              showConfirmButton: false,
+              timer: 1500,
+            }).then(() => {
+              location.reload();
+            });
+          },
+          error: function () {
             Swal.fire({
               icon: "error",
               title: "Oops...",
-              text: "Semua kolom harus diisi!",
+              text: "Terjadi kesalahan. Silakan coba lagi...",
             });
-            return;
-          }
-
-          // Buat FormData untuk mengirim data termasuk file gambar
-          var formData = new FormData();
-          formData.append("kategori", kategori);
-          formData.append("nama_barang", nama_barang);
-          formData.append("brand", brand);
-          formData.append("netto", netto);
-          formData.append("warna", warna);
-          formData.append("harga", harga);
-          formData.append("stock", stock);
-          if (foto) {
-            formData.append("foto", foto);
-          }
-
-          // Kirim data menggunakan AJAX
-          $.ajax({
-            url: "/accounts/admin/data_barang/tambah_barang",
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-              Swal.fire({
-                icon: "success",
-                title: "Berhasil!",
-                text: "Barang berhasil disimpan",
-                showConfirmButton: false,
-                timer: 1500,
-              }).then(() => {
-                location.reload();
-              });
-            },
-            error: function () {
-              Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Terjadi kesalahan. Silakan coba lagi...",
-              });
-            },
-          });
-        });
-
-      // Delete Barang
-      $(document).ready(function () {
-        $("#barangTableBody").on("click", ".delete-barang-btn", function () {
-          const barangId = $(this).data("id");
-
-          Swal.fire({
-            title: "Apakah Anda yakin?",
-            text: "Barang yang dihapus tidak dapat dikembalikan!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Ya, hapus!",
-            cancelButtonText: "Batal",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              $.ajax({
-                url: "/accounts/admin/data_barang/delete_barang",
-                type: "POST",
-                data: { id: barangId },
-                success: function (response) {
-                  if (response.status === "success") {
-                    Swal.fire({
-                      icon: "success",
-                      title: "Berhasil!",
-                      text: response.message,
-                      showConfirmButton: false,
-                      timer: 1500,
-                    }).then(() => {
-                      // Hapus baris dari tabel
-                      $(
-                        `#barangTableBody tr:has(td button[data-id='${barangId}'])`
-                      ).remove();
-                      // Update nomor urut
-                      $("#barangTableBody tr").each(function (index) {
-                        $(this)
-                          .find("td:first")
-                          .text(index + 1);
-                      });
-                    });
-                  } else {
-                    Swal.fire({
-                      icon: "error",
-                      title: "Oops...",
-                      text: "Gagal menghapus data.",
-                    });
-                  }
-                },
-                error: function () {
-                  Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Terjadi kesalahan pada server.",
-                  });
-                },
-              });
-            }
-          });
+          },
         });
       });
 
-      // Delete user
-      $("#userTableBody").on("click", ".delete-user-btn", function () {
-        const userId = $(this).data("id");
+    // Delete Barang
+    $(document).ready(function () {
+      $("#barangTableBody").on("click", ".delete-barang-btn", function () {
+        const barangId = $(this).data("id");
 
         Swal.fire({
           title: "Apakah Anda yakin?",
-          text: "User yang dihapus tidak dapat dikembalikan!",
+          text: "Barang yang dihapus tidak dapat dikembalikan!",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
@@ -915,9 +681,9 @@
         }).then((result) => {
           if (result.isConfirmed) {
             $.ajax({
-              url: "/accounts/admin/data_user/delete_user",
+              url: "/accounts/admin/data_barang/delete_barang",
               type: "POST",
-              data: { id: userId },
+              data: { id: barangId },
               success: function (response) {
                 if (response.status === "success") {
                   Swal.fire({
@@ -927,10 +693,12 @@
                     showConfirmButton: false,
                     timer: 1500,
                   }).then(() => {
+                    // Hapus baris dari tabel
                     $(
-                      `#userTableBody tr:has(td button[data-id='${userId}'])`
+                      `#barangTableBody tr:has(td button[data-id='${barangId}'])`
                     ).remove();
-                    $("#userTableBody tr").each(function (index) {
+                    // Update nomor urut
+                    $("#barangTableBody tr").each(function (index) {
                       $(this)
                         .find("td:first")
                         .text(index + 1);
@@ -955,280 +723,338 @@
           }
         });
       });
+    });
 
-      // Delete admin
-      // Delete Admin
-      $(document).ready(function () {
-        // Gunakan class yang lebih spesifik: delete-admin-btn
-        $("#adminTableBody").on("click", ".delete-admin-btn", function () {
-          const adminId = $(this).data("id");
+    // Delete user
+    $("#userTableBody").on("click", ".delete-user-btn", function () {
+      const userId = $(this).data("id");
 
-          Swal.fire({
-            title: "Apakah Anda yakin?",
-            text: "Admin yang dihapus tidak dapat dikembalikan!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Ya, hapus!",
-            cancelButtonText: "Batal",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              $.ajax({
-                url: "/accounts/admin/data_admin/delete_admin",
-                type: "POST",
-                data: { id: adminId },
-                success: function (response) {
-                  if (response.status === "success") {
-                    Swal.fire({
-                      icon: "success",
-                      title: "Berhasil!",
-                      text: response.message,
-                      showConfirmButton: false,
-                      timer: 1500,
-                    }).then(() => {
-                      // Hapus baris admin dari tabel
-                      $(
-                        `#adminTableBody tr:has(td button[data-id='${adminId}'])`
-                      ).remove();
-                      // Perbarui nomor urut secara dinamis
-                      $("#adminTableBody tr").each(function (index) {
-                        $(this)
-                          .find("td:first")
-                          .text(index + 1);
-                      });
-                    });
-                  } else {
-                    Swal.fire({
-                      icon: "error",
-                      title: "Oops...",
-                      text: "Gagal menghapus data.",
-                    });
-                  }
-                },
-                error: function () {
-                  Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Terjadi kesalahan pada server.",
+      Swal.fire({
+        title: "Apakah Anda yakin?",
+        text: "User yang dihapus tidak dapat dikembalikan!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, hapus!",
+        cancelButtonText: "Batal",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
+            url: "/accounts/admin/data_user/delete_user",
+            type: "POST",
+            data: { id: userId },
+            success: function (response) {
+              if (response.status === "success") {
+                Swal.fire({
+                  icon: "success",
+                  title: "Berhasil!",
+                  text: response.message,
+                  showConfirmButton: false,
+                  timer: 1500,
+                }).then(() => {
+                  $(
+                    `#userTableBody tr:has(td button[data-id='${userId}'])`
+                  ).remove();
+                  $("#userTableBody tr").each(function (index) {
+                    $(this)
+                      .find("td:first")
+                      .text(index + 1);
                   });
-                },
-              });
-            }
-          });
-        });
-      });
-
-      document.querySelectorAll(".edit-btn").forEach(function (button) {
-        button.addEventListener("click", function () {
-          // Ambil data dari atribut data-* di tombol edit
-          var id = button.getAttribute("data-id");
-          var kategori = button.getAttribute("data-kategori");
-          var nama_barang = button.getAttribute("data-nama_barang");
-          var brand = button.getAttribute("data-brand");
-          var netto = button.getAttribute("data-netto");
-          var warna = button.getAttribute("data-warna");
-          var harga = button.getAttribute("data-harga");
-          var stock = button.getAttribute("data-stock");
-          var foto = button.getAttribute("data-foto");
-
-          // Isi form dengan data yang diambil
-          document.getElementById("editKategori").value = kategori;
-          document.getElementById("editNamaBarang").value = nama_barang;
-          document.getElementById("editBrand").value = brand;
-          document.getElementById("editNetto").value = netto;
-          document.getElementById("editWarna").value = warna;
-          document.getElementById("editHarga").value = harga;
-          document.getElementById("editStock").value = stock;
-
-          // Tampilkan form edit
-          document.getElementById("edit-box").style.display = "block";
-
-          // Menangani pengiriman data edit ke server
-          document
-            .getElementById("submitEditBarang")
-            .addEventListener("click", function () {
-              var updatedKategori =
-                document.getElementById("editKategori").value;
-              var updatedNamaBarang =
-                document.getElementById("editNamaBarang").value;
-              var updatedBrand = document.getElementById("editBrand").value;
-              var updatedNetto = document.getElementById("editNetto").value;
-              var updatedWarna = document.getElementById("editWarna").value;
-              var updatedHarga = document.getElementById("editHarga").value;
-              var updatedStock = document.getElementById("editStock").value;
-              var updatedFoto = document.getElementById("editFoto").files[0];
-
-              // Validasi input
-              if (
-                !updatedKategori ||
-                !updatedNamaBarang ||
-                !updatedBrand ||
-                !updatedNetto ||
-                !updatedWarna ||
-                !updatedHarga ||
-                !updatedStock
-              ) {
+                });
+              } else {
                 Swal.fire({
                   icon: "error",
                   title: "Oops...",
-                  text: "Semua field harus diisi!",
+                  text: "Gagal menghapus data.",
                 });
-                return;
               }
-
-              var formData = new FormData();
-              formData.append("id", id);
-              formData.append("kategori", updatedKategori);
-              formData.append("nama_barang", updatedNamaBarang);
-              formData.append("brand", updatedBrand);
-              formData.append("netto", updatedNetto);
-              formData.append("warna", updatedWarna);
-              formData.append("harga", updatedHarga);
-              formData.append("stock", updatedStock);
-              if (updatedFoto) {
-                formData.append("foto", updatedFoto);
-              }
-
-              // Konfirmasi sebelum update
-              Swal.fire({
-                title: "Konfirmasi Update",
-                text: "Apakah Anda yakin ingin memperbarui data barang ini?",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Ya, update!",
-                cancelButtonText: "Batal",
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  // Kirim data ke server menggunakan AJAX
-                  $.ajax({
-                    url: "/accounts/admin/data_barang/edit_barang",
-                    method: "POST",
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function (response) {
-                      if (response.status === "success") {
-                        Swal.fire({
-                          icon: "success",
-                          title: "Berhasil!",
-                          text: "Barang berhasil diperbarui!",
-                          showConfirmButton: false,
-                          timer: 1500,
-                        }).then(() => {
-                          location.reload();
-                        });
-                      } else {
-                        Swal.fire({
-                          icon: "error",
-                          title: "Oops...",
-                          text: "Terjadi kesalahan saat memperbarui barang.",
-                        });
-                      }
-                    },
-                    error: function () {
-                      Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Terjadi kesalahan saat mengirim data.",
-                      });
-                    },
-                  });
-                }
-              });
-            });
-        });
-      });
-
-      document.addEventListener("DOMContentLoaded", function () {
-        // Inisialisasi tab Bootstrap
-        var triggerTabList = [].slice.call(
-          document.querySelectorAll(".nav-link")
-        );
-        triggerTabList.forEach(function (triggerEl) {
-          var tabTrigger = new bootstrap.Tab(triggerEl);
-          triggerEl.addEventListener("click", function (event) {
-            event.preventDefault();
-            tabTrigger.show();
-          });
-        });
-      });
-
-      $(document).ready(function () {
-        // Handle Delete Button
-        $(document).on("click", ".delete-btn", function (e) {
-          e.preventDefault();
-          const orderId = $(this).data("id");
-
-          Swal.fire({
-            title: "Apakah Anda yakin?",
-            text: "Order yang dihapus tidak dapat dikembalikan!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Ya, hapus!",
-            cancelButtonText: "Batal",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              deleteOrder(orderId);
-            }
-          });
-        });
-
-        // Handle Detail Button
-        $(document).on("click", ".detail-btn", function (e) {
-          e.preventDefault();
-          const orderId = $(this).data("id");
-          showOrderDetails(orderId);
-        });
-      });
-      function deleteOrder(orderId) {
-        $.ajax({
-          url: `/admin/delete-order/${orderId}`,
-          type: "DELETE",
-          success: function (response) {
-            if (response.success) {
-              Swal.fire({
-                icon: "success",
-                title: "Berhasil!",
-                text: response.message,
-                showConfirmButton: false,
-                timer: 1500,
-              }).then(() => {
-                location.reload();
-              });
-            } else {
+            },
+            error: function () {
               Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: response.message,
+                text: "Terjadi kesalahan pada server.",
               });
+            },
+          });
+        }
+      });
+    });
+
+    // Delete admin
+    // Delete Admin
+    $(document).ready(function () {
+      // Gunakan class yang lebih spesifik: delete-admin-btn
+      $("#adminTableBody").on("click", ".delete-admin-btn", function () {
+        const adminId = $(this).data("id");
+
+        Swal.fire({
+          title: "Apakah Anda yakin?",
+          text: "Admin yang dihapus tidak dapat dikembalikan!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Ya, hapus!",
+          cancelButtonText: "Batal",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $.ajax({
+              url: "/accounts/admin/data_admin/delete_admin",
+              type: "POST",
+              data: { id: adminId },
+              success: function (response) {
+                if (response.status === "success") {
+                  Swal.fire({
+                    icon: "success",
+                    title: "Berhasil!",
+                    text: response.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                  }).then(() => {
+                    // Hapus baris admin dari tabel
+                    $(
+                      `#adminTableBody tr:has(td button[data-id='${adminId}'])`
+                    ).remove();
+                    // Perbarui nomor urut secara dinamis
+                    $("#adminTableBody tr").each(function (index) {
+                      $(this)
+                        .find("td:first")
+                        .text(index + 1);
+                    });
+                  });
+                } else {
+                  Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Gagal menghapus data.",
+                  });
+                }
+              },
+              error: function () {
+                Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: "Terjadi kesalahan pada server.",
+                });
+              },
+            });
+          }
+        });
+      });
+    });
+
+    document.querySelectorAll(".edit-btn").forEach(function (button) {
+      button.addEventListener("click", function () {
+        // Ambil data dari atribut data-* di tombol edit
+        var id = button.getAttribute("data-id");
+        var kategori = button.getAttribute("data-kategori");
+        var nama_barang = button.getAttribute("data-nama_barang");
+        var brand = button.getAttribute("data-brand");
+        var netto = button.getAttribute("data-netto");
+        var warna = button.getAttribute("data-warna");
+        var harga = button.getAttribute("data-harga");
+        var stock = button.getAttribute("data-stock");
+        var foto = button.getAttribute("data-foto");
+
+        // Isi form dengan data yang diambil
+        document.getElementById("editKategori").value = kategori;
+        document.getElementById("editNamaBarang").value = nama_barang;
+        document.getElementById("editBrand").value = brand;
+        document.getElementById("editNetto").value = netto;
+        document.getElementById("editWarna").value = warna;
+        document.getElementById("editHarga").value = harga;
+        document.getElementById("editStock").value = stock;
+
+        // Tampilkan form edit
+        document.getElementById("edit-box").style.display = "block";
+
+        // Menangani pengiriman data edit ke server
+        document
+          .getElementById("submitEditBarang")
+          .addEventListener("click", function () {
+            var updatedKategori =
+              document.getElementById("editKategori").value;
+            var updatedNamaBarang =
+              document.getElementById("editNamaBarang").value;
+            var updatedBrand = document.getElementById("editBrand").value;
+            var updatedNetto = document.getElementById("editNetto").value;
+            var updatedWarna = document.getElementById("editWarna").value;
+            var updatedHarga = document.getElementById("editHarga").value;
+            var updatedStock = document.getElementById("editStock").value;
+            var updatedFoto = document.getElementById("editFoto").files[0];
+
+            // Validasi input
+            if (
+              !updatedKategori ||
+              !updatedNamaBarang ||
+              !updatedBrand ||
+              !updatedNetto ||
+              !updatedWarna ||
+              !updatedHarga ||
+              !updatedStock
+            ) {
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Semua field harus diisi!",
+              });
+              return;
             }
-          },
-          error: function (xhr) {
+
+            var formData = new FormData();
+            formData.append("id", id);
+            formData.append("kategori", updatedKategori);
+            formData.append("nama_barang", updatedNamaBarang);
+            formData.append("brand", updatedBrand);
+            formData.append("netto", updatedNetto);
+            formData.append("warna", updatedWarna);
+            formData.append("harga", updatedHarga);
+            formData.append("stock", updatedStock);
+            if (updatedFoto) {
+              formData.append("foto", updatedFoto);
+            }
+
+            // Konfirmasi sebelum update
+            Swal.fire({
+              title: "Konfirmasi Update",
+              text: "Apakah Anda yakin ingin memperbarui data barang ini?",
+              icon: "question",
+              showCancelButton: true,
+              confirmButtonColor: "#3085d6",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Ya, update!",
+              cancelButtonText: "Batal",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // Kirim data ke server menggunakan AJAX
+                $.ajax({
+                  url: "/accounts/admin/data_barang/edit_barang",
+                  method: "POST",
+                  data: formData,
+                  contentType: false,
+                  processData: false,
+                  success: function (response) {
+                    if (response.status === "success") {
+                      Swal.fire({
+                        icon: "success",
+                        title: "Berhasil!",
+                        text: "Barang berhasil diperbarui!",
+                        showConfirmButton: false,
+                        timer: 1500,
+                      }).then(() => {
+                        location.reload();
+                      });
+                    } else {
+                      Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Terjadi kesalahan saat memperbarui barang.",
+                      });
+                    }
+                  },
+                  error: function () {
+                    Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Terjadi kesalahan saat mengirim data.",
+                    });
+                  },
+                });
+              }
+            });
+          });
+      });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+      // Inisialisasi tab Bootstrap
+      var triggerTabList = [].slice.call(
+        document.querySelectorAll(".nav-link")
+      );
+      triggerTabList.forEach(function (triggerEl) {
+        var tabTrigger = new bootstrap.Tab(triggerEl);
+        triggerEl.addEventListener("click", function (event) {
+          event.preventDefault();
+          tabTrigger.show();
+        });
+      });
+    });
+
+    $(document).ready(function () {
+      // Handle Delete Button
+      $(document).on("click", ".delete-btn", function (e) {
+        e.preventDefault();
+        const orderId = $(this).data("id");
+
+        Swal.fire({
+          title: "Apakah Anda yakin?",
+          text: "Order yang dihapus tidak dapat dikembalikan!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Ya, hapus!",
+          cancelButtonText: "Batal",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            deleteOrder(orderId);
+          }
+        });
+      });
+
+      // Handle Detail Button
+      $(document).on("click", ".detail-btn", function (e) {
+        e.preventDefault();
+        const orderId = $(this).data("id");
+        showOrderDetails(orderId);
+      });
+    });
+    function deleteOrder(orderId) {
+      $.ajax({
+        url: `/admin/delete-order/${orderId}`,
+        type: "DELETE",
+        success: function (response) {
+          if (response.success) {
+            Swal.fire({
+              icon: "success",
+              title: "Berhasil!",
+              text: response.message,
+              showConfirmButton: false,
+              timer: 1500,
+            }).then(() => {
+              location.reload();
+            });
+          } else {
             Swal.fire({
               icon: "error",
               title: "Oops...",
-              text: "Terjadi kesalahan saat menghapus order",
+              text: response.message,
             });
-          },
-        });
-      }
+          }
+        },
+        error: function (xhr) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Terjadi kesalahan saat menghapus order",
+          });
+        },
+      });
+    }
 
-      function showOrderDetails(orderId) {
-        $.ajax({
-          url: `/admin/order-details/${orderId}`,
-          type: "GET",
-          success: function (response) {
-            if (response.success) {
-              const order = response.data;
+    function showOrderDetails(orderId) {
+      $.ajax({
+        url: `/admin/order-details/${orderId}`,
+        type: "GET",
+        success: function (response) {
+          if (response.success) {
+            const order = response.data;
 
-              const itemsList = order.items
-                .map(
-                  (item) => `
+            const itemsList = order.items
+              .map(
+                (item) => `
                     <tr>
                         <td>${item.nama_barang} ${item.brand}</td>
                         <td>${item.quantity}</td>
@@ -1236,65 +1062,57 @@
                         <td>Rp ${item.subtotal.toLocaleString()}</td>
                     </tr>
                 `
-                )
-                .join("");
+              )
+              .join("");
 
-              const getStatusBadgeColor = (status) => {
-                switch (status) {
-                  case "pending":
-                    return "warning";
-                  case "confirmed":
-                    return "info";
-                  case "completed":
-                    return "success";
-                  default:
-                    return "secondary";
-                }
-              };
+            const getStatusBadgeColor = (status) => {
+              switch (status) {
+                case "pending":
+                  return "warning";
+                case "confirmed":
+                  return "info";
+                case "completed":
+                  return "success";
+                default:
+                  return "secondary";
+              }
+            };
 
-              const modalContent = `
+            const modalContent = `
                     <div class="container-fluid">
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <p class="mb-2"><strong>Tanggal:</strong> ${
-                                  order.created_at
-                                }</p>
-                                <p class="mb-2"><strong>Nama:</strong> ${
-                                  order.full_name
-                                }</p>
-                                <p class="mb-2"><strong>Payment Method:</strong> ${
-                                  order.payment_method
-                                }</p>
+                                <p class="mb-2"><strong>Tanggal:</strong> ${order.created_at
+              }</p>
+                                <p class="mb-2"><strong>Nama:</strong> ${order.full_name
+              }</p>
+                                <p class="mb-2"><strong>Payment Method:</strong> ${order.payment_method
+              }</p>
                             </div>
                             <div class="col-md-6">
                                 <p class="mb-2"><strong>Status:</strong> 
                                     <select id="orderStatus" class="form-select form-select-sm d-inline-block w-auto ms-2">
-                                        <option value="pending" ${
-                                          order.status === "pending"
-                                            ? "selected"
-                                            : ""
-                                        }>Pending</option>
-                                        <option value="confirmed" ${
-                                          order.status === "confirmed"
-                                            ? "selected"
-                                            : ""
-                                        }>Confirmed</option>
-                                        <option value="completed" ${
-                                          order.status === "completed"
-                                            ? "selected"
-                                            : ""
-                                        }>Completed</option>
+                                        <option value="pending" ${order.status === "pending"
+                ? "selected"
+                : ""
+              }>Pending</option>
+                                        <option value="confirmed" ${order.status === "confirmed"
+                ? "selected"
+                : ""
+              }>Confirmed</option>
+                                        <option value="completed" ${order.status === "completed"
+                ? "selected"
+                : ""
+              }>Completed</option>
                                     </select>
-                                    <button class="btn btn-sm btn-primary ms-2" onclick="updateOrderStatus('${
-                                      order._id
-                                    }')">
+                                    <button class="btn btn-sm btn-primary ms-2" onclick="updateOrderStatus('${order._id
+              }')">
                                         Update Status
                                     </button>
                                 </p>
                                 <p class="mb-2"><strong>Total Amount:</strong> Rp ${order.total_amount.toLocaleString()}</p>
-                                <p class="mb-2"><strong>Alamat:</strong> ${
-                                  order.alamat
-                                }</p>
+                                <p class="mb-2"><strong>Alamat:</strong> ${order.alamat
+              }</p>
                             </div>
                         </div>
                         <div class="row">
@@ -1320,84 +1138,220 @@
                     </div>
                 `;
 
-              Swal.fire({
-                title: '<h5 class="mb-0">Detail Order</h5>',
-                html: modalContent,
-                showCloseButton: true,
-                showConfirmButton: false,
-                customClass: {
-                  container: "detail-modal-container",
-                  popup: "detail-modal-popup",
-                },
-              });
-            } else {
-              Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: response.message,
-              });
-            }
-          },
-          error: function (xhr) {
+            Swal.fire({
+              title: '<h5 class="mb-0">Detail Order</h5>',
+              html: modalContent,
+              showCloseButton: true,
+              showConfirmButton: false,
+              customClass: {
+                container: "detail-modal-container",
+                popup: "detail-modal-popup",
+              },
+            });
+          } else {
             Swal.fire({
               icon: "error",
               title: "Oops...",
-              text: "Terjadi kesalahan saat mengambil detail order",
+              text: response.message,
             });
-          },
-        });
-      }
-      function updateOrderStatus(orderId) {
-        const newStatus = document.getElementById("orderStatus").value;
+          }
+        },
+        error: function (xhr) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Terjadi kesalahan saat mengambil detail order",
+          });
+        },
+      });
+    }
+    function updateOrderStatus(orderId) {
+      const newStatus = document.getElementById("orderStatus").value;
 
-        Swal.fire({
-          title: "Konfirmasi",
-          text: `Apakah Anda yakin ingin mengubah status menjadi ${newStatus}?`,
-          icon: "question",
-          showCancelButton: true,
-          confirmButtonText: "Ya, ubah!",
-          cancelButtonText: "Batal",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            $.ajax({
-              url: `/admin/update-order-status/${orderId}`,
-              type: "POST",
-              contentType: "application/json",
-              data: JSON.stringify({ status: newStatus }),
-              success: function (response) {
-                if (response.success) {
-                  Swal.fire({
-                    icon: "success",
-                    title: "Berhasil!",
-                    text: response.message,
-                    showConfirmButton: false,
-                    timer: 1500,
-                  }).then(() => {
-                    // Refresh halaman setelah update
-                    location.reload();
-                  });
-                } else {
-                  Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: response.message,
-                  });
-                }
-              },
-              error: function (xhr) {
+      Swal.fire({
+        title: "Konfirmasi",
+        text: `Apakah Anda yakin ingin mengubah status menjadi ${newStatus}?`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Ya, ubah!",
+        cancelButtonText: "Batal",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
+            url: `/admin/update-order-status/${orderId}`,
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ status: newStatus }),
+            success: function (response) {
+              if (response.success) {
+                Swal.fire({
+                  icon: "success",
+                  title: "Berhasil!",
+                  text: response.message,
+                  showConfirmButton: false,
+                  timer: 1500,
+                }).then(() => {
+                  // Refresh halaman setelah update
+                  location.reload();
+                });
+              } else {
                 Swal.fire({
                   icon: "error",
                   title: "Oops...",
-                  text: "Terjadi kesalahan saat mengupdate status",
+                  text: response.message,
                 });
-              },
-            });
-          }
-        });
-      }
-    </script>
+              }
+            },
+            error: function (xhr) {
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Terjadi kesalahan saat mengupdate status",
+              });
+            },
+          });
+        }
+      });
+    }
 
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
-  </body>
+    // Fungsi untuk mencari Data Orders
+    document.getElementById("searchButtonOrders").addEventListener("click", function () {
+      var input = document.getElementById("searchInputOrders").value.toLowerCase();
+      var table = document.getElementById("ordersTable");
+      var rows = table.getElementsByTagName("tr");
+
+      // Loop melalui semua baris tabel, mulai dari indeks 1 untuk melewati header
+      for (var i = 1; i < rows.length; i++) {
+        var match = false;
+        var cells = rows[i].getElementsByTagName("td");
+
+        // Loop melalui setiap sel dalam baris
+        for (var j = 0; j < cells.length; j++) {
+          var cellText = cells[j].textContent || cells[j].innerText;
+
+          // Jika sel mengandung text pencarian
+          if (cellText.toLowerCase().indexOf(input) > -1) {
+            match = true;
+            break;
+          }
+        }
+
+        // Tampilkan atau sembunyikan baris berdasarkan hasil pencarian
+        if (match) {
+          rows[i].style.display = "";
+        } else {
+          rows[i].style.display = "none";
+        }
+      }
+    });
+
+    // Tambahkan event listener untuk pencarian saat menekan tombol Enter
+    document.getElementById("searchInputOrders").addEventListener("keyup", function (event) {
+      if (event.key === "Enter") {
+        document.getElementById("searchButtonOrders").click();
+      }
+    });
+
+    // Fungsi untuk sorting tabel
+    document.addEventListener('DOMContentLoaded', function () {
+      const table = document.getElementById('ordersTable');
+      const headers = table.querySelectorAll('th.sortable');
+
+      headers.forEach(header => {
+        header.addEventListener('click', function () {
+          const sortType = this.getAttribute('data-sort');
+          const isAsc = !this.classList.contains('asc');
+
+          // Reset semua header
+          headers.forEach(h => {
+            h.classList.remove('asc', 'desc');
+          });
+
+          // Set arah sort yang baru
+          this.classList.add(isAsc ? 'asc' : 'desc');
+
+          sortTable(table, sortType, isAsc);
+        });
+      });
+    });
+
+    function sortTable(table, sortType, isAsc) {
+      const tbody = table.querySelector('tbody');
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+
+      rows.sort((a, b) => {
+        let aValue = getCellValue(a, sortType);
+        let bValue = getCellValue(b, sortType);
+
+        if (sortType === 'index') {
+          return compareValues(parseInt(aValue), parseInt(bValue), isAsc);
+        }
+        else if (sortType === 'date') {
+          // Konversi string tanggal ke timestamp
+          const aDate = parseDate(aValue);
+          const bDate = parseDate(bValue);
+          return compareValues(aDate.getTime(), bDate.getTime(), isAsc);
+        }
+        else if (sortType === 'total') {
+          // Hapus 'Rp' dan koma, lalu convert ke number
+          aValue = parseFloat(aValue.replace(/[Rp,\s]/g, ''));
+          bValue = parseFloat(bValue.replace(/[Rp,\s]/g, ''));
+          return compareValues(aValue, bValue, isAsc);
+        }
+        else {
+          // Untuk text biasa
+          return compareValues(aValue, bValue, isAsc);
+        }
+      });
+
+      // Reorder tbody
+      rows.forEach(row => tbody.appendChild(row));
+    }
+
+    function parseDate(dateStr) {
+      // Format: "Day DD-MM-YYYY HH:mm:ss"
+      try {
+        // Hapus nama hari dan ambil bagian tanggal dan waktu
+        const [datePart, timePart] = dateStr.split(/\s+/).slice(-2);
+
+        // Parse tanggal DD-MM-YYYY
+        const [day, month, year] = datePart.split('-');
+
+        // Parse waktu HH:mm:ss
+        const [hours, minutes, seconds] = timePart ? timePart.split(':') : [0, 0, 0];
+
+        // Buat objek Date (bulan dalam JavaScript dimulai dari 0)
+        return new Date(year, month - 1, day, hours, minutes, seconds);
+      } catch (e) {
+        console.error('Error parsing date:', dateStr, e);
+        return new Date(0); // Return tanggal epoch jika parsing gagal
+      }
+    }
+
+    function getCellValue(row, sortType) {
+      const cellIndex = {
+        'index': 0,
+        'date': 1,
+        'name': 2,
+        'address': 3,
+        'items': 4,
+        'total': 5,
+        'payment': 6,
+        'status': 7
+      };
+
+      return row.cells[cellIndex[sortType]].textContent.trim();
+    }
+
+    function compareValues(a, b, isAsc) {
+      if (a < b) return isAsc ? -1 : 1;
+      if (a > b) return isAsc ? 1 : -1;
+      return 0;
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+</body>
+
 </html>
