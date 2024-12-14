@@ -111,7 +111,7 @@ body {
 .side-bar {
   background: #f1f6fc;
   scroll-behavior: auto;
-  width: 350px;
+  width: 260px;
 }
 
 .profile-info {
@@ -119,14 +119,15 @@ body {
 }
 
 .profile-info img {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   object-fit: cover;
 }
 
 .profile-name p {
   margin: 0px;
+  font-size: 12px;
   font-weight: bold;
 }
 
@@ -135,7 +136,7 @@ body {
   text-decoration: none;
   margin-top: 20px;
   margin-left: 15px;
-  font-size: 20px;
+  font-size: 15px;
   display: inline-block;
 }
 
@@ -148,21 +149,37 @@ body {
   margin-right: 20px;
 }
 
-.button-fiture button {
+.button-fiture .btn {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: 98px;
+  color: #fff !important;
+  font-size: 13px;
+  box-shadow: 2px 2px 1px #000000;
+  transition: all 0.2s ease;
+}
+.button-fiture .btn:active {
+  transform: translateX(1px);
+  box-shadow: 0px 0px 1px #000000;
 }
 
-.history-cont.card {
+.history-cont .card {
   display: flex;
-  height: 24%;
+  height: 35%;
   justify-content: space-between;
-
   margin-left: 30px;
 }
 
 .img-fluid {
   height: 150px;
+}
+
+.img-histori img {
+  width: 70px;
+  height: 75px;
+}
+
+.order-items p {
+  font-size: 12px;
 }
