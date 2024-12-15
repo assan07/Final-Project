@@ -28,19 +28,22 @@
   </head>
 
   <body>
-    {% extends "main/navbar1.html" %}
-    {% block content %} 
+    {% extends "main/navbar1.html" %} {% block content %}
     <!-- Product List Page -->
     <!-- List Collection -->
-    <div class="list-collection col-4 d-flex flex-wrap ">
-      {% for kategori in barang_data %}
+    <div class="list-collection col-4 d-flex flex-wrap">
+      {% set displayed_categories = [] %} {# Inisialisasi daftar kosong untuk
+      melacak kategori yang sudah ditampilkan #} {% for kategori in barang_data
+      %} {% if kategori.kategori not in displayed_categories %}
       <button
-        class="btn btn-link text-decoration-none filter-btn "
-        data-kategori="{{kategori.kategori}}"
+        class="btn btn-link text-decoration-none filter-btn"
+        data-kategori="{{ kategori.kategori }}"
       >
-        Sort by: {{kategori.kategori}}
+        Sort by: {{ kategori.kategori }}
       </button>
-      {% endfor %}
+      {% set _ = displayed_categories.append(kategori.kategori) %} {# Tambahkan
+      kategori ke daftar setelah ditampilkan #} {% endif %} {% endfor %}
+
       <button
         class="btn btn-link text-decoration-none filter-btn"
         data-kategori="All"
