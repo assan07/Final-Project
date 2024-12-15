@@ -742,40 +742,35 @@ def product_lists():
 
 # filter
 
-
 @app.route("/products/product_lists/filter", methods=["GET"])
 def filter_products():
-
     try:
         # Koleksi barang
         barang_collection = db.barang
 
-        # Ambil parameter kategori dari URL, default ke string kosong
+        # Ambil parameter kategori
         kategori = request.args.get('kategori', '').strip().upper()
-
         # Filter data barang berdasarkan kategori
         if kategori and kategori != "ALL":
-            # Pencarian case-insensitive menggunakan regex
             barang_data = list(barang_collection.find(
-                {"kategori": {"$regex": f"^{kategori}$", "$options": "i"}}))
+                {"kategori": {"$regex": f"^{kategori}$", "$options": "i"}}
+            ))
         else:
-            # Jika kategori tidak disediakan atau 'ALL', ambil semua barang
-            barang_data = list(barang_collection.find())
-
-        # Konversi harga menjadi float untuk semua data barang
+            barang_data = list(barang_collection.find())    
+        # Konversi ObjectId ke string dan tambahkan default foto
         for barang in barang_data:
+            barang['_id'] = str(barang['_id'])  # Konversi ObjectId ke string
             barang['harga'] = float(barang.get('harga', 0))
+            barang['foto'] = barang.get('foto', 'default_image.jpg')
 
-        # Render template dengan data barang
-        return render_template("products/product_list_filter.html", barang_data=barang_data)
+        # Kirim data sebagai JSON
+        return jsonify({"status": "success", "barang": barang_data})
 
     except Exception as e:
-        print(f"Error: {str(e)}")  # Log error untuk debugging
-        return jsonify({"message": "An error occurred", "error": str(e)}), 500
+        print(f"Error: {str(e)}")  # Debugging error
+        return jsonify({"status": "error", "message": "An error occurred", "error": str(e)}), 500
 
 # route produk detail
-
-
 @app.route("/products/product_details/<product_id>")
 def product_details(product_id):
     if "user_id" in session:
