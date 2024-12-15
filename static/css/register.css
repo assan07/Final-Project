@@ -5,7 +5,7 @@ body {
 .register-container {
   max-width: 100%;
   height: 100vh;
-  box-shadow: 0 8p  x 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8p x 20px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
 .register-left {
@@ -25,7 +25,7 @@ body {
   margin-bottom: 20px;
 }
 
-.title{
+.title {
   margin-bottom: 100px;
 }
 .register-left h2 {
@@ -67,4 +67,41 @@ body {
 }
 .social-icons a:hover {
   color: #0056b3;
+}
+.link-login-hp {
+  display: none;
+}
+.image-logo-hp {
+  display: flex;
+  justify-content: center;
+}
+.img-hp {
+  display: none;
+  width: 100px;
+  height: 100px;
+}
+.rounded-0{
+  box-shadow: 2px 2px 1px #000;
+}
+.btn-register.rounded-0:hover{
+  background-color: #007bff;
+}
+.btn-register:active{
+  transform: translateY(1px);
+  box-shadow: none;
+}
+@media only screen and (max-width: 480px) {
+  .register-left {
+    display: none;
+  }
+
+  .img-hp {
+    display: block;
+  }
+  .register-for-hp {
+    display: block;
+  }
+  .link-login-hp {
+    display: block;
+  }
 }

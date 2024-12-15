@@ -18,10 +18,12 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
       rel="stylesheet"
     />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-      rel="stylesheet"
-    />
+    <!-- cdn jquery -->
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.js"
+      integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+      crossorigin="anonymous"
+    ></script>
   </head>
 
   <body>
@@ -42,10 +44,19 @@
         >
       </div>
       <!-- Register Form -->
-      <div class="register-form col-lg-6">
+      <div class="register-form col-lg-6 col-12 col-md-10">
+        <div class="image-logo-hp">
+          <img
+            src="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
+            alt="Logo"
+            class="col-lg-2 img-hp"
+          />
+        </div>
         <div class="title">
-          <h1 class="text-start mb-4">Create an account</h1>
-          <p>Or <a href="accounts/users/login">sign in</a></p>
+          <h1 class="text-start mb-2 text-center">Create an account</h1>
+          <p class="link-login-hp text-center">
+            Or <a href="{{ url_for('user_login') }}">sign in</a>
+          </p>
         </div>
 
         {% with messages = get_flashed_messages(with_categories=true) %} {% if
@@ -55,26 +66,39 @@
         <form action="{{ url_for('user_register') }}" method="POST">
           <input
             type="text"
-            class="form-control"
+            class="form-control rounded-0"
             placeholder="Full Name"
-            aria-label="Full Name"
+            aria-label="Full Name "
             name="full_name"
           />
           <input
             type="email"
-            class="form-control"
+            class="form-control rounded-0"
             placeholder="Email Address"
             aria-label="Email Address"
             name="email"
           />
           <input
             type="password"
-            class="form-control"
+            id="password"
+            class="form-control rounded-0"
             placeholder="Password"
             aria-label="Password"
             name="password"
           />
-          <button type="submit" class="btn btn-primary">Register Now</button>
+          <div class="form-check mt-2 mb-2">
+            <input
+              type="checkbox"
+              class="form-check-input rounded-0"
+              id="show-password"
+            />
+            <label class="form-check-label" for="show-password"
+              >Show Password</label
+            >
+          </div>
+          <button type="submit" class="btn-register rounded-0 fw-bold">
+            Register Now
+          </button>
         </form>
       </div>
     </div>
@@ -83,5 +107,18 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <script>
+      $(document).ready(function () {
+        $("#show-password").change(function () {
+          const passwordInput = $("#password");
+
+          if ($(this).is(":checked")) {
+            passwordInput.attr("type", "text"); // Tampilkan password
+          } else {
+            passwordInput.attr("type", "password"); // Sembunyikan password
+          }
+        });
+      });
+    </script>
   </body>
 </html>

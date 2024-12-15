@@ -76,6 +76,16 @@
 .register-for-hp{
   display: none;
 }
+.rounded-0{
+  box-shadow: 2px 2px 1px #000;
+}
+.btn-login.rounded-0:hover{
+  background-color: #007bff;
+}
+.btn-login:active{
+  transform: translateY(1px);
+  box-shadow: none;
+}
 @media only screen and (max-width: 480px) {
   .login-right {
     display: none;

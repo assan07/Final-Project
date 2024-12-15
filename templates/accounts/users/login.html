@@ -24,6 +24,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <!-- cdn jquery -->
     <script
       src="https://code.jquery.com/jquery-3.7.1.js"
       integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
@@ -53,14 +54,14 @@
         <form action="{{ url_for('user_login') }}" method="POST">
           <input
             type="email"
-            class="form-control"
+            class="form-control rounded-0"
             placeholder="Email Address"
             aria-label="Email Address"
             name="email"
           />
           <input
             type="password"
-            class="form-control"
+            class="form-control rounded-0"
             placeholder="Password"
             id="password-input"
             aria-label="Password"
@@ -69,15 +70,22 @@
           <div class="form-check mt-2 mb-2">
             <input
               type="checkbox"
-              class="form-check-input"
+              class="form-check-input rounded-0"
               id="show-password"
             />
             <label class="form-check-label" for="show-password"
               >Show Password</label
             >
           </div>
-          <button type="submit" class="btn btn-primary">Login Now</button>
-          <p class="register-for-hp text-center">Create Your Account? <a class="text-decoration-none " href="{{ url_for('user_register') }}">Register</a></p>
+          <button type="submit" class="btn-login rounded-0">Login Now</button>
+          <p class="register-for-hp text-center">
+            Create Your Account?
+            <a
+              class="text-decoration-none"
+              href="{{ url_for('user_register') }}"
+              >Register</a
+            >
+          </p>
           <p class="text-center mt-3">
             Forgot your password?
             <a href="{{ url_for('forget_password') }}">Click here</a>
