@@ -1,0 +1,99 @@
+.login-container {
+  max-width: 100%;
+  height: 100vh;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+.login-form {
+  padding: 70px;
+}
+
+.title {
+  margin-bottom: 100px;
+}
+
+.login-form h1 {
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 90px;
+}
+.form-control {
+  margin-bottom: 20px;
+}
+.form-control:focus {
+  box-shadow: 0 0 5px rgba(20, 236, 45, 0.8);
+  border-color: #1fe20e;
+}
+.login-right {
+  display: flex;
+  background: linear-gradient(135deg, #18e3c5, #2edb34);
+  color: white;
+  padding: 30px;
+  width: 50%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.login-form button {
+  width: 100%;
+  background-color: #007bff;
+  border: none;
+  padding: 10px;
+  font-size: 18px;
+  border-radius: 5px;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+.login-form button:hover {
+  background-color: #0056b3;
+}
+
+.login-right img {
+  width: 170px;
+  height: 170px;
+  margin-bottom: 20px;
+}
+.login-right h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+.login-right button {
+  margin-top: 20px;
+}
+.image-logo-hp{
+ display: flex;
+ justify-content: center;
+
+}
+.img-hp {
+  display: none;
+  width: 100px;
+  height: 100px;
+}
+
+.register-for-hp{
+  display: none;
+}
+.rounded-0{
+  box-shadow: 2px 2px 1px #000;
+}
+.btn-login.rounded-0:hover{
+  background-color: #007bff;
+}
+.btn-login:active{
+  transform: translateY(1px);
+  box-shadow: none;
+}
+@media only screen and (max-width: 480px) {
+  .login-right {
+    display: none;
+  }
+  .img-hp {
+    display: block;
+  }
+  .register-for-hp{
+    display: block;
+  }
+}

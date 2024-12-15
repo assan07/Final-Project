@@ -1,13 +1,224 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body>
-  <h1 class="text-3xl font-bold underline">
-    Hello world!
-  </h1>
-</body>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
+      type="image/x-icon"
+    />
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
+      type="image/x-icon"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile Management</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/order_history.css') }}"
+    />
+    <!-- Font Awesome -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+
+  <body>
+    <!-- Navbar -->
+
+    {% extends "main/navbar2.html" %} {% block content %}
+    <!-- Main Content -->
+    <div class="profile-container">
+      <div class="row profile-box p-4">
+        <!-- side bar -->
+
+        <!-- ===================== -->
+        <div class="side-bar col-md-3 text-start">
+          <div class="profile-info d-flex align-items-center gap-4">
+            <div class="image-profile">
+              {% if profile_pic %}
+              <img
+                src="{{ profile_pic }}"
+                alt="Profile Picture"
+                class="img-thumbnail"
+              />
+              {% else %}
+              <a href="/accounts/users/profile"
+                ><img
+                  src="{{ url_for('static', filename='images/profile_pics/default_profile.png') }}"
+                  alt="Profile Picture"
+                  class="img-thumbnail"
+              /></a>
+              {% endif %}
+            </div>
+            <div class="profile-name">
+              <p>{{ full_name }}</p>
+              <p>{{ email }}</p>
+            </div>
+          </div>
+          <div class="sidebar-menu d-flex flex-column">
+            <a href="/accounts/users/profile"
+              ><i class="fa-solid fa-user-pen"></i>Akun anda</a
+            >
+            <a href="/carts/order_summary"
+              ><i class="fa-solid fa-cart-arrow-down"></i>Keranjang anda</a
+            >
+            <a href="/carts/order_history"
+              ><i class="fa-solid fa-clock-rotate-left"></i>Riwayat</a
+            >
+            <a href="/accounts/users/edit_password"
+              ><i class="fas fa-key"></i>Edit password</a
+            >
+            <a href="/accounts/users/logout"
+              ><i class="fa-solid fa-right-from-bracket"></i>Log Out</a
+            >
+          </div>
+        </div>
+
+        <!-- Riwayat Pembelian -->
+        <div
+          class="history-cont my-5 col-10 col-md-7 col-lg-8 mt-5 g-3 bg-body-secondary"
+        >
+          <!-- Product List -->
+          {% if orders %} {% for order in orders %}
+          <div
+            class="order-items card p-3 col-12 col-md-7 col-lg-11 mt-2 rounded-0"
+          >
+            {% for item in order.get('items', []) %}
+            <div class="item-histori row mb-3">
+              <div class="col-3 img-histori">
+                <img
+                  src="{{ url_for('static', filename='images/gambar_barang/' + item.get('gambar_barang', 'placeholder.png')) }}"
+                  class="img-fluid rounded"
+                  alt="{{ item.get('nama_barang', 'Product Image') }}"
+                />
+              </div>
+              <div class="col-6">
+                <p class="text-bold">
+                  {{ item.get('nama_barang', 'Nama Produk') }}
+                </p>
+                <p>Quantity: {{ item.get('quantity', 0) }}</p>
+                <p>
+                  Order Status:
+                  <span
+                    class="badge {% if order.status == 'pending' %}bg-warning{% elif order.status == 'confirmed' %}bg-info{% elif order.status == 'completed' %}bg-success{% endif %}"
+                  >
+                    {{order.status}}
+                  </span>
+                </p>
+                <p class="mt-0">Total: Rp. {{ item.get('subtotal', 0) }}</p>
+              </div>
+              <div class="col-3 button-fiture">
+                {% if order.status == 'completed' %}
+                <!-- Beli Lagi Button -->
+                <div class="btn-beli">
+                  <a
+                    href="{{ url_for('product_details', product_id=item.get('product_id')) }}"
+                    class="btn btn-success mb-2 rounded-0"
+                  >
+                    <i class="fa-solid fa-cart-arrow-down text-light mx-1"></i>
+                    Beli
+                  </a>
+                </div>
+
+                <div class="item-row">
+                  <button
+                    class="btn btn-danger remove-item-btn rounded-0"
+                    data-order-id="{{ order['_id'] }}"
+                    data-product-id="{{ item['product_id'] }}"
+                  >
+                    <i class="fa-solid fa-trash-arrow-up mx-1"></i> Hapus
+                  </button>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% endfor %} {% else %}
+          <div class="alert alert-info mt-3">
+            Anda belum melakukan checkout barang.
+            <a href="/products/product_lists" class="text-decoration-underline"
+              >Belanja sekarang!</a
+            >
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+
+    <!-- Bootstrap JS -->
+
+    {% block scripts %}
+    <script>
+      $(document).on("click", ".remove-item-btn", function (e) {
+        console.log("clicked");
+
+        e.preventDefault(); // Mencegah reload halaman
+
+        const $button = $(this);
+        const orderId = $button.data("order-id");
+        const productId = $button.data("product-id");
+
+        if (!orderId || !productId) {
+          alert("Order ID atau Product ID tidak valid");
+          return;
+        }
+
+        $.ajax({
+          url: "/carts/order_history/remove-from-order",
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify({ order_id: orderId, product_id: productId }),
+          success: function (response) {
+            location.reload();
+            // Tampilkan pesan sukses menggunakan SweetAlert2
+            Swal.fire({
+              title: "Berhasil!",
+              text: "Histori anda berhasil dihapus",
+              icon: "success",
+              confirmButtonText: "OK",
+              timer: 3000,
+            });
+
+            // Hapus elemen item dari DOM
+            $button.closest(".item-row").remove();
+          },
+          error: function (xhr) {
+            // Tampilkan pesan error jika gagal
+            Swal.fire({
+              title: "Gagal!",
+              text:
+                xhr.responseJSON.message ||
+                "Terjadi kesalahan, silakan coba lagi.",
+              icon: "error",
+              confirmButtonText: "OK",
+            });
+            alert(
+              xhr.responseJSON.message ||
+                "Terjadi kesalahan saat menghapus item"
+            );
+          },
+        });
+      });
+    </script>
+    {% endblock %}
+  </body>
 </html>

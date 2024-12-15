@@ -1,47 +1,560 @@
-.bg {
-  background-color: rgba(183, 191, 254, 0.616);
+:root {
+  --primary-color: #120470;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: #ffffff;
+  padding: 0;
+  margin: 0;
+}
+/* navbar */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  height: 80px;
+  background: #ffffff;
+  z-index: 1000;
+  box-shadow: 8px 8px 10px #6166fa96;
+}
+/* icon brand */
+#icon-brand {
+  width: 56px;
+  height: 56px;
+  margin-left: 40px;
+  margin-right: 10px;
+}
+
+#icon-title {
+  width: 160px;
+  height: 40px;
+  margin-top: 7px;
+}
+/* =========== */
+.nav .link-href {
+  display: flex;
+  justify-content: space-between;
+  text-decoration: none;
+  list-style: none;
+  margin-top: 12px;
+  margin-right: 45px;
+  height: 40px;
+  font-size: 18px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #120470 !important;
+  font-weight: bold;
+}
+
+.nav-link:hover {
+  color: #ffce44 !important;
+  text-decoration: none;
+}
+
+.profile-user {
+  display: flex;
+}
+
+/* icon user */
+.icon-user {
+  color: #120470;
+  margin-right: 20px;
+  margin-left: 20px;
+  cursor: pointer;
+  height: 80px;
+  transition: all 0.3s ease-in-out;
+}
+
+.icon-user img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-item {
+  display: none;
+  position: fixed;
+  top: 58px;
+  right: 10px;
+  background: #fff;
+  box-shadow: 5px 5px 8px #6166fa96;
+  transition: all 0.3s ease-in-out;
+}
+
+.nav-item .amount {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #03b503;
+  color: #fff;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  left: 40px;
+  bottom: 15px;
+  font-size: 12px;
+}
+
+/* Ketika .icon-user dihover, tampilkan elemen dengan class .profile-item */
+.icon-user:hover .profile-item {
+  display: block;
+}
+
+.navbar-usernm {
+  margin-top: 10px;
+  margin-left: 6px;
+  color: #120470;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* haburget menu */
+.openbtn {
+  position: relative;
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+}
+
+.openbtn span {
+  background: #2d0ff6;
+  display: inline-block;
+  position: absolute;
+  left: 14px;
+  height: 2px;
+  border-radius: 5px;
+  width: 45%;
+  transition: all 0.4s;
+  &:nth-of-type(1) {
+    top: 13px;
+  }
+  &:nth-of-type(2) {
+    top: 19px;
+  }
+  &:nth-of-type(3) {
+    top: 25px;
+  }
+  &:nth-of-type(3)::after {
+    content: "menu";
+    position: absolute;
+    top: 5px;
+    left: -2px;
+    color: #2d0ff6;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+  }
+}
+
+.openbtn.active span {
+  &:nth-of-type(1) {
+    top: 14px;
+    left: 18px;
+    transform: translateY(6px) rotate(-45deg);
+    width: 30%;
+  }
+  &:nth-of-type(2) {
+    opacity: 0;
+  }
+  &:nth-of-type(3) {
+    top: 26px;
+    left: 18px;
+    transform: translateY(-6px) rotate(45deg);
+    width: 30%;
+  }
+  &:nth-of-type(3)::after {
+    content: "close";
+    transform: translateY(0) rotate(-45deg);
+    top: 5px;
+    left: 4px;
+  }
+}
+
+/* Sidebar container */
+.side-menu {
+  position: fixed;
+  top: 55px;
+  right: -100%; /* Hide sidebar by default */
+  height: 100%;
+  width: 300px;
+  background-color: #0007d8f3;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+  z-index: 500;
+  transition: right 0.3s ease-in-out;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+/* User section styling */
+.link-side {
+  margin-bottom: 20px;
+  text-align: start;
+}
+
+.link-side img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-user-side {
+  display: flex;
+}
+
+.profile-user-side img {
+  width: 50px;
   height: 50px;
 }
-
-/* Memastikan footer tetap di bagian bawah */
-body {
-  display: flex; /* Pastikan body menggunakan Flexbox */
-  flex-direction: column;
-  min-height: 100vh; /* Pastikan tinggi minimum halaman sama dengan tinggi layar */
-  margin: 0; /* Hilangkan margin default body */
+.side-usernm {
+  margin-top: 30px;
+  color: #fff;
 }
 
+/* Sidebar links */
+.link-side {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-item.side {
+  margin-bottom: 15px;
+}
+.nav-link.side-link i {
+  width: 30px;
+  margin-right: 10px;
+}
+
+.nav-item.side a {
+  text-decoration: none;
+  color: #ffffff !important;
+  font-size: 16px;
+  display: block;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.nav-item.side a:hover {
+  background-color: #120470;
+}
+/* ======================= */
+
+/* hero */
+.main {
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  padding: 50px 15px;
+  height: 100vh;
+  width: 100%;
+  margin-top: 100px;
+  background-image: url("/static/images/icon/bg.png");
+  background-size: cover;
+  justify-content: center;
+  transition: all 0.3s ease-in-out;
+}
+
+.box-item {
+  margin-left: 50px;
+  display: flex;
+  justify-content: space-between;
+  width: 70vw;
+}
+
+h1 {
+  font-weight: bold;
+  filter: drop-shadow(6px 6px 10px #1017f4);
+  color: #120470 !important;
+  font-size: 43px;
+}
+
+.slides-container {
+  display: flex;
+  background-image: url("/static/images/icon/bg.png");
+  background-size: cover;
+  transition: transform 0.5s ease-in-out;
+  width: 400%;
+}
+
+.slide {
+  flex: 0 0 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.item-collection {
+  padding: 0;
+  width: 300px;
+  height: 300px;
+  margin-right: 100px;
+  background: transparent;
+  transition: all 0.3s ease-in-out;
+  border: 3px solid #120470;
+}
+
+.item-collection img {
+  height: 360px;
+  background: transparent;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn {
+  border-radius: 15px;
+  border: 1px solid #120470;
+  transition: 0.3s ease;
+  color: #120470;
+
+  font-weight: bold;
+}
+
+.btn-outline-primary {
+  background-color: #010330;
+  color: white;
+}
+
+.btn-outline-info:hover {
+  background-color: #067bc2;
+  color: white;
+}
+
+/* button navigasi kiri */
+.fa-circle-left {
+  color: #120470;
+  font-size: 40px;
+  margin-left: 80px;
+  transition: all 0.3s ease-in-out;
+}
+
+.fa-circle-left:hover {
+  transform: translateX(-8px);
+  color: #1552fb;
+}
+.fa-circle-left:active {
+  transform: translateX(10px);
+  color: #120470;
+}
+
+/* button navigasi kanan */
+.fa-circle-right {
+  color: #120470;
+  font-size: 40px;
+  margin-right: 80px;
+  transition: all 0.3s ease-in-out;
+}
+
+.fa-circle-right:hover {
+  transform: translateX(8px);
+  color: #1552fb;
+}
+.fa-circle-right:active {
+  transform: translateX(15px);
+  color: #120470;
+}
+
+/* about */
+
+.item-about {
+  display: flex;
+  justify-content: space-between;
+}
+
+.about-section {
+  background: linear-gradient(135deg, #2f1cff, #15d4fb);
+  color: white;
+  padding: 50px 15px;
+}
+.about-section h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.about-section p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  text-align: justify;
+}
+
+/* footer */
 footer {
-  margin-top: auto; /* Dorong footer ke bagian bawah */
-  background-color: #f8f9fa; /* Opsional: Berikan warna latar belakang untuk footer */
+  z-index: 100;
+  height: 100%;
 }
 
-footer hr {
-  border: 1px solid #ddd; /* Warna garis */
-  margin: 0 auto;
-  width: 90%; /* Lebar garis */
+.bg-footer {
+  height: 70%;
+  background: linear-gradient(45deg, #001f33, #001f4c);
 }
 
-footer p {
-  font-size: 14px;
-  color: #6c757d;
-  line-height: 1.5;
+.bg-footer h4 {
+  color: #ffce44;
 }
 
-/* Tombol oval */
-.custom-button {
-  background-color: rgba(183, 191, 254, 0.616);
-  border-radius: 50px; /* Membuat tombol oval */
-  padding: 10px 20px; /* Memberikan ruang dalam tombol */
-  color: black; /* Warna teks hitam */
+.bg-footer a {
+  color: #ffce44;
+  transition: 0.3s;
 }
 
-/* Jarak antar tombol */
-.button-container .btn + .btn {
-  margin-left: 10px; /* Memberi jarak antar tombol */
+.bg-footer a:hover {
+  color: white;
+  text-decoration: underline;
 }
 
-/* Memberikan jarak antara gambar dan footer */
-.content-section {
-  margin-bottom: 50px; /* Tambahkan jarak di bawah section utama */
+.footer-icons a {
+  margin: 0 10px;
+  color: #ffce44;
+  font-size: 1.5rem;
+  transition: 0.3s;
+}
+
+.footer-icons a:hover {
+  color: white;
+}
+
+.rounded-2 {
+  transition: transform 0.3s ease;
+}
+
+.rounded-2:hover {
+  transform: scale(1.05);
+}
+
+@media (min-width: 481px) {
+  .side-menu {
+    display: none;
+  }
+}
+/* hp */
+@media only screen and (max-width: 480px) {
+  .side-menu {
+    display: block;
+  }
+  .main {
+    background-image: none;
+    background-size: 100% 100%;
+    background-position: center;
+  }
+  /* humberger menu */
+  .openbtn {
+    display: block;
+  }
+
+  .link-href .nav-item {
+    display: none;
+  }
+  .link-href .nav-item.product-link {
+    display: block;
+    margin-top: 6px !important;
+    font-size: 15px;
+    color: var(--primary-color) !important;
+  }
+
+  /* cart */
+  .link-href .nav-item.cart {
+    display: block;
+    margin-top: 6px;
+  }
+
+  .box-item {
+    margin-left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .item-collection {
+    width: 200px;
+    height: 200px;
+    margin-left: 59px;
+    border: none;
+  }
+
+  .item-collection img {
+    height: 250px;
+    margin-left: 10px;
+  }
+  #icon-brand {
+    width: 40px;
+    height: 40px;
+    margin-left: 15px;
+    margin-right: 4px;
+    margin-top: 7px;
+  }
+  #icon-title {
+    width: 110px;
+    height: 30px;
+    margin-top: 7px;
+  }
+
+  .icon-user {
+    display: none;
+  }
+
+  .icon-user img {
+    display: none;
+  }
+
+  .profile-item {
+    display: none;
+  }
+
+  /* Ketika .icon-user dihover, tampilkan elemen dengan class .profile-item */
+  .icon-user:hover .profile-item {
+    display: block;
+  }
+  .navbar-usernm {
+    font-weight: bold;
+  }
+
+  /* haburget menu */
+  .openbtn {
+    margin-right: -40px;
+    margin-top: 2px;
+  }
+
+  .openbtn span {
+    background: #120470;
+    display: inline-block;
+    position: absolute;
+    left: 14px;
+    height: 2px;
+    border-radius: 5px;
+    width: 45%;
+    transition: all 0.4s;
+    &:nth-of-type(1) {
+      top: 13px;
+    }
+    &:nth-of-type(2) {
+      top: 19px;
+    }
+    &:nth-of-type(3) {
+      top: 25px;
+    }
+    &:nth-of-type(3)::after {
+      content: "menu";
+      position: absolute;
+      top: 5px;
+      left: -2px;
+      color: #120470;
+      font-size: 0.6rem;
+      text-transform: uppercase;
+    }
+  }
+}
+
+/* laptop */
+@media only screen and (min-width: 1024px) {
+  .openbtn {
+    display: none;
+  }
 }

@@ -1,0 +1,124 @@
+.container-list{
+  z-index: -10  ;
+}
+
+/* List Collection */
+.list-collection {
+  display: flex;
+  position: sticky;
+  justify-content: center;
+  align-items: end;
+  background-color: #ffffff;
+  padding: 10px;
+  position: sticky;
+  top: 80px;
+  z-index: 90;
+  margin-bottom: 20px;
+  margin-top: 40px;
+  width: 100%;
+  height: 100%;
+}
+.list-collection .filter-btn {
+  margin-top: 20px;
+  margin-right: 3px;
+  box-shadow: 2px 2px 1px #000;
+  border: none;
+  height: 40px;
+  color: #04002a;
+  transition: all 0.3s ease-in;
+}
+.list-collection .filter-btn:active {
+  box-shadow: 0px 0px 0px #ffffff00;
+  transform: translateY(1px);
+}
+
+/* Product Card */
+.card-list-barang {
+  color: #2f1cff;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 100px;
+  margin-left: 10px;
+  gap: 5px;
+  height: 100%;
+  z-index: 10;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.product-card {
+  display: flex;
+  height: 310px;
+  width: 230px;
+  padding: 10px;
+}
+
+.product-card.card:hover {
+  opacity: 0.9;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.img-barang img {
+  width: 60%;
+  height: 100%;
+  display: flex;
+  align-items: start;
+}
+
+.product-card h5,
+.product-card p {
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.product-card:hover h5,
+.product-card:hover p {
+  color: #1d4ed8;
+}
+
+.product-card:hover button {
+  background-color: #1d4ed8;
+  color: white;
+}
+
+.card-body {
+  position: absolute;
+  margin-top: 170px;
+}
+
+@media only screen and (max-width: 480px) {
+  .list-collection {
+    text-align: center;
+  }
+
+  .card-list-barang {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 10px;
+    margin-left: -5px;
+    justify-content: center;
+    align-items: center;
+  }
+  .product-card {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -8px;
+    gap: 3px;
+    height: 200px;
+    width: 160px;
+  }
+  .product-card h5,
+  .product-card p {
+    font-size: 12px;
+    transition: color 0.3s ease;
+  }
+
+  .product-card:hover h5,
+  .product-card:hover p {
+    color: #1d4ed8;
+  }
+
+  .card-body {
+    position: absolute;
+    margin-top: 100px;
+  }
+}

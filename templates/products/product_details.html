@@ -1,13 +1,206 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body>
-  <h1 class="text-3xl font-bold underline">
-    Hello world!
-  </h1>
-</body>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Product Detail</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/product_details.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/index.css') }}"
+    />
+  </head>
+
+  <body>
+    {% extends "main/navbar1.html" %}
+    {% block content %}
+    <div class="cont-product-detail container">
+      <div class="row">
+        <!-- Image Section -->
+        <div class="col-md-4">
+          <div class="border p-4 text-center">
+            <img
+              src="{{ url_for('static', filename='images/gambar_barang/' ~ (product['foto'] if product['foto'] else 'placeholder.png')) }}"
+              class="img-fluid"
+              alt="{{ product['brand'] }}"
+            />
+          </div>
+        </div>
+
+        <!-- Product Details -->
+        <div class="col-md-8">
+          <h3>{{ product['nama_barang'] }}</h3>
+          <p class="text-muted mb-0  pt-3">Kategori: {{ product['kategori'] }}</p>
+          <p class="text-muted">Brand: {{ product['brand'] }}</p>
+          <h5 class="text-danger">
+            Rp {{ "{:,.0f}".format(product['harga']) }}
+          </h5>
+          <p class="mb-0">Terjual: <strong>{{ product['terjual'] }}</strong></p>
+          <p>Deskripsi Produk: <strong>{{ product['netto'] }}</strong></p>
+
+          <!-- Quantity and Add to Cart -->
+          <div class="d-flex align-items-center mt-3">
+            <p class="me-3 mb-0">Jumlah:</p>
+            <div class="input-group me-3" style="width: 120px">
+              <button
+                id="decrease"
+                class="btn btn-outline-secondary text-danger"
+              >
+                -
+              </button>
+              <input
+                id="quantity"
+                type="text"
+                class="form-control text-center"
+                value="1"
+                min="1"
+                max="{{ product['stock'] }}"
+              />
+              <button
+                id="increase"
+                class="btn btn-outline-secondary text-success"
+              >
+                +
+              </button>
+            </div>
+            <p class="mb-0">
+              Tersisa: <strong id="stock">{{ product['stock'] }}</strong>
+            </p>
+          </div>
+          <h5 class="mt-3">
+            Subtotal: Rp
+            <span id="subtotal">{{ "{:,.0f}".format(product['harga']) }}</span>
+          </h5>
+          <button
+            id="add-to-cart"
+            class="btn btn-success w-100 mt-3"
+            data-product-id="{{ product['id'] }}"
+          >
+            Tambah Keranjang
+          </button>
+        </div>
+      </div>
+
+      <!-- Store Information -->
+      <div class="row mt-5">
+        <div class="col-md-12">
+          <div class="d-flex align-items-center border p-3">
+            <img
+              src="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
+              class="rounded-circle me-3"
+              alt="Store Logo"
+              style="width: 50px; height: 50px"
+            />
+            <div>
+              <h6 class="mb-0">TB Mustika Dua</h6>
+              <p class="mb-0 text-muted">Toko Bangunan</p>
+              <p class="mb-0">
+                <a href="tel:+6285219396096" class="text-success"
+                  ><strong>+6285219396096</strong></a
+                >
+              </p>
+              <p class="mb-0">
+                Jl. Dayanu Ikhsanuddin, kota baubau, Sulawesi Tenggara
+              </p>
+            </div>
+            <a
+              href="/products/product_lists"
+              class="btn btn-link ms-auto text-info"
+              >Kunjungi</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    {% block scripts %}
+    <script>
+      $(document).ready(function () {
+        const $quantity = $("#quantity");
+        const $subtotal = $("#subtotal");
+        const stock = parseInt($("#stock").text(), 10);
+        const productPrice = parseFloat("{{ product['harga'] }}");
+
+        // Perbarui subtotal
+        const updateSubtotal = () => {
+          const currentQuantity = parseInt($quantity.val(), 10) || 1;
+          $subtotal.text(
+            (currentQuantity * productPrice).toLocaleString("id-ID")
+          );
+        };
+
+        // Kurangi jumlah
+        $("#decrease").click(function () {
+          const currentQuantity = parseInt($quantity.val(), 10) || 1;
+          if (currentQuantity > 1) {
+            $quantity.val(currentQuantity - 1);
+            updateSubtotal();
+          }
+        });
+
+        // Tambah jumlah
+        $("#increase").click(function () {
+          const currentQuantity = parseInt($quantity.val(), 10) || 1;
+          if (currentQuantity < stock) {
+            $quantity.val(currentQuantity + 1);
+            updateSubtotal();
+          }
+        });
+
+        // Validasi input manual
+        $quantity.on("input", function () {
+          let currentValue = parseInt($quantity.val(), 10);
+          if (isNaN(currentValue) || currentValue < 1) {
+            $quantity.val(1);
+          } else if (currentValue > stock) {
+            $quantity.val(stock);
+          }
+          updateSubtotal();
+        });
+
+        // Tambah ke keranjang
+        $("#add-to-cart").click(function () {
+          const productId = "{{ product['_id'] }}";
+          const quantity = parseInt($quantity.val(), 10) || 1;
+
+          $.ajax({
+            url: "/products/product_details/add",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ product_id: productId, quantity: quantity }),
+            success: function (response) {
+              $("#stock").text(response.remaining_stock);
+              location.reload();
+              updateNavbarQuantity();
+            },
+            error: function (xhr) {
+              alert(xhr.responseJSON.message || "Terjadi kesalahan");
+            },
+          });
+        });
+      });
+    </script>
+    {% endblock %}
+  </body>
 </html>
