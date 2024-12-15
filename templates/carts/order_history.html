@@ -30,6 +30,13 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
       rel="stylesheet"
     />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
 
   <body>
@@ -40,7 +47,7 @@
     <div class="profile-container">
       <div class="row profile-box p-4">
         <!-- side bar -->
-        
+
         <!-- ===================== -->
         <div class="side-bar col-md-3 text-start">
           <div class="profile-info d-flex align-items-center gap-4">
@@ -85,14 +92,16 @@
         </div>
 
         <!-- Riwayat Pembelian -->
-        <div class="history-cont my-5 col-10 col-md-7 col-lg-8 mt-5 g-3">
+        <div
+          class="history-cont my-5 col-10 col-md-7 col-lg-8 mt-5 g-3 bg-body-secondary"
+        >
           <!-- Product List -->
           {% if orders %} {% for order in orders %}
           <div
-            class="order-items card p-3 col-12 col-md-7 col-lg-12 mt-2 rounded-0"
+            class="order-items card p-3 col-12 col-md-7 col-lg-11 mt-2 rounded-0"
           >
             {% for item in order.get('items', []) %}
-            <div class="item-histori row mb-3 ">
+            <div class="item-histori row mb-3">
               <div class="col-3 img-histori">
                 <img
                   src="{{ url_for('static', filename='images/gambar_barang/' + item.get('gambar_barang', 'placeholder.png')) }}"
@@ -101,7 +110,9 @@
                 />
               </div>
               <div class="col-6">
-                <p class="text-bold">{{ item.get('nama_barang', 'Nama Produk') }}</p>
+                <p class="text-bold">
+                  {{ item.get('nama_barang', 'Nama Produk') }}
+                </p>
                 <p>Quantity: {{ item.get('quantity', 0) }}</p>
                 <p>
                   Order Status:
@@ -121,7 +132,8 @@
                     href="{{ url_for('product_details', product_id=item.get('product_id')) }}"
                     class="btn btn-success mb-2 rounded-0"
                   >
-                    <i class="fa-solid fa-cart-arrow-down text-light mx-1"></i> Beli
+                    <i class="fa-solid fa-cart-arrow-down text-light mx-1"></i>
+                    Beli
                   </a>
                 </div>
 
@@ -153,13 +165,8 @@
     {% endblock %}
 
     <!-- Bootstrap JS -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    {% block scripts %}
     <script>
       $(document).on("click", ".remove-item-btn", function (e) {
         console.log("clicked");
@@ -182,13 +189,28 @@
           data: JSON.stringify({ order_id: orderId, product_id: productId }),
           success: function (response) {
             location.reload();
+            // Tampilkan pesan sukses menggunakan SweetAlert2
+            Swal.fire({
+              title: "Berhasil!",
+              text: "Histori anda berhasil dihapus",
+              icon: "success",
+              confirmButtonText: "OK",
+              timer: 3000,
+            });
 
             // Hapus elemen item dari DOM
             $button.closest(".item-row").remove();
-
-            // Tambahkan logika tambahan jika diperlukan, misalnya memperbarui total harga
           },
           error: function (xhr) {
+            // Tampilkan pesan error jika gagal
+            Swal.fire({
+              title: "Gagal!",
+              text:
+                xhr.responseJSON.message ||
+                "Terjadi kesalahan, silakan coba lagi.",
+              icon: "error",
+              confirmButtonText: "OK",
+            });
             alert(
               xhr.responseJSON.message ||
                 "Terjadi kesalahan saat menghapus item"
@@ -197,5 +219,6 @@
         });
       });
     </script>
+    {% endblock %}
   </body>
 </html>
