@@ -1,0 +1,107 @@
+body {
+  background-color: #f8f9fa;
+  font-family: "Roboto", sans-serif;
+}
+.register-container {
+  max-width: 100%;
+  height: 100vh;
+  box-shadow: 0 8p x 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+.register-left {
+  background: linear-gradient(135deg, #007bff, #6610f2);
+  color: white;
+  padding: 30px;
+  display: flex;
+  width: 50%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.register-left img {
+  width: 170px;
+  height: 170px;
+  margin-bottom: 20px;
+}
+
+.title {
+  margin-bottom: 100px;
+}
+.register-left h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+.register-left button {
+  margin-top: 20px;
+}
+.register-form {
+  padding: 40px;
+}
+.form-control {
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
+.form-control:focus {
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.8);
+  border-color: #007bff;
+}
+.register-form button {
+  width: 100%;
+  background-color: #007bff;
+  border: none;
+  padding: 10px;
+  font-size: 18px;
+  border-radius: 5px;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+.register-form button:hover {
+  background-color: #0056b3;
+}
+.social-icons a {
+  font-size: 20px;
+  margin: 0 10px;
+  color: #007bff;
+  transition: color 0.3s ease;
+}
+.social-icons a:hover {
+  color: #0056b3;
+}
+.link-login-hp {
+  display: none;
+}
+.image-logo-hp {
+  display: flex;
+  justify-content: center;
+}
+.img-hp {
+  display: none;
+  width: 100px;
+  height: 100px;
+}
+.rounded-0{
+  box-shadow: 2px 2px 1px #000;
+}
+.btn-register.rounded-0:hover{
+  background-color: #007bff;
+}
+.btn-register:active{
+  transform: translateY(1px);
+  box-shadow: none;
+}
+@media only screen and (max-width: 480px) {
+  .register-left {
+    display: none;
+  }
+
+  .img-hp {
+    display: block;
+  }
+  .register-for-hp {
+    display: block;
+  }
+  .link-login-hp {
+    display: block;
+  }
+}

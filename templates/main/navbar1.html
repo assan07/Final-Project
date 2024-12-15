@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Toko Bangunan Mustika Dua Kota Baubau" />
+
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
+      type="image/x-icon"
+    />
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
+      type="image/x-icon"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/index.css') }}"
+    />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+
+  <body>
+    <header>
+      <div class="container w-100 col-12">
+        <nav
+          class="nav fixed-top nav-pills"
+          aria-label="Main navigation"
+        >
+          <a
+            href="/"
+            class="logo col-4 d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
+          >
+            <img
+              id="icon-brand"
+              src="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
+              alt="Logo brand"
+            />
+            <img
+              id="icon-title"
+              src="{{ url_for('static', filename='images/icon/logo-title.png') }}"
+              alt="Logo title"
+            />
+          </a>
+          <ul class="link-href">
+            <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
+            <li class="nav-item">
+              <a href="/#about" class="nav-link">Tentang Kami</a>
+            </li>
+            <li class="nav-item product-link">
+              <a href="/products/product_lists" class="nav-link">Produk Kami</a>
+            </li>
+            <li class="nav-item cart">
+              <a
+                class="nav-link fa-solid fa-cart-arrow-down"
+                href="/carts/order_summary"
+                role="button"
+                style="font-size: 24px"
+              >
+              </a>
+              {% if quantity and quantity > 0 %}
+              <div class="amount">
+                <span>{{ quantity }}</span>
+              </div>
+              {% else %}
+              <div class="amount" style="display: none">
+                <span>0</span>
+              </div>
+              {% endif %}
+            </li>
+            <div class="icon-user">
+              <div class="profile-user">
+                {% if profile_pic %}
+                <a href="/accounts/users/profile"
+                  ><img
+                    src="{{ profile_pic }}"
+                    alt="Profile Picture"
+                    class="img-thumbnail"
+                /></a>
+                {% else %}
+                <a href="/accounts/users/profile"
+                  ><img
+                    src="{{ url_for('static', filename='images/profile_pics/default_profile.png') }}"
+                    alt="Profile Picture"
+                    class="img-thumbnail"
+                /></a>
+                {% endif %}
+                <span class="navbar-usernm">{{ full_name }}</span>
+              </div>
+              <div class="profile-item">
+                <a
+                  href="/accounts/users/profile"
+                  id="profile-link"
+                  class="nav-link profile_menu d-none"
+                  >Profile</a
+                >
+
+                <a href="/accounts/users/login" id="login-link" class="nav-link"
+                  >Login</a
+                >
+                <a
+                  href="/accounts/users/register"
+                  id="register-link"
+                  class="nav-link"
+                  >Register</a
+                >
+                <a
+                  href="/accounts/users/logout"
+                  id="logout-link"
+                  class="nav-link d-none"
+                  >Log Out</a
+                >
+              </div>
+            </div>
+            <!-- hamburgermenu -->
+            <div class="openbtn"><span></span><span></span><span></span></div>
+          </ul>
+        </nav>
+        <!-- side menu -->
+
+        <!-- Sidebar -->
+        <div class="side-menu">
+          <ul class="link-side">
+            <li class="nav-item side">
+             
+              <div class="profile-user-side">
+                {% if profile_pic %}
+                <a href="/accounts/users/profile">
+                  <img
+                    src="{{ profile_pic }}"
+                    alt="Profile Picture"
+                    class="img-thumbnail"
+                  />
+                </a>
+                {% else %}
+                <a href="/accounts/users/profile">
+                  <img
+                    src="{{ url_for('static', filename='images/profile_pics/default_profile.png') }}"
+                    alt="Profile Picture"
+                    class="img-thumbnail"
+                  />
+                </a>
+                {% endif %}
+                <span class="side-usernm">{{ full_name }}</span>
+              </div>
+            </li>
+            <li class="nav-item side">
+              <a
+                href="/accounts/users/profile"
+                id="profile-side"
+                class="nav-link profile_menu side-link d-none"
+                ><i class="fa-regular fa-address-card"></i>Profile</a
+              >
+            </li>
+
+            <li class="nav-item side">
+              <a href="/" class="nav-link side-link"
+                ><i class="fa-solid fa-house"></i>Home</a
+              >
+            </li>
+            <li class="nav-item side">
+              <a href="/#about" class="nav-link side-link"
+                ><i class="fa fa-info-circle"></i>Tentang Kami</a
+              >
+            </li>
+            <li class="nav-item side">
+              <a
+                href="/accounts/users/login"
+                id="login-side"
+                class="nav-link side-link"
+                ><i class="fa-solid fa-lock"></i>Login</a
+              >
+            </li>
+            <li class="nav-item side">
+              <a
+                href="/accounts/users/register"
+                id="register-side"
+                class="nav-link side-link"
+                ><i class="fa-solid fa-user-lock"></i>Register</a
+              >
+            </li>
+            <li class="nav-item side">
+              <a
+                href="/accounts/users/logout"
+                id="logout-side"
+                class="nav-link side-link d-none"
+                ><i class="fa-solid fa-right-to-bracket"></i>Log Out</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </header>
+    <!-- contenct -->
+    {% block content %} {% endblock %}
+    <footer>
+      <div class="bg-footer text-light py-4">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-4">
+              <h4>Mustika Dua</h4>
+              <p>
+                Mustika Dua adalah toko bangunan terpercaya untuk semua
+                kebutuhan proyek Anda.
+              </p>
+            </div>
+            <div class="col-md-4">
+              <h4>Quick Links</h4>
+              <ul class="list-unstyled">
+                <li><a href="/">Home</a></li>
+                <li><a href="#">Product</a></li>
+                <li><a href="#">Cart</a></li>
+              </ul>
+            </div>
+            <div class="col-md-4">
+              <h4>Contact Us</h4>
+              <div class="footer-icons">
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="text-center mt-3">
+            <p>
+              © 2024 Mustika Dua. All rights reserved.
+              <a href="#">Privacy Policy</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        // Validasi status login
+        $.ajax({
+          url: "/accounts/users/status",
+          type: "GET",
+          success: function (response) {
+            if (response.is_logged_in) {
+              $("#profile-link").removeClass("d-none");
+              $("#logout-link").removeClass("d-none");
+              $("#login-link").addClass("d-none");
+              $("#register-link").addClass("d-none");
+              //sidebar
+              $("#profile-side").removeClass("d-none");
+              $("#logout-side").removeClass("d-none");
+              $("#login-side").addClass("d-none");
+              $("#register-side").addClass("d-none");
+            } else {
+              $("#profile-link").addClass("d-none");
+              $("#logout-link").addClass("d-none");
+              $("#login-link").removeClass("d-none");
+              $("#register-link").removeClass("d-none");
+              //side
+              $("#profile-side").addClass("d-none");
+              $("#logout-side").addClass("d-none");
+              $("#login-side").removeClass("d-none");
+              $("#register-side").removeClass("d-none");
+            }
+          },
+          error: function () {
+            console.error("Gagal mendapatkan status login.");
+          },
+        });
+        //humberger
+        $(".openbtn").click(function () {
+          $(this).toggleClass("active");
+          const sideMenu = $(".side-menu");
+
+          if ($(this).hasClass("active")) {
+            sideMenu.css("right", "0"); // Show sidebar
+          } else {
+            sideMenu.css("right", "-100%"); // Hide sidebar
+          }
+        });
+
+        // Update jumlah keranjang
+        function updateNavbarQuantity() {
+          $.ajax({
+            url: "/cart/quantity",
+            method: "GET",
+            success: function (response) {
+              const $amount = $(".amount");
+              if (response.quantity && response.quantity > 0) {
+                $amount.find("span").text(response.quantity);
+                $amount.show();
+              } else {
+                $amount.hide();
+              }
+              // Panggil saat halaman dimuat
+              updateNavbarQuantity();
+            },
+            error: function () {
+              console.error("Gagal memperbarui jumlah keranjang");
+            },
+          });
+        }
+      });
+    </script>
+    <!-- Blok Skrip untuk Halaman Anak -->
+    {% block scripts %} {% endblock %}
+  </body>
+</html>

@@ -1,0 +1,32 @@
+.page-detail {
+  margin-top: 100px;
+}
+
+.cont-product-detail {
+  width: 100%;
+  margin-top: 100px;
+}
+
+/* Product Cards */
+.product-Cards {
+  width: 90%;
+  border-top: 2px solid #2f1cff;
+  margin-top: 100px;
+}
+
+.product-Cards {
+  width: 90%;
+}
+
+.btn.btn-success{
+  color: #fff;
+  border: none;
+  transition: all .3s ease-in-out;
+}
+
+.btn.btn-success:hover{
+  transform: translateY(-2px);
+  box-shadow: 2px 4px 1px #0000004d;
+
+}
+ 

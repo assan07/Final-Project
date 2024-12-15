@@ -1,0 +1,182 @@
+body {
+  padding: 0;
+  margin: 0;
+  background-color: #f8f9fa;
+}
+
+/* navbar */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  height: 80px;
+  background: #ffffff;
+  box-shadow: 8px 8px 10px #6166fa96;
+}
+
+.nav .link-href {
+  display: flex;
+  justify-content: space-between;
+  text-decoration: none;
+  list-style: none;
+  margin-top: 12px;
+  margin-right: 45px;
+  height: 40px;
+  font-size: 18px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #120470 !important;
+  font-weight: bold;
+}
+
+.nav-link:hover {
+  color: #ffce44 !important;
+  text-decoration: none;
+}
+.nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #ffffffb3;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.nav-button.left {
+  left: 10px;
+}
+
+.nav-button.right {
+  right: 10px;
+}
+
+.nav-button:hover {
+  background: #ffffffe6;
+}
+
+.icon-user {
+  color: #120470;
+  margin-right: 20px;
+  margin-left: 20px;
+  cursor: pointer;
+  height: 80px;
+  transition: all 0.3s ease-in-out;
+}
+
+.icon-user img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-item {
+  display: none;
+  position: fixed;
+  top: 58px;
+  right: 10px;
+  background: #fff;
+  box-shadow: 5px 5px 8px #6166fa96;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Ketika .icon-user dihover, tampilkan elemen dengan class .profile-item */
+.icon-user:hover .profile-item {
+  display: block;
+}
+.navbar-usernm {
+  font-weight: bold;
+}
+
+/* main */
+.profile-container {
+  max-width: 100%;
+}
+
+.profile-box {
+  margin-top: 70px;
+  height: 100vh;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.side-bar {
+  background: #f1f6fc;
+  scroll-behavior: auto;
+  width: 260px;
+}
+
+.profile-info {
+  margin-top: 30px;
+}
+
+.profile-info img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-name p {
+  margin: 0px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.sidebar-menu a {
+  color: #495057;
+  text-decoration: none;
+  margin-top: 20px;
+  margin-left: 15px;
+  font-size: 15px;
+  display: inline-block;
+}
+
+.sidebar-menu a:hover {
+  color: #007bff;
+}
+
+.sidebar-menu i {
+  width: 30px;
+  margin-right: 20px;
+}
+
+.button-fiture .btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 98px;
+  color: #fff !important;
+  font-size: 13px;
+  box-shadow: 2px 2px 1px #000000;
+  transition: all 0.2s ease;
+}
+.button-fiture .btn:active {
+  transform: translateX(1px);
+  box-shadow: 0px 0px 1px #000000;
+}
+
+.history-cont .card {
+  display: flex;
+  height: 35%;
+  justify-content: space-between;
+  margin-left: 30px;
+}
+
+
+.img-histori img {
+  width: 100px;
+  height: 90px;
+}
+
+.order-items p {
+  font-size: 12px;
+}

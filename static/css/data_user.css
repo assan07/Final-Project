@@ -1,0 +1,49 @@
+/* Body Background */
+body {
+  background-color: #f4f4f4;
+}
+
+/* Navbar Customization */
+.nav-custom {
+  background: #2f1cff;
+  height: 50px;
+}
+
+.nav-custom .nav-link {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.nav-custom .nav-link:hover {
+  color: #555;
+}
+
+/* Table */
+table {
+  background-color: #fff;
+}
+
+/* Tombol Delete */
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+  transform: scale(1.05); /* Efek zoom saat hover */
+}
+
+.delete-btn:active {
+  background-color: #bd2130;
+}

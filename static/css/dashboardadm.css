@@ -1,0 +1,191 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  height: 80px;
+  background: #fff;
+  box-shadow: 8px 8px 10px #6166fa96;
+  z-index: 1000;
+}
+
+.sidebar {
+  height: 100vh;
+  position: fixed;
+  top: 87px;
+  left: 0;
+  padding-top: 0.7rem;
+  box-shadow: 8px 8px 10px #06084096;
+}
+
+.side-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.main-content {
+  margin-left: 250px;
+  margin-top: 100px;
+  padding: 20px;
+  z-index: -200;
+}
+
+
+.nav-link {
+  color: #333;
+  padding: 0.8rem 1rem;
+  border-radius: 0.25rem;
+  margin: 0.2rem 0;
+}
+
+.nav-link:hover {
+  background-color: #c7ddf3;
+}
+
+.nav-link.active {
+  background-color: #0d6efd;
+  color: white;
+}
+
+.card {
+  margin-top: 6rem;
+}
+
+.stats-card {
+  transition: transform 0.2s;
+  border-radius: 0.5rem;
+}
+
+.stats-card:hover {
+  transform: translateY(-5px);
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.bg-blue-dark {
+  background-color: #003366;
+  color: white;
+}
+
+.bg-blue-medium {
+  background-color: #004c99;
+  color: white;
+}
+
+.bg-blue-light {
+  background-color: #1a75ff;
+  color: white;
+}
+
+.bg-blue-lighter {
+  background-color: #66a3ff;
+  color: white;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border-radius: 0.2rem;
+  height: auto;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+}
+
+.btn i {
+  margin-right: 4px;
+}
+
+.detail-modal-container {
+  padding: 15px;
+}
+
+/* Modal popup - mengatur ukuran dan tampilan kotak modal */
+.detail-modal-popup {
+  width: auto !important;
+  max-width: 700px !important;
+  margin: 1.75rem auto;
+  font-size: 0.9rem !important;
+}
+
+/* Header modal */
+.detail-modal-header {
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 1rem;
+}
+
+/* Tombol close */
+.detail-modal-close {
+  padding: 0.5rem !important;
+}
+
+/* Styling tambahan untuk tabel */
+.table {
+  font-size: 0.9rem;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  white-space: nowrap;
+}
+
+/* Responsif untuk layar kecil */
+@media (max-width: 768px) {
+  .detail-modal-popup {
+    width: 90% !important;
+    margin: 1rem auto;
+  }
+
+  .table {
+    font-size: 0.8rem;
+  }
+}
+
+.sortable {
+  cursor: pointer;
+  position: relative;
+}
+
+.sortable i {
+  margin-left: 5px;
+  font-size: 0.8em;
+}
+
+.sortable.asc i::before {
+  content: "\f0de";
+  /* fa-sort-up */
+  color: #000;
+}
+
+.sortable.desc i::before {
+  content: "\f0dd";
+  /* fa-sort-down */
+  color: #000;
+}
+
+.sortable:hover {
+  background-color: #e9ecef;
+}
+
+.table td.align-middle {
+  vertical-align: middle !important;
+}
+
+.d-flex.align-items-center {
+  height: 100%;
+}
+
+.d-flex.align-items-center .btn {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  line-height: 1.5;
+}
