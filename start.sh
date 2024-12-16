@@ -5,7 +5,7 @@ export PYTHONUNBUFFERED=true
 VIRTUALENV=.data/venv
 
 if [ ! -d $VIRTUALENV ]; then
-  python3.8 -m venv $VIRTUALENV
+  python3.3 -m venv $VIRTUALENV
 fi
 
 if [ ! -f $VIRTUALENV/bin/pip ]; then

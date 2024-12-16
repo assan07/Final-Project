@@ -263,6 +263,7 @@ body {
   background-size: cover;
   justify-content: center;
   transition: all 0.3s ease-in-out;
+  align-items: center;
 }
 
 .box-item {
@@ -290,6 +291,7 @@ h1 {
 .slide {
   flex: 0 0 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -310,15 +312,6 @@ h1 {
   transition: all 0.3s ease-in-out;
 }
 
-.btn {
-  border-radius: 15px;
-  border: 1px solid #120470;
-  transition: 0.3s ease;
-  color: #120470;
-
-  font-weight: bold;
-}
-
 .btn-outline-primary {
   background-color: #010330;
   color: white;
@@ -327,6 +320,25 @@ h1 {
 .btn-outline-info:hover {
   background-color: #067bc2;
   color: white;
+}
+.nav-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  font-size: 24px;
+  color: #2f1cff;
+}
+
+.nav-button.left {
+  left: 10px;
+}
+
+.nav-button.right {
+  right: 10px;
 }
 
 /* button navigasi kiri */
@@ -337,12 +349,8 @@ h1 {
   transition: all 0.3s ease-in-out;
 }
 
-.fa-circle-left:hover {
-  transform: translateX(-8px);
-  color: #1552fb;
-}
 .fa-circle-left:active {
-  transform: translateX(10px);
+  transform: translateX(-10px);
   color: #120470;
 }
 
@@ -354,10 +362,7 @@ h1 {
   transition: all 0.3s ease-in-out;
 }
 
-.fa-circle-right:hover {
-  transform: translateX(8px);
-  color: #1552fb;
-}
+
 .fa-circle-right:active {
   transform: translateX(15px);
   color: #120470;
@@ -438,7 +443,6 @@ footer {
   display: none;
 }
 @media only screen and (max-width: 360px) {
-
   .nav-bar .link-href {
     display: flex;
     justify-content: space-between;
@@ -449,7 +453,7 @@ footer {
   }
   .main {
     background-image: none;
-    background-size: 100% 100%;
+    background-size: 100%;
     background-position: center;
   }
 
@@ -483,6 +487,10 @@ footer {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+  }
+  .img-fluid {
+    max-width: 100%;
+    height: auto;
   }
 
   .item-collection {
@@ -567,19 +575,27 @@ footer {
 
 /* hp */
 @media only screen and (max-width: 420px) {
+  .slides-container {
+    width: 90%;
+  }
+  .box-item h1 {
+    font-size: 1.5rem;
+  }
   .side-menu {
     display: block;
   }
   .main {
     background-image: none;
-    background-size: 100% 100%;
+    background-size: 100%;
     background-position: center;
   }
   .nav-bar .link-href {
     height: 50px;
     margin-top: 10px;
   }
-
+  .nav-button {
+    font-size: 20px;
+  }
   .link-href .nav-item {
     display: none;
     margin-top: 20px;
@@ -613,7 +629,7 @@ footer {
   }
 
   .item-collection {
-    width: 200px;
+    width: 100%;
     height: 200px;
     margin-left: 59px;
     border: none;
@@ -662,7 +678,6 @@ footer {
   .link-href .openbtn {
     display: block;
     margin-top: 10px;
-   
   }
 
   .openbtn span {
@@ -699,5 +714,22 @@ footer {
 @media only screen and (min-width: 1024px) {
   .openbtn {
     display: none;
+  }
+}
+/* Media query untuk layar dengan lebar maksimum 360px */
+@media only screen and (max-width: 360px) {
+  .slides-container {
+    width: 95%;
+  }
+
+  .box-item h1 {
+    font-size: 1.2rem;
+  }
+  .nav-button {
+    font-size: 20px;
+  }
+
+  .item-collection img {
+    max-width: 80%;
   }
 }
