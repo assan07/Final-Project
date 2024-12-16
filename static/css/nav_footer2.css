@@ -393,17 +393,11 @@ h1 {
   text-align: justify;
 }
 
-footer {
-  box-sizing: border-box;
-  width: 100vw;
-  margin-top: 20px;
-  margin-left: -10px;
+.bg-footer {
+  z-index: 100;
+  margin-top: 50px;
   padding: 15px;
   height: 100%;
-}
-
-.bg-footer {
-  height: 70%;
   background: linear-gradient(45deg, #001f33, #001f4c);
 }
 

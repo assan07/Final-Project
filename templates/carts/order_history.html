@@ -92,66 +92,59 @@
         </div>
 
         <!-- Riwayat Pembelian -->
-        <div
-          class="history-cont my-5 col-10 col-md-7 col-lg-8 mt-5 g-3 bg-body-secondary"
-        >
+        <div class="history-cont col-10 col-md-7 col-lg-8">
           <!-- Product List -->
-          {% if orders %} {% for order in orders %}
-          <div
-            class="order-items card p-3 col-12 col-md-7 col-lg-11 mt-2 rounded-0"
-          >
-            {% for item in order.get('items', []) %}
-            <div class="item-histori row mb-3">
-              <div class="col-3 img-histori">
-                <img
-                  src="{{ url_for('static', filename='images/gambar_barang/' + item.get('gambar_barang', 'placeholder.png')) }}"
-                  class="img-fluid rounded"
-                  alt="{{ item.get('nama_barang', 'Product Image') }}"
-                />
-              </div>
-              <div class="col-6">
-                <p class="text-bold">
-                  {{ item.get('nama_barang', 'Nama Produk') }}
-                </p>
-                <p>Quantity: {{ item.get('quantity', 0) }}</p>
-                <p>
-                  Order Status:z
-                  <span
-                    class="badge {% if order.status == 'pending' %}bg-warning{% elif order.status == 'confirmed' %}bg-info{% elif order.status == 'completed' %}bg-success{% endif %}"
-                  >
-                    {{order.status}}
-                  </span>
-                </p>
-                <p class="mt-0">Total: Rp. {{ item.get('subtotal', 0) }}</p>
-              </div>
-              <div class="col-3 button-fiture">
-                {% if order.status == 'completed' %}
-                <!-- Beli Lagi Button -->
-                <div class="btn-beli">
-                  <a
-                    href="{{ url_for('product_details', product_id=item.get('product_id')) }}"
-                    class="btn btn-success mb-2 rounded-0"
-                  >
-                    <i class="fa-solid fa-cart-arrow-down text-light mx-1"></i>
-                    Beli
-                  </a>
-                </div>
-
-                <div class="item-row">
-                  <button
-                    class="btn btn-danger remove-item-btn rounded-0"
-                    data-order-id="{{ order['_id'] }}"
-                    data-product-id="{{ item['product_id'] }}"
-                  >
-                    <i class="fa-solid fa-trash-arrow-up mx-1"></i> Hapus
-                  </button>
-                </div>
-                {% endif %}
-              </div>
+          {% if orders %} {% for order in orders %} {% for item in
+          order.get('items', []) %}
+          <div class="order-items card row mb-3 rounded-0">
+            <div class="col-3 img-histori">
+              <img
+                src="{{ url_for('static', filename='images/gambar_barang/' + item.get('gambar_barang', 'placeholder.png')) }}"
+                class="img-fluid rounded"
+                alt="{{ item.get('nama_barang', 'Product Image') }}"
+              />
             </div>
-            {% endfor %}
+            <div class="col-6">
+              <p class="text-bold">
+                {{ item.get('nama_barang', 'Nama Produk') }}
+              </p>
+              <p>Quantity: {{ item.get('quantity', 0) }}</p>
+              <p>
+                Order Status:z
+                <span
+                  class="badge {% if order.status == 'pending' %}bg-warning{% elif order.status == 'confirmed' %}bg-info{% elif order.status == 'completed' %}bg-success{% endif %}"
+                >
+                  {{order.status}}
+                </span>
+              </p>
+              <p class="mt-0">Total: Rp. {{ item.get('subtotal', 0) }}</p>
+            </div>
+            <div class="col-3 button-fiture">
+              {% if order.status == 'completed' %}
+              <!-- Beli Lagi Button -->
+              <div class="btn-beli">
+                <a
+                  href="{{ url_for('product_details', product_id=item.get('product_id')) }}"
+                  class="btn btn-success mb-2 rounded-0"
+                >
+                  <i class="fa-solid fa-cart-arrow-down text-light mx-1"></i>
+                  Beli
+                </a>
+              </div>
+
+              <div class="item-row">
+                <button
+                  class="btn btn-danger remove-item-btn rounded-0"
+                  data-order-id="{{ order['_id'] }}"
+                  data-product-id="{{ item['product_id'] }}"
+                >
+                  <i class="fa-solid fa-trash-arrow-up mx-1"></i> Hapus
+                </button>
+              </div>
+              {% endif %}
+            </div>
           </div>
-          {% endfor %} {% else %}
+          {% endfor %} {% endfor %} {% else %}
           <div class="alert alert-info mt-3">
             Anda belum melakukan checkout barang.
             <a href="/products/product_lists" class="text-decoration-underline"

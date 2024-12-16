@@ -95,17 +95,9 @@ body {
   font-weight: bold;
 }
 
-/* main */
-.profile-container {
-  max-width: 100%;
-}
-
 .profile-box {
-  margin-top: 70px;
-  height: 100vh;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+  height: auto;
 }
 
 .side-bar {
@@ -164,17 +156,35 @@ body {
   box-shadow: 0px 0px 1px #000000;
 }
 
-.history-cont .card {
-  display: flex;
-  height: 35%;
-  justify-content: space-between;
-  margin-left: 30px;
+.history-cont {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-left: 50px;
+  margin-top: 50px;
+  width: 80%;
+  height: auto;
+  padding: 10px;
+  background-color: blue;
+  scroll-behavior: smooth;
+  overflow: auto;
+  z-index: -10;
 }
 
+.order-items {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 10px;
+  height: 160px; /* Pastikan ini tidak terlalu tinggi */
+  margin: 0; /* Hapus margin-left untuk menghindari overflow */
+  box-shadow: 2px 2px 2px #000000;
+  box-sizing: border-box; /* Pastikan padding dihitung dalam ukuran */
+}
 
 .img-histori img {
-  width: 100px;
-  height: 90px;
+  width: 120px;
+  height: 100px;
 }
 
 .order-items p {
