@@ -1229,8 +1229,6 @@ def update_order_status(order_id):
 
 
 # route histori pembelian
-
-
 @app.route("/carts/order_history")
 def order_history():
     if "user_id" in session and "email" in session:
@@ -1240,6 +1238,8 @@ def order_history():
 
         # Ambil semua pesanan berdasarkan user_id
         orders = list(orders_collection.find({"user_id": user_id}))
+        print("data order")
+        print(orders)
 
         # Konversi ObjectId ke string untuk menghindari error di template
         for order in orders:

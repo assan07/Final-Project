@@ -96,6 +96,8 @@ body {
 }
 
 .profile-box {
+  display: flex;
+  flex-direction: row;
   margin-top: 20px;
   height: auto;
 }
@@ -103,7 +105,15 @@ body {
 .side-bar {
   background: #f1f6fc;
   scroll-behavior: auto;
-  width: 260px;
+  width: 380px;
+  height: 100%;
+  margin-top: 70px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+.side-bar-box{
+margin-left: 20px;
+margin-bottom: 200px;
 }
 
 .profile-info {
@@ -119,7 +129,7 @@ body {
 
 .profile-name p {
   margin: 0px;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: bold;
 }
 
@@ -128,7 +138,7 @@ body {
   text-decoration: none;
   margin-top: 20px;
   margin-left: 15px;
-  font-size: 15px;
+  font-size: 20px;
   display: inline-block;
 }
 
@@ -160,26 +170,30 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
-  margin-left: 50px;
-  margin-top: 50px;
-  width: 80%;
+  margin-left: 20px;
+  margin-top: 80px;
+  width: 70%;
   height: auto;
   padding: 10px;
-  background-color: blue;
   scroll-behavior: smooth;
   overflow: auto;
-  z-index: -10;
 }
 
 .order-items {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
   padding: 10px;
-  height: 160px; /* Pastikan ini tidak terlalu tinggi */
-  margin: 0; /* Hapus margin-left untuk menghindari overflow */
+  height: 160px;
+  margin: 0;
+  cursor: pointer;
+  border: none;
+  background-color: #f9feff;
   box-shadow: 2px 2px 2px #000000;
-  box-sizing: border-box; /* Pastikan padding dihitung dalam ukuran */
+  box-sizing: border-box;
+  transition: all 0.3s ease-in-out;
+}
+.order-items:hover {
+  transform: translateY(-2px);
 }
 
 .img-histori img {
@@ -189,4 +203,8 @@ body {
 
 .order-items p {
   font-size: 12px;
+}
+.alert-info{
+  margin-top: 10px;
+  height: 50px;
 }

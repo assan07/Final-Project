@@ -45,49 +45,51 @@
     {% extends "main/navbar2.html" %} {% block content %}
     <!-- Main Content -->
     <div class="profile-container">
-      <div class="row profile-box p-4">
+      <div class="profile-box">
         <!-- side bar -->
 
         <!-- ===================== -->
         <div class="side-bar col-md-3 text-start">
-          <div class="profile-info d-flex align-items-center gap-4">
-            <div class="image-profile">
-              {% if profile_pic %}
-              <img
-                src="{{ profile_pic }}"
-                alt="Profile Picture"
-                class="img-thumbnail"
-              />
-              {% else %}
-              <a href="/accounts/users/profile"
-                ><img
-                  src="{{ url_for('static', filename='images/profile_pics/default_profile.png') }}"
+          <div class="side-bar-box">
+            <div class="profile-info d-flex align-items-center gap-4">
+              <div class="image-profile">
+                {% if profile_pic %}
+                <img
+                  src="{{ profile_pic }}"
                   alt="Profile Picture"
                   class="img-thumbnail"
-              /></a>
-              {% endif %}
+                />
+                {% else %}
+                <a href="/accounts/users/profile"
+                  ><img
+                    src="{{ url_for('static', filename='images/profile_pics/default_profile.png') }}"
+                    alt="Profile Picture"
+                    class="img-thumbnail"
+                /></a>
+                {% endif %}
+              </div>
+              <div class="profile-name">
+                <p>{{ full_name }}</p>
+                <p>{{ email }}</p>
+              </div>
             </div>
-            <div class="profile-name">
-              <p>{{ full_name }}</p>
-              <p>{{ email }}</p>
+            <div class="sidebar-menu d-flex flex-column">
+              <a href="/accounts/users/profile"
+                ><i class="fa-solid fa-user-pen"></i>Akun anda</a
+              >
+              <a href="/carts/order_summary"
+                ><i class="fa-solid fa-cart-arrow-down"></i>Keranjang anda</a
+              >
+              <a href="/carts/order_history"
+                ><i class="fa-solid fa-clock-rotate-left"></i>Riwayat</a
+              >
+              <a href="/accounts/users/edit_password"
+                ><i class="fas fa-key"></i>Edit password</a
+              >
+              <a href="/accounts/users/logout"
+                ><i class="fa-solid fa-right-from-bracket"></i>Log Out</a
+              >
             </div>
-          </div>
-          <div class="sidebar-menu d-flex flex-column">
-            <a href="/accounts/users/profile"
-              ><i class="fa-solid fa-user-pen"></i>Akun anda</a
-            >
-            <a href="/carts/order_summary"
-              ><i class="fa-solid fa-cart-arrow-down"></i>Keranjang anda</a
-            >
-            <a href="/carts/order_history"
-              ><i class="fa-solid fa-clock-rotate-left"></i>Riwayat</a
-            >
-            <a href="/accounts/users/edit_password"
-              ><i class="fas fa-key"></i>Edit password</a
-            >
-            <a href="/accounts/users/logout"
-              ><i class="fa-solid fa-right-from-bracket"></i>Log Out</a
-            >
           </div>
         </div>
 
@@ -145,7 +147,7 @@
             </div>
           </div>
           {% endfor %} {% endfor %} {% else %}
-          <div class="alert alert-info mt-3">
+          <div class="alert alert-info">
             Anda belum melakukan checkout barang.
             <a href="/products/product_lists" class="text-decoration-underline"
               >Belanja sekarang!</a
