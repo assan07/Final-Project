@@ -112,14 +112,14 @@
               </p>
               <p>Quantity: {{ item.get('quantity', 0) }}</p>
               <p>
-                Order Status:z
+                Order Status:
                 <span
                   class="badge {% if order.status == 'pending' %}bg-warning{% elif order.status == 'confirmed' %}bg-info{% elif order.status == 'completed' %}bg-success{% endif %}"
                 >
                   {{order.status}}
                 </span>
               </p>
-              <p class="mt-0">Total: Rp. {{ item.get('subtotal', 0) }}</p>
+              <p class="mt-0">Total: Rp. {{ "{:,.0f}".format(item.get('subtotal', 0)) }}</p>
             </div>
             <div class="col-3 button-fiture">
               {% if order.status == 'completed' %}
