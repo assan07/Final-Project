@@ -26,13 +26,12 @@
   </head>
 
   <body>
-    {% extends "main/navbar1.html" %}
-    {% block content %}
-    <div class="cont-product-detail container">
+    {% extends "main/navbar1.html" %} {% block content %}
+    <div class="cont-product-detail container rounded-0">
       <div class="row">
         <!-- Image Section -->
-        <div class="col-md-4">
-          <div class="border p-4 text-center">
+        <div class="col-md-4 col-12">
+          <div class="border-end p-4 text-center">
             <img
               src="{{ url_for('static', filename='images/gambar_barang/' ~ (product['foto'] if product['foto'] else 'placeholder.png')) }}"
               class="img-fluid"
@@ -44,7 +43,9 @@
         <!-- Product Details -->
         <div class="col-md-8">
           <h3>{{ product['nama_barang'] }}</h3>
-          <p class="text-muted mb-0  pt-3">Kategori: {{ product['kategori'] }}</p>
+          <p class="text-muted mb-0 pt-3">
+            Kategori: {{ product['kategori'] }}
+          </p>
           <p class="text-muted">Brand: {{ product['brand'] }}</p>
           <h5 class="text-danger">
             Rp {{ "{:,.0f}".format(product['harga']) }}
@@ -87,7 +88,7 @@
           </h5>
           <button
             id="add-to-cart"
-            class="btn btn-success w-100 mt-3"
+            class="btn btn-success w-100 mt-3 rounded-0"
             data-product-id="{{ product['id'] }}"
           >
             Tambah Keranjang
@@ -96,35 +97,6 @@
       </div>
 
       <!-- Store Information -->
-      <div class="row mt-5">
-        <div class="col-md-12">
-          <div class="d-flex align-items-center border p-3">
-            <img
-              src="{{ url_for('static', filename='images/icon/logo-brand.png') }}"
-              class="rounded-circle me-3"
-              alt="Store Logo"
-              style="width: 50px; height: 50px"
-            />
-            <div>
-              <h6 class="mb-0">TB Mustika Dua</h6>
-              <p class="mb-0 text-muted">Toko Bangunan</p>
-              <p class="mb-0">
-                <a href="tel:+6285219396096" class="text-success"
-                  ><strong>+6285219396096</strong></a
-                >
-              </p>
-              <p class="mb-0">
-                Jl. Dayanu Ikhsanuddin, kota baubau, Sulawesi Tenggara
-              </p>
-            </div>
-            <a
-              href="/products/product_lists"
-              class="btn btn-link ms-auto text-info"
-              >Kunjungi</a
-            >
-          </div>
-        </div>
-      </div>
     </div>
     {% endblock %}
 

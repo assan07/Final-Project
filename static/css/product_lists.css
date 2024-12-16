@@ -1,5 +1,6 @@
-.container-list{
-  z-index: -10  ;
+.container-list {
+  padding: 10px;
+  height: 100%;
 }
 
 /* List Collection */
@@ -51,10 +52,16 @@
   width: 230px;
   padding: 10px;
 }
+.card-item {
+  display: flex;
+  height: 310px;
+  width: 230px;
+  padding: 10px;
+  transition: all .3s ease-in-out;
+}
 
-.product-card.card:hover {
-  opacity: 0.9;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+.card-item.card:hover{
+  transform: translateY(-4px);
 }
 
 .img-barang img {

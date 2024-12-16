@@ -924,7 +924,6 @@ def order_summary():
 
 # route untuk mengupdate jumlah barang yang akan di pesan
 
-
 @app.route("/carts/order_summary/update-cart", methods=["POST"])
 def update_cart():
     try:
@@ -1004,26 +1003,15 @@ def delete_from_cart():
         return jsonify({"message": "Terjadi kesalahan saat menghapus item"}), 500
 
 
-@app.route("/submit-order", methods=["POST"])
+@app.route("/carts/order_summary/submit-order", methods=["POST"])
 def submit_order():
     try:
         # Cek autentikasi
         if 'user_id' not in session:
-            return jsonify({"message": "Silakan login terlebih dahulu"}), 401
+            return jsonify({"message": "Silakan login terlebih dahulu"}), 401    
         
-         # Validasi: cek apakah user memiliki pesanan yang belum selesai
-        pending_order = db.orders.find_one({
-            "user_id": session['user_id'],
-            "status": "pending"
-        })
-        # if pending_order:
-        #     return jsonify({
-        #         "message": "Anda sudah memiliki pesanan yang belum diproses. Selesaikan pesanan tersebut sebelum membuat pesanan baru."
-        #     }), 400
-
-
-
         data = request.get_json()
+        print("Data diterima dari frontend:", data)  # Debugging log
 
         # Validasi data
         if not data.get('items'):
@@ -1052,6 +1040,7 @@ def submit_order():
         # Hitung total dan validasi stok
         total_amount = 0
         order_items = []
+        item_details = []  # Data tambahan untuk WhatsApp
 
         for item in data['items']:
             cart_item = cart_collection.find_one({"_id": ObjectId(item['id'])})
@@ -1060,7 +1049,8 @@ def submit_order():
 
             # Cek stok
             product = barang_collection.find_one(
-                {"_id": ObjectId(cart_item["product_id"])})
+                {"_id": ObjectId(cart_item["product_id"])}
+            )
             if not product or int(product.get("stock", 0)) < item['quantity']:
                 return jsonify({
                     "message": f"Stok tidak mencukupi untuk produk {cart_item.get('brand', 'Unknown')}"
@@ -1078,6 +1068,13 @@ def submit_order():
                 "brand": cart_item.get("brand", ""),
                 "harga": cart_item.get("harga", 0),
                 "quantity": item['quantity'],
+                "subtotal": subtotal
+            })
+
+            # Tambahkan data untuk pesan WhatsApp
+            item_details.append({
+                "nama_barang": cart_item.get("nama_barang", "Nama Barang"),
+                "jumlah": item['quantity'],
                 "subtotal": subtotal
             })
 
@@ -1111,15 +1108,23 @@ def submit_order():
         for item in data['items']:
             cart_collection.delete_one({"_id": ObjectId(item['id'])})
 
+        # Kembalikan data untuk SweetAlert dan WhatsApp
         return jsonify({
             "message": "Order berhasil dibuat",
             "order_id": order_id,
-            "status": "success"
+            "status": "success",
+            "data": {
+                "nama_pembeli": full_name,
+                "total_harga": total_amount,
+                "metode_pembayaran": data['payment_method'],
+                "items": item_details
+            }
         }), 200
 
     except Exception as e:
         print(f"Error in submit_order: {str(e)}")
         return jsonify({"message": "Terjadi kesalahan saat memproses pesanan"}), 500
+
 
 
 @app.template_filter('format_currency')

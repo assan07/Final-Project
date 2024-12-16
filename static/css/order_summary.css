@@ -35,9 +35,24 @@ hr {
   transition: transform 0.2s ease;
 }
 
-input[type="radio"]:checked+label .img-radio {
+input[type="radio"]:checked + label .img-radio {
   transform: scale(1.1);
   border: 1px solid #007bff;
   border-radius: 5px;
+}
 
+.btn-beli {
+  color: #fff;
+  border: none;
+  height: 50%;
+  cursor: pointer;
+  font-weight: bold;
+  background-color: #007bff;
+  box-shadow: 2px 2px 2px #000;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-beli:active {
+  box-shadow: 0px 0px 0px #00000000;
+  transform: translateY(-2px);
 }
