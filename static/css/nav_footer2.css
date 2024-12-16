@@ -1,14 +1,16 @@
 :root {
   --primary-color: #120470;
 }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 body {
   font-family: "Poppins", sans-serif;
   background-color: #ffffff;
-  padding: 0;
-  margin: 0;
 }
-
 /* navbar */
 .nav2 {
   display: flex;
@@ -18,7 +20,6 @@ body {
   z-index: 1000;
   box-shadow: 8px 8px 10px #6166fa96;
 }
-
 /* icon brand */
 #icon-brand {
   width: 56px;
@@ -32,7 +33,6 @@ body {
   height: 40px;
   margin-top: 7px;
 }
-
 /* =========== */
 .nav2 .link-href {
   display: flex;
@@ -47,7 +47,6 @@ body {
 }
 
 .link-href .nav-link {
-
   text-decoration: none;
   margin-top: 15px;
   color: #120470 !important;
@@ -59,11 +58,9 @@ body {
   text-decoration: none;
 }
 
-
 .profile-user {
   display: flex;
 }
-
 
 /* icon user */
 .icon-user {
@@ -93,11 +90,9 @@ body {
   box-shadow: 5px 5px 8px #6166fa96;
   transition: all 0.3s ease-in-out;
 }
-
 .profile-item .profile_menu {
   margin-top: -1px;
 }
-
 /* Ketika .icon-user dihover, tampilkan elemen dengan class .profile-item */
 .icon-user:hover .profile-item {
   display: block;
@@ -117,7 +112,6 @@ body {
   bottom: 15px;
   font-size: 12px;
 }
-
 
 .navbar-usernm {
   margin-top: 10px;
@@ -145,19 +139,15 @@ body {
   border-radius: 5px;
   width: 45%;
   transition: all 0.4s;
-
   &:nth-of-type(1) {
     top: 13px;
   }
-
   &:nth-of-type(2) {
     top: 19px;
   }
-
   &:nth-of-type(3) {
     top: 25px;
   }
-
   &:nth-of-type(3)::after {
     content: "menu";
     position: absolute;
@@ -176,18 +166,15 @@ body {
     transform: translateY(6px) rotate(-45deg);
     width: 30%;
   }
-
   &:nth-of-type(2) {
     opacity: 0;
   }
-
   &:nth-of-type(3) {
     top: 26px;
     left: 18px;
     transform: translateY(-6px) rotate(45deg);
     width: 30%;
   }
-
   &:nth-of-type(3)::after {
     content: "close";
     transform: translateY(0) rotate(-45deg);
@@ -200,8 +187,7 @@ body {
 .side-menu {
   position: fixed;
   top: 55px;
-  right: -100%;
-  /* Hide sidebar by default */
+  right: -100%; /* Hide sidebar by default */
   height: 100%;
   width: 300px;
   background-color: #0007d8f3;
@@ -233,7 +219,6 @@ body {
   width: 50px;
   height: 50px;
 }
-
 .side-usernm {
   margin-top: 30px;
   color: #fff;
@@ -249,7 +234,6 @@ body {
 .nav-item.side {
   margin-bottom: 15px;
 }
-
 .nav-link.side-link i {
   width: 30px;
   margin-right: 10px;
@@ -268,7 +252,6 @@ body {
 .nav-item.side a:hover {
   background-color: #120470;
 }
-
 /* ======================= */
 
 /* hero */
@@ -362,7 +345,6 @@ h1 {
   transform: translateX(-8px);
   color: #1552fb;
 }
-
 .fa-circle-left:active {
   transform: translateX(10px);
   color: #120470;
@@ -380,7 +362,6 @@ h1 {
   transform: translateX(8px);
   color: #1552fb;
 }
-
 .fa-circle-right:active {
   transform: translateX(15px);
   color: #120470;
@@ -398,7 +379,6 @@ h1 {
   color: white;
   padding: 50px 15px;
 }
-
 .about-section h2 {
   font-size: 2.5rem;
   font-weight: bold;
@@ -413,10 +393,13 @@ h1 {
   text-align: justify;
 }
 
-/* footer */
 footer {
+  box-sizing: border-box;
+  width: 100vw;
+  margin-top: 20px;
+  margin-left: -10px;
+  padding: 15px;
   height: 100%;
-  z-index: 100;
 }
 
 .bg-footer {
@@ -456,24 +439,20 @@ footer {
 .rounded-2:hover {
   transform: scale(1.05);
 }
-
 .link-href .nav-item.product-link .icon-produk {
   display: none;
 }
 
 /* hp */
 @media only screen and (max-width: 480px) {
-
   .side-menu {
     display: block;
   }
-
   .main {
     background-image: none;
     background-size: 100% 100%;
     background-position: center;
   }
-
   /* humberger menu */
   .openbtn {
     display: block;
@@ -482,13 +461,12 @@ footer {
   .link-href .nav-item {
     display: none;
   }
-
   .nav-item.product-link {
     display: flex;
     font-size: 15px;
     width: 170px;
     color: var(--primary-color) !important;
-    transition: all .3s ease-in-out;
+    transition: all 0.3s ease-in-out;
   }
 
   .link-href .nav-item.product-link .icon-produk {
@@ -520,7 +498,6 @@ footer {
     height: 250px;
     margin-left: 10px;
   }
-
   #icon-brand {
     width: 40px;
     height: 40px;
@@ -528,7 +505,6 @@ footer {
     margin-right: 4px;
     margin-top: 7px;
   }
-
   #icon-title {
     width: 110px;
     height: 30px;
@@ -551,7 +527,6 @@ footer {
   .icon-user:hover .profile-item {
     display: block;
   }
-
   .navbar-usernm {
     font-weight: bold;
   }
@@ -571,19 +546,15 @@ footer {
     border-radius: 5px;
     width: 45%;
     transition: all 0.4s;
-
     &:nth-of-type(1) {
       top: 13px;
     }
-
     &:nth-of-type(2) {
       top: 19px;
     }
-
     &:nth-of-type(3) {
       top: 25px;
     }
-
     &:nth-of-type(3)::after {
       content: "menu";
       position: absolute;
