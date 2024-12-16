@@ -251,7 +251,7 @@ body {
 /* ======================= */
 
 /* hero */
-.main {
+.bg-main {
   display: flex;
   overflow: hidden;
   position: relative;
@@ -361,7 +361,6 @@ h1 {
   margin-right: 80px;
   transition: all 0.3s ease-in-out;
 }
-
 
 .fa-circle-right:active {
   transform: translateX(15px);
@@ -584,16 +583,17 @@ footer {
   .side-menu {
     display: block;
   }
-  .main {
-    background-image: none;
-    background-size: 100%;
-    background-position: center;
+  .bg-main {
+    background-image: none !important;
+    background-color: #fff;
   }
+
   .nav-bar .link-href {
     height: 50px;
     margin-top: 10px;
   }
   .nav-button {
+    margin-top: 200px;
     font-size: 20px;
   }
   .link-href .nav-item {
@@ -721,11 +721,16 @@ footer {
   .slides-container {
     width: 95%;
   }
+  .bg-main {
+    background-size: 1px;
+    background-image: none;
+  }
 
   .box-item h1 {
     font-size: 1.2rem;
   }
   .nav-button {
+    margin-top: 200px;
     font-size: 20px;
   }
 
