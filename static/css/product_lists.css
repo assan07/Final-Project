@@ -57,10 +57,10 @@
   height: 310px;
   width: 230px;
   padding: 10px;
-  transition: all .3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
-.card-item.card:hover{
+.card-item.card:hover {
   transform: translateY(-4px);
 }
 
@@ -91,41 +91,89 @@
   position: absolute;
   margin-top: 170px;
 }
-
-@media only screen and (max-width: 480px) {
+/* Media query untuk layar dengan lebar maksimum 420px */
+@media only screen and (max-width: 420px) {
   .list-collection {
-    text-align: center;
+    text-align: start;
+  }
+  .list-collection .filter-btn {
+    font-size: 12px;
+    box-shadow: 1px 1px 1px #000;
   }
 
   .card-list-barang {
-    display: flex;
-    flex-wrap: wrap;
-    row-gap: 10px;
-    margin-left: -5px;
-    justify-content: center;
-    align-items: center;
+    margin-top: 60px;
   }
-  .product-card {
-    display: flex;
-    flex-wrap: wrap;
-    margin-left: -8px;
-    gap: 3px;
-    height: 200px;
-    width: 160px;
+
+  .product-card,
+  .card-item {
+    height: 250px;
+    width: 180px;
   }
-  .product-card h5,
-  .product-card p {
+}
+
+/* Media query untuk layar dengan lebar maksimum 360px */
+@media only screen and (max-width: 360px) {
+  .list-collection {
+    text-align: start;
+  }
+  .list-collection .filter-btn {
     font-size: 12px;
-    transition: color 0.3s ease;
+    box-shadow: 1px 1px 1px #000;
   }
 
-  .product-card:hover h5,
-  .product-card:hover p {
-    color: #1d4ed8;
+  .card-list-barang {
+    margin-top: 40px;
   }
 
-  .card-body {
-    position: absolute;
-    margin-top: 100px;
+  .product-card,
+  .card-item {
+    height: 220px;
+    width: 150px;
+  }
+
+  @media only screen and (max-width: 480px) {
+    .list-collection {
+      text-align: start;
+    }
+    .list-collection {
+      text-align: center;
+    }
+    .list-collection .filter-btn {
+      font-size: 12px;
+      box-shadow: 1px 1px 1px #000;
+    }
+
+    .card-list-barang {
+      display: flex;
+      flex-wrap: wrap;
+      row-gap: 10px;
+      margin-left: -5px;
+      justify-content: center;
+      align-items: center;
+    }
+    .product-card {
+      display: flex;
+      flex-wrap: wrap;
+      margin-left: -8px;
+      gap: 3px;
+      height: 200px;
+      width: 160px;
+    }
+    .product-card h5,
+    .product-card p {
+      font-size: 12px;
+      transition: color 0.3s ease;
+    }
+
+    .product-card:hover h5,
+    .product-card:hover p {
+      color: #1d4ed8;
+    }
+
+    .card-body {
+      position: absolute;
+      margin-top: 100px;
+    }
   }
 }
