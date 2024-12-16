@@ -208,3 +208,31 @@ margin-bottom: 200px;
   margin-top: 10px;
   height: 50px;
 }
+/* Media query untuk layar dengan lebar maksimum 420px */
+@media only screen and (max-width: 420px) {
+  .history-cont {
+    grid-template-columns: 1fr;
+    margin-left: 10px;
+    margin-top: 100px;
+    width: 90%;
+  }
+  .order-items {
+    height: 140px;
+    padding: 5px;
+  }
+}
+
+/* Media query untuk layar dengan lebar maksimum 360px */
+@media only screen and (max-width: 360px) {
+  .history-cont {
+    grid-template-columns: 1fr;
+    margin-left: 10px;
+    margin-top: 100px;
+    width: 90%;
+  }
+  .order-items {
+    margin: 0px;
+    height: 150px;
+    padding: 5px;
+  }
+}
