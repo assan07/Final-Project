@@ -27,8 +27,8 @@ app.secret_key = 'my_super_secret_key_12345'
 bcrypt = Bcrypt(app)
 
 # Direktori untuk menyimpan gambar
-UPLOAD_FOLDER_BARANG = 'static/images/gambar_barang'
-UPLOAD_FOLDER_PROFILE = 'static/images/profile_pics'
+UPLOAD_FOLDER_BARANG = 'Final-Project/static/images/gambar_barang'
+UPLOAD_FOLDER_PROFILE = 'Final-Project/static/images/profile_pics'
 app.config['UPLOAD_FOLDER_BARANG'] = UPLOAD_FOLDER_BARANG
 app.config['UPLOAD_FOLDER_PROFILE'] = UPLOAD_FOLDER_PROFILE
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
